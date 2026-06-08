@@ -1,2 +1,12 @@
 /.gradle/
 /.idea/
+/config_overhauled.png
+/fabric/runs/
+/fabric/build/
+/fabric/.gradle/
+/common/build/
+/buildSrc/build/
+/buildSrc/.gradle/
+/neoforge/build/
+/neoforge/run/
+/forge/build/
