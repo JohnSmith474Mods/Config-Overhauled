@@ -10,6 +10,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -156,30 +157,30 @@ public abstract class AbstractRegistrySelectionScreen<T> extends Screen {
 
                 if (this.onMoveUp == null && this.onMoveDown == null) {
                     if (j < 32) {
-                        guiGraphics.blitSprite(this.highlightedSprite, left, top, 32, 32);
+                        guiGraphics.blitSprite(RenderType::guiTextured, this.highlightedSprite, left, top, 32, 32);
                     } else {
-                        guiGraphics.blitSprite(this.sprite, left, top, 32, 32);
+                        guiGraphics.blitSprite(RenderType::guiTextured, this.sprite, left, top, 32, 32);
                     }
                 } else {
                     if (j < 16) {
-                        guiGraphics.blitSprite(this.highlightedSprite, left, top, 32, 32);
+                        guiGraphics.blitSprite(RenderType::guiTextured, this.highlightedSprite, left, top, 32, 32);
                     } else {
-                        guiGraphics.blitSprite(this.sprite, left, top, 32, 32);
+                        guiGraphics.blitSprite(RenderType::guiTextured, this.sprite, left, top, 32, 32);
                     }
 
                     if (this.onMoveUp != null) {
                         if (j < 32 && j > 16 && k < 16) {
-                            guiGraphics.blitSprite(MOVE_UP_HIGHLIGHTED_SPRITE, left, top, 32, 32);
+                            guiGraphics.blitSprite(RenderType::guiTextured, MOVE_UP_HIGHLIGHTED_SPRITE, left, top, 32, 32);
                         } else {
-                            guiGraphics.blitSprite(MOVE_UP_SPRITE, left, top, 32, 32);
+                            guiGraphics.blitSprite(RenderType::guiTextured, MOVE_UP_SPRITE, left, top, 32, 32);
                         }
                     }
 
                     if (this.onMoveDown != null) {
                         if (j < 32 && j > 16 && k > 16) {
-                            guiGraphics.blitSprite(MOVE_DOWN_HIGHLIGHTED_SPRITE, left, top, 32, 32);
+                            guiGraphics.blitSprite(RenderType::guiTextured, MOVE_DOWN_HIGHLIGHTED_SPRITE, left, top, 32, 32);
                         } else {
-                            guiGraphics.blitSprite(MOVE_DOWN_SPRITE, left, top, 32, 32);
+                            guiGraphics.blitSprite(RenderType::guiTextured, MOVE_DOWN_SPRITE, left, top, 32, 32);
                         }
                     }
                 }

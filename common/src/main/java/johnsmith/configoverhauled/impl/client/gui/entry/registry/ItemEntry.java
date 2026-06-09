@@ -9,6 +9,6 @@ import net.minecraft.world.item.ItemStack;
 
 public class ItemEntry extends RegistryEntry<Item> {
     public ItemEntry(Property<Item> property, AbstractConfigScreen parentScreen, Minecraft minecraft, Runnable onValueChanged) {
-        super(property, parentScreen, minecraft, onValueChanged, BuiltInRegistries.ITEM, ItemStack::new, Item::getDescription);
+        super(property, parentScreen, minecraft, onValueChanged, BuiltInRegistries.ITEM, ItemStack::new, Item::getName);
     }
 }

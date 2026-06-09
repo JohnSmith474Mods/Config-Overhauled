@@ -10,6 +10,6 @@ import java.util.List;
 
 public class ItemListEntry extends RegistryListEntry<Item> {
     public ItemListEntry(Property<List<Item>> property, AbstractConfigScreen parentScreen, Minecraft minecraft, Runnable onValueChanged) {
-        super(property, parentScreen, minecraft, onValueChanged, BuiltInRegistries.ITEM, ItemStack::new, Item::getDescription);
+        super(property, parentScreen, minecraft, onValueChanged, BuiltInRegistries.ITEM, ItemStack::new, Item::getName);
     }
 }
