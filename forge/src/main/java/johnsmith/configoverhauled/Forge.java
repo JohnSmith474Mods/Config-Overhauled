@@ -1,19 +1,30 @@
 package johnsmith.configoverhauled;
 
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.ConfigScreenHandler;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
+import net.minecraftforge.fml.loading.FMLPaths;
 
 @Mod(Constants.MOD_ID)
-public class ExampleMod {
+public class Forge {
+    public Forge() {
+        IEventBus eventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
-    public ExampleMod() {
+        Common.init();
 
-        // This method is invoked by the Forge mod loader when it is ready
-        // to load your mod. You can access Forge and Common code in this
-        // project.
+        Config.MANAGER.init(FMLPaths.CONFIGDIR.get());
 
-        // Use Forge to bootstrap the Common mod.
-        Constants.LOG.info("Hello Forge world!");
-        CommonClass.init();
-
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            ModLoadingContext.get().registerExtensionPoint(
+                    ConfigScreenHandler.ConfigScreenFactory.class,
+                    () -> new ConfigScreenHandler.ConfigScreenFactory((minecraft, parentScreen) ->
+                            Config.MANAGER.createScreen(parentScreen)
+                    )
+            );
+        }
     }
 }

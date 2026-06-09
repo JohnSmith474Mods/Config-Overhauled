@@ -8,6 +8,6 @@ import org.slf4j.LoggerFactory;
 public class ConfigFactoryImpl implements ConfigFactory {
     @Override
     public ConfigManager create(String modId) {
-        return new ConfigManagerImpl(modId, LoggerFactory.getLogger(Constants.MOD_ID + "/" + modId));
+        return new ConfigManagerImpl(modId, LoggerFactory.getLogger(modId));
     }
 }
