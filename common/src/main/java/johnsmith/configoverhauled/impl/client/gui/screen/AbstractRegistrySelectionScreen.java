@@ -76,6 +76,10 @@ public abstract class AbstractRegistrySelectionScreen<T> extends Screen {
             super(minecraft, width, height, y, itemHeight);
         }
 
+        public AbstractElementList(Minecraft minecraft, int width, int height, int y, int itemHeight, int headerHeight) {
+            super(minecraft, width, height, y, itemHeight, headerHeight);
+        }
+
         public void clearEntries() {
             super.clearEntries();
         }

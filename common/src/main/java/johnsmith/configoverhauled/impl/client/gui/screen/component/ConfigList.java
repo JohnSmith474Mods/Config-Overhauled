@@ -109,5 +109,5 @@ public class ConfigList extends AbstractConfigList {
      * @return The adjusted scrollbar x-coordinate.
      */
     @Override
-    protected int getScrollbarPosition() { return super.getScrollbarPosition() - 3; }
+    protected int scrollBarX() { return super.scrollBarX() - 3; }
 }

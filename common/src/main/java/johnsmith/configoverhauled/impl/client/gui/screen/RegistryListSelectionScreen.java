@@ -60,7 +60,7 @@ public class RegistryListSelectionScreen<T> extends AbstractRegistrySelectionScr
     }
 
     private void updateAvailable(String query) {
-        double scroll = this.availableList.getScrollAmount();
+        double scroll = this.availableList.scrollAmount();
         this.availableList.clearEntries();
         String lowerQuery = query.toLowerCase(Locale.ROOT);
 
@@ -81,7 +81,7 @@ public class RegistryListSelectionScreen<T> extends AbstractRegistrySelectionScr
     }
 
     private void updateSelected(String query) {
-        double scroll = this.selectedList.getScrollAmount();
+        double scroll = this.availableList.scrollAmount();
         this.selectedList.clearEntries();
         String lowerQuery = query.toLowerCase(Locale.ROOT);
 
@@ -126,10 +126,9 @@ public class RegistryListSelectionScreen<T> extends AbstractRegistrySelectionScr
         private final Component listTitle;
 
         public ElementList(Minecraft minecraft, int width, int height, int y, int itemHeight, int x, Component listTitle) {
-            super(minecraft, width, height, y, itemHeight);
+            super(minecraft, width, height, y, itemHeight, 16);
             this.setX(x);
             this.listTitle = listTitle;
-            this.setRenderHeader(true, 16);
         }
 
         @Override
@@ -146,7 +145,7 @@ public class RegistryListSelectionScreen<T> extends AbstractRegistrySelectionScr
         }
 
         @Override
-        protected int getScrollbarPosition() {
+        protected int scrollBarX() {
             return this.getX() + this.width - 6;
         }
     }
