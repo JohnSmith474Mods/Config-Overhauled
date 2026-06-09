@@ -40,9 +40,9 @@ public class Config {
             .register();
 
     static {
-        //if (Services.PLATFORM.isDevelopmentEnvironment()) {
+        if (Services.PLATFORM.isDevelopmentEnvironment()) {
             registerTestConfigs();
-        //}
+        }
     }
 
     private static void registerTestConfigs() {
