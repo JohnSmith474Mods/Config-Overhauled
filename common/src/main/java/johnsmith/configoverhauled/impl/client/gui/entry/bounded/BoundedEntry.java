@@ -53,7 +53,7 @@ public abstract class BoundedEntry<T extends Number & Comparable<T>, W extends A
             if (val.compareTo(this.getBounds().lowerBound) >= 0 && val.compareTo(this.getBounds().upperBound) <= 0) {
                 this.setValue(val);
                 if (this.widget instanceof EditBox box) {
-                    box.setTextColor(0xFFFFFF);
+                    box.setTextColor(0xFFFFFFFF);
                 }
             } else {
                 this.updateWidgetValue();
@@ -92,18 +92,18 @@ public abstract class BoundedEntry<T extends Number & Comparable<T>, W extends A
         box.setResponder(s -> {
             try {
                 if (this.isPartialInput(s)) {
-                    box.setTextColor(0xFFFFFF);
+                    box.setTextColor(0xFFFFFFFF);
                     return;
                 }
                 T val = this.parse(s);
 
                 if (val.compareTo(bounds.lowerBound) >= 0 && val.compareTo(bounds.upperBound) <= 0) {
-                    box.setTextColor(0xFFFFFF);
+                    box.setTextColor(0xFFFFFFFF);
                 } else {
-                    box.setTextColor(0xFF0000);
+                    box.setTextColor(0xFFFF0000);
                 }
             } catch (NumberFormatException ignored) {
-                box.setTextColor(0xFF0000);
+                box.setTextColor(0xFFFF0000);
             }
         });
 
@@ -127,7 +127,7 @@ public abstract class BoundedEntry<T extends Number & Comparable<T>, W extends A
             if (this.minecraft.screen instanceof ConfigScreen configScreen) {
                 configScreen.deferredTooltip = boundsTooltip;
             } else {
-                guiGraphics.renderTooltip(this.minecraft.font, boundsTooltip, mouseX, mouseY);
+                guiGraphics.setTooltipForNextFrame(this.minecraft.font, boundsTooltip, mouseX, mouseY);
             }
         }
     }

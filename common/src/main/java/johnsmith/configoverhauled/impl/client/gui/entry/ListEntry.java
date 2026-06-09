@@ -34,10 +34,10 @@ public class ListEntry<E> extends OptionEntry<List<E>, EditBox> {
                 DataResult<List<E>> result = this.property.codec().parse(JsonOps.INSTANCE, element);
                 result.result().ifPresentOrElse(list -> {
                     this.setValue(list);
-                    box.setTextColor(0xFFFFFF);
-                }, () -> box.setTextColor(0xFF0000));
+                    box.setTextColor(0xFFFFFFFF);
+                }, () -> box.setTextColor(0xFFFF0000));
             } catch (Exception e) {
-                box.setTextColor(0xFF0000);
+                box.setTextColor(0xFFFF0000);
             }
         });
         return box;
@@ -73,7 +73,7 @@ public class ListEntry<E> extends OptionEntry<List<E>, EditBox> {
             if (this.minecraft.screen instanceof ConfigScreen configScreen) {
                 configScreen.deferredTooltip = boundsTooltip;
             } else {
-                guiGraphics.renderTooltip(this.minecraft.font, boundsTooltip, mouseX, mouseY);
+                guiGraphics.setTooltipForNextFrame(this.minecraft.font, boundsTooltip, mouseX, mouseY);
             }
         }
     }

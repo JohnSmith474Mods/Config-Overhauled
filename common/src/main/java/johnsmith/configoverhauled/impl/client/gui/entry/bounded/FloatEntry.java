@@ -41,7 +41,7 @@ public class FloatEntry extends BoundedEntry<Float, EditBox> {
     @Override
     protected void updateWidgetValue() {
         this.widget.setValue(this.formatValue(this.getBounds().get()));
-        this.widget.setTextColor(0xFFFFFF);
+        this.widget.setTextColor(0xFFFFFFFF);
         this.widget.setCursorPosition(0);
         this.widget.setHighlightPos(0);
     }

@@ -39,7 +39,7 @@ public class LongEntry extends BoundedEntry<Long, EditBox> {
     @Override
     protected void updateWidgetValue() {
         this.widget.setValue(String.valueOf(this.getBounds().get()));
-        this.widget.setTextColor(0xFFFFFF);
+        this.widget.setTextColor(0xFFFFFFFF);
         this.widget.setCursorPosition(0);
         this.widget.setHighlightPos(0);
     }

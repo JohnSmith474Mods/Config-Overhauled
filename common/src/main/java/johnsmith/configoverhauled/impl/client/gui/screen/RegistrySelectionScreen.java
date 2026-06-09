@@ -76,11 +76,11 @@ public class RegistrySelectionScreen<T> extends AbstractRegistrySelectionScreen<
             guiGraphics.fill(left - 2, top - 2, left + 242, top + 34, 0xFFFFFFFF);
             guiGraphics.fill(left - 1, top - 1, left + 241, top + 33, 0xFF000000);
 
-            guiGraphics.pose().pushPose();
-            guiGraphics.pose().translate(left, top, 0);
-            guiGraphics.pose().scale(2.0F, 2.0F, 1.0F);
+            guiGraphics.pose().pushMatrix();
+            guiGraphics.pose().translate(left, top);
+            guiGraphics.pose().scale(2.0F, 2.0F);
             guiGraphics.renderItem(this.iconProvider.apply(this.currentSelection), 0, 0);
-            guiGraphics.pose().popPose();
+            guiGraphics.pose().popMatrix();
 
             int maxWidth = 204;
             Component name = this.nameProvider.apply(this.currentSelection);

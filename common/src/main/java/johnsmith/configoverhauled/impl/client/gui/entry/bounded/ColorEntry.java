@@ -46,7 +46,7 @@ public class ColorEntry extends BoundedEntry<Integer, EditBox> {
     @Override
     protected void updateWidgetValue() {
         this.widget.setValue(String.format("#%06X", this.getBounds().get()));
-        this.widget.setTextColor(0xFFFFFF);
+        this.widget.setTextColor(0xFFFFFFFF);
         this.widget.setCursorPosition(0);
         this.widget.setHighlightPos(0);
     }

@@ -24,7 +24,7 @@ public class StringEntry extends OptionEntry<String, EditBox> {
         box.setMaxLength(32767);
         box.setResponder(s -> {
             this.setValue(s);
-            box.setTextColor(0xFFFFFF);
+            box.setTextColor(0xFFFFFFFF);
         });
         return box;
     }
@@ -32,7 +32,7 @@ public class StringEntry extends OptionEntry<String, EditBox> {
     @Override
     protected void updateWidgetValue() {
         this.widget.setValue(this.property.get());
-        this.widget.setTextColor(0xFFFFFF);
+        this.widget.setTextColor(0xFFFFFFFF);
         this.widget.setCursorPosition(0);
         this.widget.setHighlightPos(0);
     }
@@ -55,7 +55,7 @@ public class StringEntry extends OptionEntry<String, EditBox> {
             if (this.minecraft.screen instanceof ConfigScreen configScreen) {
                 configScreen.deferredTooltip = boundsTooltip;
             } else {
-                guiGraphics.renderTooltip(this.minecraft.font, boundsTooltip, mouseX, mouseY);
+                guiGraphics.setTooltipForNextFrame(this.minecraft.font, boundsTooltip, mouseX, mouseY);
             }
         }
     }
