@@ -19,13 +19,14 @@ public class StringEntry extends AbstractTextEntry<String> {
     }
 
     @Override
-    protected void setupEditBox(EditBox box) {
-        box.setResponder(s -> box.setTextColor(0xFFFFFFFF));
-    }
-
-    @Override
-    protected void applyInput(String input) {
-        this.setValue(input);
+    protected EditBox createWidget() {
+        EditBox box = new EditBox(this.minecraft.font, 0, 0, 75, 20, Component.empty());
+        box.setMaxLength(32767);
+        box.setResponder(s -> {
+            this.setValue(s);
+            box.setTextColor(0xFFFFFFFF);
+        });
+        return box;
     }
 
     @Override
@@ -54,7 +55,7 @@ public class StringEntry extends AbstractTextEntry<String> {
             if (this.minecraft.screen instanceof ConfigScreen configScreen) {
                 configScreen.deferredTooltip = boundsTooltip;
             } else {
-                guiGraphics.renderTooltip(this.minecraft.font, boundsTooltip, mouseX, mouseY);
+                guiGraphics.setTooltipForNextFrame(this.minecraft.font, boundsTooltip, mouseX, mouseY);
             }
         }
     }

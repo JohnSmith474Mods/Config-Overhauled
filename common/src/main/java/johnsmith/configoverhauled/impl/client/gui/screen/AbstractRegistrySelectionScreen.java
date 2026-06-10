@@ -10,6 +10,7 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.CommonComponents;
@@ -146,50 +147,50 @@ public abstract class AbstractRegistrySelectionScreen<T> extends Screen {
                 guiGraphics.fill(left, top, left + 32, top + 32, -1601138544);
             }
 
-            guiGraphics.pose().pushPose();
-            guiGraphics.pose().translate(left, top, 0);
-            guiGraphics.pose().scale(2.0F, 2.0F, 1.0F);
+            guiGraphics.pose().pushMatrix();
+            guiGraphics.pose().translate(left, top);
+            guiGraphics.pose().scale(2.0F, 2.0F);
             guiGraphics.renderItem(this.icon, 0, 0);
-            guiGraphics.pose().popPose();
+            guiGraphics.pose().popMatrix();
 
             if (isMouseOver && this.sprite != null && this.highlightedSprite != null) {
-                guiGraphics.pose().pushPose();
-                guiGraphics.pose().translate(0, 0, 200.0F);
+                guiGraphics.pose().pushMatrix();
+                guiGraphics.pose().translate(0, 0);
 
                 int j = mouseX - left;
                 int k = mouseY - top;
 
                 if (this.onMoveUp == null && this.onMoveDown == null) {
                     if (j < 32) {
-                        guiGraphics.blitSprite(RenderType::guiTextured, this.highlightedSprite, left, top, 32, 32);
+                        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, this.highlightedSprite, left, top, 32, 32);
                     } else {
-                        guiGraphics.blitSprite(RenderType::guiTextured, this.sprite, left, top, 32, 32);
+                        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, this.sprite, left, top, 32, 32);
                     }
                 } else {
                     if (j < 16) {
-                        guiGraphics.blitSprite(RenderType::guiTextured, this.highlightedSprite, left, top, 32, 32);
+                        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, this.highlightedSprite, left, top, 32, 32);
                     } else {
-                        guiGraphics.blitSprite(RenderType::guiTextured, this.sprite, left, top, 32, 32);
+                        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, this.sprite, left, top, 32, 32);
                     }
 
                     if (this.onMoveUp != null) {
                         if (j < 32 && j > 16 && k < 16) {
-                            guiGraphics.blitSprite(RenderType::guiTextured, MOVE_UP_HIGHLIGHTED_SPRITE, left, top, 32, 32);
+                            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, MOVE_UP_HIGHLIGHTED_SPRITE, left, top, 32, 32);
                         } else {
-                            guiGraphics.blitSprite(RenderType::guiTextured, MOVE_UP_SPRITE, left, top, 32, 32);
+                            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, MOVE_UP_SPRITE, left, top, 32, 32);
                         }
                     }
 
                     if (this.onMoveDown != null) {
                         if (j < 32 && j > 16 && k > 16) {
-                            guiGraphics.blitSprite(RenderType::guiTextured, MOVE_DOWN_HIGHLIGHTED_SPRITE, left, top, 32, 32);
+                            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, MOVE_DOWN_HIGHLIGHTED_SPRITE, left, top, 32, 32);
                         } else {
-                            guiGraphics.blitSprite(RenderType::guiTextured, MOVE_DOWN_SPRITE, left, top, 32, 32);
+                            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, MOVE_DOWN_SPRITE, left, top, 32, 32);
                         }
                     }
                 }
 
-                guiGraphics.pose().popPose();
+                guiGraphics.pose().popMatrix();
             }
 
             int maxWidth = width - 38;
