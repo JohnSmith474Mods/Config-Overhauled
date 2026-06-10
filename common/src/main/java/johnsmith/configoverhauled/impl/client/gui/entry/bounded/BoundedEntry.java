@@ -40,28 +40,8 @@ public abstract class BoundedEntry<T extends Number & Comparable<T>> extends Abs
 
     protected abstract boolean isPartialInput(String input);
 
-    protected void applyValue(String input) {
-        try {
-            if (this.isPartialInput(input)) {
-                this.updateWidgetValue();
-                return;
-            }
-            T val = this.parse(input);
-
-            if (val.compareTo(this.getBounds().lowerBound) >= 0 && val.compareTo(this.getBounds().upperBound) <= 0) {
-                this.setValue(val);
-                if (this.widget instanceof EditBox box) {
-                    box.setTextColor(0xFFFFFFFF);
-                }
-            } else {
-                this.updateWidgetValue();
-            }
-        } catch (NumberFormatException ignored) {
-            this.updateWidgetValue();
-        }
-    }
-
-    protected EditBox buildNumericBox() {
+    @Override
+    protected void setupEditBox(EditBox box) {
         PropertyImpl.Bounded<T> bounds = this.getBounds();
         box.setFilter(s -> s.matches(this.getRegexFilter()));
         box.setResponder(s -> {

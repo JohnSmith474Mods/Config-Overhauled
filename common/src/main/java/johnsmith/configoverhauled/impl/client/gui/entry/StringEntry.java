@@ -19,14 +19,13 @@ public class StringEntry extends AbstractTextEntry<String> {
     }
 
     @Override
-    protected EditBox createWidget() {
-        EditBox box = new EditBox(this.minecraft.font, 0, 0, 75, 20, Component.empty());
-        box.setMaxLength(32767);
-        box.setResponder(s -> {
-            this.setValue(s);
-            box.setTextColor(0xFFFFFFFF);
-        });
-        return box;
+    protected void setupEditBox(EditBox box) {
+        box.setResponder(s -> box.setTextColor(0xFFFFFFFF));
+    }
+
+    @Override
+    protected void applyInput(String input) {
+        this.setValue(input);
     }
 
     @Override

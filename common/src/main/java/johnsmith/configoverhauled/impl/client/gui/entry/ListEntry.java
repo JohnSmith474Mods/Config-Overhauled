@@ -30,10 +30,11 @@ public class ListEntry<E> extends AbstractTextEntry<List<E>> {
             try {
                 JsonElement element = JsonParser.parseString(s);
                 DataResult<List<E>> result = this.property.codec().parse(JsonOps.INSTANCE, element);
-                result.result().ifPresentOrElse(list -> {
-                    this.setValue(list);
+                if (result.result().isPresent()) {
                     box.setTextColor(0xFFFFFFFF);
-                }, () -> box.setTextColor(0xFFFF0000));
+                } else {
+                    box.setTextColor(0xFFFF0000);
+                }
             } catch (Exception e) {
                 box.setTextColor(0xFFFF0000);
             }
