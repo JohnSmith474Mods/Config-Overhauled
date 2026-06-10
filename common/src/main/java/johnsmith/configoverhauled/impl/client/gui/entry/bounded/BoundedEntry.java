@@ -4,20 +4,18 @@ import java.util.List;
 
 import johnsmith.configoverhauled.impl.client.gui.screen.AbstractConfigScreen;
 import johnsmith.configoverhauled.impl.client.gui.screen.ConfigScreen;
-import johnsmith.configoverhauled.impl.client.gui.entry.OptionEntry;
+import johnsmith.configoverhauled.impl.client.gui.entry.AbstractTextEntry;
 import johnsmith.configoverhauled.impl.core.state.PropertyImpl;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 
 import org.jetbrains.annotations.NotNull;
 
-public abstract class BoundedEntry<T extends Number & Comparable<T>, W extends AbstractWidget> extends OptionEntry<T, W> {
-
+public abstract class BoundedEntry<T extends Number & Comparable<T>> extends AbstractTextEntry<T> {
     public BoundedEntry(PropertyImpl.Bounded<T> property, AbstractConfigScreen parentScreen, Minecraft minecraft, Runnable onValueChanged) {
         super(property, parentScreen, minecraft, onValueChanged);
     }
@@ -42,72 +40,47 @@ public abstract class BoundedEntry<T extends Number & Comparable<T>, W extends A
 
     protected abstract boolean isPartialInput(String input);
 
-    protected void applyValue(String input) {
+    @Override
+    protected void setupEditBox(EditBox box) {
+        PropertyImpl.Bounded<T> bounds = this.getBounds();
+        box.setFilter(s -> s.matches(this.getRegexFilter()));
+        box.setResponder(s -> {
+            try {
+                if (this.isPartialInput(s)) {
+                    box.setTextColor(0xFFFFFFFF);
+                    return;
+                }
+                T val = this.parse(s);
+
+                if (val.compareTo(bounds.lowerBound) >= 0 && val.compareTo(bounds.upperBound) <= 0) {
+                    box.setTextColor(0xFFFFFFFF);
+                } else {
+                    box.setTextColor(0xFFFF0000);
+                }
+            } catch (NumberFormatException ignored) {
+                box.setTextColor(0xFFFF0000);
+            }
+        });
+    }
+
+    @Override
+    protected void applyInput(String input) {
         try {
             if (this.isPartialInput(input)) {
-                this.updateWidgetValue();
+                this.restoreCurrentValue();
                 return;
             }
             T val = this.parse(input);
 
             if (val.compareTo(this.getBounds().lowerBound) >= 0 && val.compareTo(this.getBounds().upperBound) <= 0) {
                 this.setValue(val);
-                if (this.widget instanceof EditBox box) {
-                    box.setTextColor(0xFFFFFF);
-                }
+                this.widget.setTextColor(0xFFFFFFFF);
             } else {
-                this.updateWidgetValue();
+                this.restoreCurrentValue();
             }
         } catch (NumberFormatException ignored) {
-            this.updateWidgetValue();
+            this.restoreCurrentValue();
         }
-    }
-
-    protected EditBox buildNumericBox() {
-        PropertyImpl.Bounded<T> bounds = this.getBounds();
-        EditBox box = new EditBox(this.minecraft.font, 0, 0, 75, 20, Component.empty()) {
-            @Override
-            public void setFocused(boolean focused) {
-                super.setFocused(focused);
-                if (!focused) {
-                    applyValue(this.getValue());
-                }
-            }
-
-            @Override
-            public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-                if (keyCode == 257 || keyCode == 335) {
-                    applyValue(this.getValue());
-                    return true;
-                }
-                return super.keyPressed(keyCode, scanCode, modifiers);
-            }
-        };
-
-        box.setValue(String.valueOf(bounds.get()));
-        box.setCursorPosition(0);
-        box.setHighlightPos(0);
-
-        box.setFilter(s -> s.matches(this.getRegexFilter()));
-        box.setResponder(s -> {
-            try {
-                if (this.isPartialInput(s)) {
-                    box.setTextColor(0xFFFFFF);
-                    return;
-                }
-                T val = this.parse(s);
-
-                if (val.compareTo(bounds.lowerBound) >= 0 && val.compareTo(bounds.upperBound) <= 0) {
-                    box.setTextColor(0xFFFFFF);
-                } else {
-                    box.setTextColor(0xFF0000);
-                }
-            } catch (NumberFormatException ignored) {
-                box.setTextColor(0xFF0000);
-            }
-        });
-
-        return box;
     }
 
     protected Component getCurrentValueTooltipText() {

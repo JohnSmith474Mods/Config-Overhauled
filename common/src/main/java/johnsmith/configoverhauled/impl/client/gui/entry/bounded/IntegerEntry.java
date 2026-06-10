@@ -4,12 +4,10 @@ import johnsmith.configoverhauled.impl.client.gui.screen.AbstractConfigScreen;
 import johnsmith.configoverhauled.impl.core.state.PropertyImpl;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 
-public class IntegerEntry extends BoundedEntry<Integer, EditBox> {
-
-    public IntegerEntry(PropertyImpl.Bounded<Integer> property, AbstractConfigScreen parentScreen, Minecraft minecraft, Runnable onValueChanged) {
+public class IntegerEntry extends BoundedEntry<Integer> {
+    public IntegerEntry(PropertyImpl.Integer property, AbstractConfigScreen parentScreen, Minecraft minecraft, Runnable onValueChanged) {
         super(property, parentScreen, minecraft, onValueChanged);
         this.widget.setValue(String.valueOf(property.get()));
         this.widget.setCursorPosition(0);
@@ -32,14 +30,9 @@ public class IntegerEntry extends BoundedEntry<Integer, EditBox> {
     }
 
     @Override
-    protected EditBox createWidget() {
-        return this.buildNumericBox();
-    }
-
-    @Override
     protected void updateWidgetValue() {
         this.widget.setValue(String.valueOf(this.getBounds().get()));
-        this.widget.setTextColor(0xFFFFFF);
+        this.widget.setTextColor(0xFFFFFFFF);
         this.widget.setCursorPosition(0);
         this.widget.setHighlightPos(0);
     }

@@ -10,9 +10,8 @@ import net.minecraft.network.chat.Component;
 
 import org.jetbrains.annotations.NotNull;
 
-public class ColorEntry extends BoundedEntry<Integer, EditBox> {
-
-    public ColorEntry(PropertyImpl.Bounded<Integer> property, AbstractConfigScreen parentScreen, Minecraft minecraft, Runnable onValueChanged) {
+public class ColorEntry extends BoundedEntry<Integer> {
+    public ColorEntry(PropertyImpl.Color property, AbstractConfigScreen parentScreen, Minecraft minecraft, Runnable onValueChanged) {
         super(property, parentScreen, minecraft, onValueChanged);
         this.updateWidgetValue();
     }
@@ -34,19 +33,15 @@ public class ColorEntry extends BoundedEntry<Integer, EditBox> {
     }
 
     @Override
-    protected EditBox createWidget() {
-        EditBox box = this.buildNumericBox();
+    protected void setupEditBox(EditBox box) {
+        super.setupEditBox(box); // Applies the BoundedEntry regex responder
         box.setMaxLength(7);
-        box.setValue(String.format("#%06X", this.getBounds().get()));
-        box.setCursorPosition(0);
-        box.setHighlightPos(0);
-        return box;
     }
 
     @Override
     protected void updateWidgetValue() {
         this.widget.setValue(String.format("#%06X", this.getBounds().get()));
-        this.widget.setTextColor(0xFFFFFF);
+        this.widget.setTextColor(0xFFFFFFFF);
         this.widget.setCursorPosition(0);
         this.widget.setHighlightPos(0);
     }

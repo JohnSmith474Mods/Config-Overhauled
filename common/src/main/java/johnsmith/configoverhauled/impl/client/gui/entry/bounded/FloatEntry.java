@@ -4,14 +4,12 @@ import johnsmith.configoverhauled.impl.client.gui.screen.AbstractConfigScreen;
 import johnsmith.configoverhauled.impl.core.state.PropertyImpl;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 
 import java.math.BigDecimal;
 
-public class FloatEntry extends BoundedEntry<Float, EditBox> {
-
-    public FloatEntry(PropertyImpl.Bounded<Float> type, AbstractConfigScreen parentScreen, Minecraft minecraft, Runnable onValueChanged) {
+public class FloatEntry extends BoundedEntry<Float> {
+    public FloatEntry(PropertyImpl.Float type, AbstractConfigScreen parentScreen, Minecraft minecraft, Runnable onValueChanged) {
         super(type, parentScreen, minecraft, onValueChanged);
         this.widget.setValue(this.formatValue(type.get()));
         this.widget.setCursorPosition(0);
@@ -34,18 +32,12 @@ public class FloatEntry extends BoundedEntry<Float, EditBox> {
     }
 
     @Override
-    protected EditBox createWidget() {
-        return this.buildNumericBox();
-    }
-
-    @Override
     protected void updateWidgetValue() {
         this.widget.setValue(this.formatValue(this.getBounds().get()));
-        this.widget.setTextColor(0xFFFFFF);
+        this.widget.setTextColor(0xFFFFFFFF);
         this.widget.setCursorPosition(0);
         this.widget.setHighlightPos(0);
     }
-
 
     @Override
     protected Component getCurrentValueTooltipText() {
@@ -58,7 +50,7 @@ public class FloatEntry extends BoundedEntry<Float, EditBox> {
     }
 
     private String formatValue(Float value) {
-        String plain = new BigDecimal(String.valueOf(value)).toPlainString();
+        String plain = BigDecimal.valueOf(value).toPlainString();
         if (plain.contains(".")) {
             plain = plain.replaceAll("0*$", "");
             if (plain.endsWith(".")) {
