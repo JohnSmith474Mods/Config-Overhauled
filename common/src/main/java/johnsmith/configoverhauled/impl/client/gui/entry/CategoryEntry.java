@@ -40,7 +40,7 @@ public class CategoryEntry extends Entry {
     public void render(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovering, float partialTick) {
         int textY = top + (height - minecraft.font.lineHeight) / 2;
         int screenWidth = minecraft.getWindow().getGuiScaledWidth();
-        guiGraphics.drawString(minecraft.font, this.label, screenWidth / 2 - this.textWidth / 2, textY, 0xFFFFFFFF, false);
+        guiGraphics.drawString(minecraft.font, this.label, screenWidth / 2 - this.textWidth / 2, textY, 0xFFFFFF, false);
     }
 
     @Override

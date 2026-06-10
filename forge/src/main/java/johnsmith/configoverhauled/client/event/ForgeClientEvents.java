@@ -1,27 +1,28 @@
 package johnsmith.configoverhauled.client.event;
 
 import com.mojang.brigadier.arguments.StringArgumentType;
-
 import johnsmith.configoverhauled.Constants;
 import johnsmith.configoverhauled.impl.command.AbstractDataGenCommand;
 import johnsmith.configoverhauled.impl.command.ConfigDumpCommand;
 import johnsmith.configoverhauled.impl.command.ConfigLangGenCommand;
 import johnsmith.configoverhauled.impl.network.client.ClientEventHandler;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.Commands;
-
+import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.RegisterClientCommandsEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
+@EventBusSubscriber(modid = Constants.MOD_ID, bus = EventBusSubscriber.Bus.FORGE, value = Dist.CLIENT)
 public class ForgeClientEvents {
 
-    // Removed @SubscribeEvent
+    @SubscribeEvent
     public static void onClientDisconnect(ClientPlayerNetworkEvent.LoggingOut event) {
         Minecraft.getInstance().execute(ClientEventHandler::onClientDisconnect);
     }
 
-    // Removed @SubscribeEvent
+    @SubscribeEvent
     public static void onClientCommands(RegisterClientCommandsEvent event) {
         event.getDispatcher().register(Commands.literal(Constants.CONFIG_DUMP)
                 .then(Commands.argument(Constants.NAMESPACE, StringArgumentType.word())

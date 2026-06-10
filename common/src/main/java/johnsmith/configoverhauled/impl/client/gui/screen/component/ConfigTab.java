@@ -36,11 +36,6 @@ public class ConfigTab implements Tab {
     }
 
     @Override
-    public Component getTabExtraNarration() {
-        return Component.empty();
-    }
-
-    @Override
     public void visitChildren(Consumer<AbstractWidget> consumer) {
         consumer.accept(this.list);
     }

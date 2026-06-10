@@ -58,7 +58,7 @@ public class EnumEntry<E extends Enum<E>> extends OptionEntry<E, CycleButton<E>>
             if (this.minecraft.screen instanceof ConfigScreen configScreen) {
                 configScreen.deferredTooltip = boundsTooltip;
             } else {
-                guiGraphics.setTooltipForNextFrame(this.minecraft.font, boundsTooltip, mouseX, mouseY);
+                guiGraphics.renderTooltip(this.minecraft.font, boundsTooltip, mouseX, mouseY);
             }
         }
     }

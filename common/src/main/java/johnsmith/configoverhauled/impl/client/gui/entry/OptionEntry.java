@@ -167,7 +167,7 @@ public abstract class OptionEntry<T, W extends AbstractWidget> extends Entry {
         int maxLabelWidth = widgetX - left - 5;
         if (maxLabelWidth > 0) {
             Component displayLabel = this.labelComponent;
-            int textColor = 0xFFFFFFFF;
+            int textColor = 0xFFFFFF;
 
             boolean isConnectedToRemoteServer = this.minecraft.player != null && !this.minecraft.hasSingleplayerServer();
             boolean isRemotelyControlled = this.property.scope() != ConfigScope.CLIENT && isConnectedToRemoteServer;

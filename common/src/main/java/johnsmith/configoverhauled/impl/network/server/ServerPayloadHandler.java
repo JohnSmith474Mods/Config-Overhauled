@@ -14,7 +14,7 @@ import net.minecraft.nbt.CompoundTag;
 public class ServerPayloadHandler {
     public static void handleUpdateRequestPacket(ConfigUpdateRequestPacket packet, ServerPlayer sender) {
         // 0. Ignore unauthorized config edits.
-        boolean isAuthorized = sender.hasPermissions(2) || sender.getServer().isSingleplayerOwner(sender.getGameProfile());
+        boolean isAuthorized = sender.hasPermissions(2) || sender.server.isSingleplayerOwner(sender.getGameProfile());
         if (!isAuthorized) {
             return;
         }
@@ -35,7 +35,7 @@ public class ServerPayloadHandler {
 
         // 6. Issue a broadcast sync for this property only.
         ConfigSyncPacket broadcastPacket = createBroadcastPacket(manager, property);
-        Services.PLATFORM.sendToAllClients(broadcastPacket, sender.getServer());
+        Services.PLATFORM.sendToAllClients(broadcastPacket, sender.server);
     }
 
     private static ConfigSyncPacket createBroadcastPacket(ConfigManager manager, Property<?> property) {

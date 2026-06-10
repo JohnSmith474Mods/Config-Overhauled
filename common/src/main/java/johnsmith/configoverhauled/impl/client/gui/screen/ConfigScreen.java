@@ -1,5 +1,6 @@
 package johnsmith.configoverhauled.impl.client.gui.screen;
 
+import com.mojang.blaze3d.systems.RenderSystem;
 import johnsmith.configoverhauled.Constants;
 import johnsmith.configoverhauled.api.Category;
 import johnsmith.configoverhauled.api.ConfigManager;
@@ -16,7 +17,7 @@ import net.minecraft.client.gui.layouts.HeaderAndFooterLayout;
 import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.RenderType;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
@@ -151,16 +152,16 @@ public class ConfigScreen extends AbstractConfigScreen {
         this.deferredTooltip = null;
         super.render(guiGraphics, mouseX, mouseY, partialTick);
 
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, Screen.FOOTER_SEPARATOR, 0, this.height - this.layout.getFooterHeight() - 2, 0.0F, 0.0F, this.width, 2, 32, 2);
+        guiGraphics.blit(RenderType::guiTextured, Screen.FOOTER_SEPARATOR, 0, this.height - this.layout.getFooterHeight() - 2, 0.0F, 0.0F, this.width, 2, 32, 2);
 
         if (this.deferredTooltip != null) {
-            guiGraphics.setTooltipForNextFrame(this.font, this.deferredTooltip, mouseX, mouseY);
+            guiGraphics.renderTooltip(this.font, this.deferredTooltip, mouseX, mouseY);
         }
     }
 
     @Override
     protected void renderMenuBackground(GuiGraphics guiGraphics) {
-        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TAB_HEADER_BACKGROUND, 0, 0, 0.0F, 0.0F, this.width, this.layout.getHeaderHeight(), 16, 16);
+        guiGraphics.blit(RenderType::guiTextured, TAB_HEADER_BACKGROUND, 0, 0, 0.0F, 0.0F, this.width, this.layout.getHeaderHeight(), 16, 16);
         this.renderMenuBackground(guiGraphics, 0, this.layout.getHeaderHeight(), this.width, this.height);
     }
 }
