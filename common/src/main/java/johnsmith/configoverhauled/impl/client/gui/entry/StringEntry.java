@@ -12,27 +12,26 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class StringEntry extends OptionEntry<String, EditBox> {
+public class StringEntry extends AbstractTextEntry<String> {
     public StringEntry(Property<String> property, AbstractConfigScreen parentScreen, Minecraft minecraft, Runnable onValueChanged) {
         super(property, parentScreen, minecraft, onValueChanged);
         this.updateWidgetValue();
     }
 
     @Override
-    protected EditBox createWidget() {
-        EditBox box = new EditBox(this.minecraft.font, 0, 0, 75, 20, Component.empty());
-        box.setMaxLength(32767);
-        box.setResponder(s -> {
-            this.setValue(s);
-            box.setTextColor(0xFFFFFF);
-        });
-        return box;
+    protected void setupEditBox(EditBox box) {
+        box.setResponder(s -> box.setTextColor(0xFFFFFFFF));
+    }
+
+    @Override
+    protected void applyInput(String input) {
+        this.setValue(input);
     }
 
     @Override
     protected void updateWidgetValue() {
         this.widget.setValue(this.property.get());
-        this.widget.setTextColor(0xFFFFFF);
+        this.widget.setTextColor(0xFFFFFFFF);
         this.widget.setCursorPosition(0);
         this.widget.setHighlightPos(0);
     }

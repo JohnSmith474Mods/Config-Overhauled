@@ -7,8 +7,8 @@ import com.mojang.serialization.JsonOps;
 
 import johnsmith.configoverhauled.api.Property;
 import johnsmith.configoverhauled.impl.client.gui.screen.AbstractConfigScreen;
-
 import johnsmith.configoverhauled.impl.client.gui.screen.ConfigScreen;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
@@ -18,29 +18,44 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.List;
 
-public class ListEntry<E> extends OptionEntry<List<E>, EditBox> {
+public class ListEntry<E> extends AbstractTextEntry<List<E>> {
     public ListEntry(Property<List<E>> property, AbstractConfigScreen parentScreen, Minecraft minecraft, Runnable onValueChanged) {
         super(property, parentScreen, minecraft, onValueChanged);
         this.updateWidgetValue();
     }
 
     @Override
-    protected EditBox createWidget() {
-        EditBox box = new EditBox(this.minecraft.font, 0, 0, 75, 20, Component.empty());
-        box.setMaxLength(32767);
+    protected void setupEditBox(EditBox box) {
         box.setResponder(s -> {
             try {
                 JsonElement element = JsonParser.parseString(s);
                 DataResult<List<E>> result = this.property.codec().parse(JsonOps.INSTANCE, element);
-                result.result().ifPresentOrElse(list -> {
-                    this.setValue(list);
-                    box.setTextColor(0xFFFFFF);
-                }, () -> box.setTextColor(0xFF0000));
+                if (result.result().isPresent()) {
+                    box.setTextColor(0xFFFFFFFF);
+                } else {
+                    box.setTextColor(0xFFFF0000);
+                }
             } catch (Exception e) {
-                box.setTextColor(0xFF0000);
+                box.setTextColor(0xFFFF0000);
             }
         });
-        return box;
+    }
+
+    @Override
+    protected void applyInput(String input) {
+        try {
+            JsonElement element = JsonParser.parseString(input);
+            DataResult<List<E>> result = this.property.codec().parse(JsonOps.INSTANCE, element);
+            result.result().ifPresentOrElse(
+                    list -> {
+                        this.setValue(list);
+                        this.widget.setTextColor(0xFFFFFFFF);
+                    },
+                    this::restoreCurrentValue
+            );
+        } catch (Exception e) {
+            this.restoreCurrentValue();
+        }
     }
 
     @Override
