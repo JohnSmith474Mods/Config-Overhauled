@@ -67,14 +67,14 @@ public class RegistrySelectionScreen<T> extends AbstractRegistrySelectionScreen<
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
-        guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 8, 0xFFFFFF);
+        guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 8, 0xFFFFFFFF);
 
         if (this.currentSelection != null) {
-            int left = this.width / 2 - 120;
+            int left = this.width / 2 - 118;
             int top = 24;
 
-            guiGraphics.fill(left - 2, top - 2, left + 242, top + 34, 0xFFFFFFFF);
-            guiGraphics.fill(left - 1, top - 1, left + 241, top + 33, 0xFF000000);
+            guiGraphics.fill(left - 2, top - 2, left + 238, top + 34, 0xFFFFFFFF);
+            guiGraphics.fill(left - 1, top - 1, left + 237, top + 33, 0xFF000000);
 
             guiGraphics.pose().pushPose();
             guiGraphics.pose().translate(left, top, 0);
@@ -82,14 +82,14 @@ public class RegistrySelectionScreen<T> extends AbstractRegistrySelectionScreen<
             guiGraphics.renderItem(this.iconProvider.apply(this.currentSelection), 0, 0);
             guiGraphics.pose().popPose();
 
-            int maxWidth = 204;
+            int maxWidth = 203;
             Component name = this.nameProvider.apply(this.currentSelection);
 
-            guiGraphics.drawString(this.font, this.trimComponent(name, maxWidth), left + 34, top + 1, 0xFFFFFF, false);
+            guiGraphics.drawString(this.font, this.trimComponent(name, maxWidth), left + 34, top + 1, 0xFFFFFFFF, false);
 
             ResourceLocation key = this.registry.getKey(this.currentSelection);
             if (key != null) {
-                guiGraphics.drawString(this.font, this.trimString(key.toString(), maxWidth), left + 34, top + 12, 0x888888, false);
+                guiGraphics.drawString(this.font, this.trimString(key.toString(), maxWidth), left + 34, top + 12, 0xFF888888, false);
             }
         }
     }

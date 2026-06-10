@@ -192,15 +192,15 @@ public abstract class AbstractRegistrySelectionScreen<T> extends Screen {
                 guiGraphics.pose().popPose();
             }
 
-            int maxWidth = width - 38;
+            int maxWidth = 203;
 
             Component trimmedName = AbstractRegistrySelectionScreen.this.trimComponent(this.name, maxWidth);
-            guiGraphics.drawString(AbstractRegistrySelectionScreen.this.font, trimmedName, left + 34, top + 1, 0xFFFFFF, false);
+            guiGraphics.drawString(AbstractRegistrySelectionScreen.this.font, trimmedName, left + 34, top + 1, 0xFFFFFFFF, false);
 
             ResourceLocation key = AbstractRegistrySelectionScreen.this.registry.getKey(this.element);
             if (key != null) {
                 String trimmedKey = AbstractRegistrySelectionScreen.this.trimString(key.toString(), maxWidth);
-                guiGraphics.drawString(AbstractRegistrySelectionScreen.this.font, trimmedKey, left + 34, top + 12, 0x888888, false);
+                guiGraphics.drawString(AbstractRegistrySelectionScreen.this.font, trimmedKey, left + 34, top + 12, 0xFF888888, false);
             }
         }
 
