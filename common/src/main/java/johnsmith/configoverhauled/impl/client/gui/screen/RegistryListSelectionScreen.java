@@ -119,7 +119,7 @@ public class RegistryListSelectionScreen<T> extends AbstractRegistrySelectionScr
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
-        guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 8, 0xFFFFFF);
+        guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 8, 0xFFFFFFFF);
     }
 
     private class ElementList extends AbstractElementList {
@@ -136,7 +136,7 @@ public class RegistryListSelectionScreen<T> extends AbstractRegistrySelectionScr
             Component formattedTitle = this.listTitle.copy()
                     .withStyle(ChatFormatting.BOLD)
                     .withStyle(ChatFormatting.UNDERLINE);
-            guiGraphics.drawCenteredString(this.minecraft.font, formattedTitle, x + this.getRowWidth() / 2, y + 2, 0xFFFFFF);
+            guiGraphics.drawCenteredString(this.minecraft.font, formattedTitle, x + this.getRowWidth() / 2, y + 2, 0xFFFFFFFF);
         }
 
         @Override
