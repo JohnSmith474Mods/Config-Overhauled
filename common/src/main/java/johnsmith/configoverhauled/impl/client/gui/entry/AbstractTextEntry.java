@@ -4,6 +4,7 @@ import johnsmith.configoverhauled.api.Property;
 import johnsmith.configoverhauled.impl.client.gui.screen.AbstractConfigScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
 
 public abstract class AbstractTextEntry<T> extends OptionEntry<T, EditBox> {
@@ -23,12 +24,12 @@ public abstract class AbstractTextEntry<T> extends OptionEntry<T, EditBox> {
             }
 
             @Override
-            public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-                if (keyCode == 257 || keyCode == 335) { // ENTER or NUMPAD ENTER
+            public boolean keyPressed(KeyEvent event) {
+                if (event.key() == 257 || event.key() == 335) {
                     applyInput(this.getValue());
                     return true;
                 }
-                return super.keyPressed(keyCode, scanCode, modifiers);
+                return super.keyPressed(event);
             }
         };
         box.setMaxLength(32767);

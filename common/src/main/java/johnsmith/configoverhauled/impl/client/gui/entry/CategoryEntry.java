@@ -1,4 +1,3 @@
-// johnsmith/configoverhauled/impl/client/gui/entry/CategoryEntry.java
 package johnsmith.configoverhauled.impl.client.gui.entry;
 
 import johnsmith.configoverhauled.api.Group;
@@ -37,8 +36,8 @@ public class CategoryEntry extends Entry {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovering, float partialTick) {
-        int textY = top + (height - minecraft.font.lineHeight) / 2;
+    public void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY, boolean isHovering, float partialTick) {
+        int textY = this.getY() + (this.getHeight() - minecraft.font.lineHeight) / 2;
         int screenWidth = minecraft.getWindow().getGuiScaledWidth();
         guiGraphics.drawString(minecraft.font, this.label, screenWidth / 2 - this.textWidth / 2, textY, 0xFFFFFFFF, false);
     }

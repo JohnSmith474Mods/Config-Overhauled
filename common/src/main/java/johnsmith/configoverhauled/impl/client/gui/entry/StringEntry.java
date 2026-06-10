@@ -46,8 +46,8 @@ public class StringEntry extends AbstractTextEntry<String> {
     }
 
     @Override
-    public void render(@NotNull GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovering, float partialTick) {
-        super.render(guiGraphics, index, top, left, width, height, mouseX, mouseY, hovering, partialTick);
+    public void renderContent(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, boolean isHovering, float partialTick) {
+        super.renderContent(guiGraphics, mouseX, mouseY, isHovering, partialTick);
 
         if (this.widget.isMouseOver(mouseX, mouseY)) {
             List<FormattedCharSequence> boundsTooltip = List.of(this.getContentPreview().getVisualOrderText());

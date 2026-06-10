@@ -69,7 +69,7 @@ public class ColorEntry extends BoundedEntry<Integer> {
             this.renderNextColorPreviewTriangle(guiGraphics, boxX, boxY, boxSize, nextColor);
         }
 
-        guiGraphics.renderOutline(boxX, boxY, boxSize, boxSize, 0xFFAAAAAA);
+        guiGraphics.submitOutline(boxX, boxY, boxSize, boxSize, 0xFFAAAAAA);
     }
 
     protected void renderNextColorPreviewTriangle(GuiGraphics guiGraphics, int boxX, int boxY, int boxSize, int color) {
@@ -98,19 +98,8 @@ public class ColorEntry extends BoundedEntry<Integer> {
     }
 
     @Override
-    public void render(
-            @NotNull GuiGraphics guiGraphics,
-            int index,
-            int top,
-            int left,
-            int width,
-            int height,
-            int mouseX,
-            int mouseY,
-            boolean hovering,
-            float partialTick
-    ) {
-        super.render(guiGraphics, index, top, left, width, height, mouseX, mouseY, hovering, partialTick);
+    public void renderContent(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, boolean isHovering, float partialTick) {
+        super.renderContent(guiGraphics, mouseX, mouseY, isHovering, partialTick);
 
         int boxSize = 20;
         int padding = 5;

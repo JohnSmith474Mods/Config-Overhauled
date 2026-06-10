@@ -10,8 +10,8 @@ import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.ObjectSelectionList;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
-import net.minecraft.client.renderer.RenderType;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
@@ -78,7 +78,7 @@ public abstract class AbstractRegistrySelectionScreen<T> extends Screen {
         }
 
         public AbstractElementList(Minecraft minecraft, int width, int height, int y, int itemHeight, int headerHeight) {
-            super(minecraft, width, height, y, itemHeight, headerHeight);
+            super(minecraft, width, height, y, itemHeight);
         }
 
         public void clearEntries() {
@@ -142,50 +142,50 @@ public abstract class AbstractRegistrySelectionScreen<T> extends Screen {
         }
 
         @Override
-        public void render(GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean isMouseOver, float partialTick) {
-            if (isMouseOver) {
-                guiGraphics.fill(left, top, left + 32, top + 32, -1601138544);
+        public void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY, boolean isHovering, float partialTick) {
+            if (isHovering) {
+                guiGraphics.fill(this.getX(), this.getY(), this.getX() + 32, this.getY() + 32, -1601138544);
             }
 
             guiGraphics.pose().pushMatrix();
-            guiGraphics.pose().translate(left, top);
+            guiGraphics.pose().translate(this.getX(), this.getY());
             guiGraphics.pose().scale(2.0F, 2.0F);
             guiGraphics.renderItem(this.icon, 0, 0);
             guiGraphics.pose().popMatrix();
 
-            if (isMouseOver && this.sprite != null && this.highlightedSprite != null) {
+            if (isHovering && this.sprite != null && this.highlightedSprite != null) {
                 guiGraphics.pose().pushMatrix();
                 guiGraphics.pose().translate(0, 0);
 
-                int j = mouseX - left;
-                int k = mouseY - top;
+                int j = mouseX - this.getX();
+                int k = mouseY - this.getY();
 
                 if (this.onMoveUp == null && this.onMoveDown == null) {
                     if (j < 32) {
-                        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, this.highlightedSprite, left, top, 32, 32);
+                        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, this.highlightedSprite, this.getX(), this.getY(), 32, 32);
                     } else {
-                        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, this.sprite, left, top, 32, 32);
+                        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, this.sprite, this.getX(), this.getY(), 32, 32);
                     }
                 } else {
                     if (j < 16) {
-                        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, this.highlightedSprite, left, top, 32, 32);
+                        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, this.highlightedSprite, this.getX(), this.getY(), 32, 32);
                     } else {
-                        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, this.sprite, left, top, 32, 32);
+                        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, this.sprite, this.getX(), this.getY(), 32, 32);
                     }
 
                     if (this.onMoveUp != null) {
                         if (j < 32 && j > 16 && k < 16) {
-                            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, MOVE_UP_HIGHLIGHTED_SPRITE, left, top, 32, 32);
+                            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, MOVE_UP_HIGHLIGHTED_SPRITE, this.getX(), this.getY(), 32, 32);
                         } else {
-                            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, MOVE_UP_SPRITE, left, top, 32, 32);
+                            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, MOVE_UP_SPRITE, this.getX(), this.getY(), 32, 32);
                         }
                     }
 
                     if (this.onMoveDown != null) {
                         if (j < 32 && j > 16 && k > 16) {
-                            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, MOVE_DOWN_HIGHLIGHTED_SPRITE, left, top, 32, 32);
+                            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, MOVE_DOWN_HIGHLIGHTED_SPRITE, this.getX(), this.getY(), 32, 32);
                         } else {
-                            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, MOVE_DOWN_SPRITE, left, top, 32, 32);
+                            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, MOVE_DOWN_SPRITE, this.getX(), this.getY(), 32, 32);
                         }
                     }
                 }
@@ -196,19 +196,19 @@ public abstract class AbstractRegistrySelectionScreen<T> extends Screen {
             int maxWidth = width - 38;
 
             Component trimmedName = AbstractRegistrySelectionScreen.this.trimComponent(this.name, maxWidth);
-            guiGraphics.drawString(AbstractRegistrySelectionScreen.this.font, trimmedName, left + 34, top + 1, 0xFFFFFFFF, false);
+            guiGraphics.drawString(AbstractRegistrySelectionScreen.this.font, trimmedName, this.getX() + 34, this.getY() + 1, 0xFFFFFFFF, false);
 
             ResourceLocation key = AbstractRegistrySelectionScreen.this.registry.getKey(this.element);
             if (key != null) {
                 String trimmedKey = AbstractRegistrySelectionScreen.this.trimString(key.toString(), maxWidth);
-                guiGraphics.drawString(AbstractRegistrySelectionScreen.this.font, trimmedKey, left + 34, top + 12, 0xFF888888, false);
+                guiGraphics.drawString(AbstractRegistrySelectionScreen.this.font, trimmedKey, this.getX() + 34, this.getY() + 12, 0xFF888888, false);
             }
         }
 
         @Override
-        public boolean mouseClicked(double mouseX, double mouseY, int button) {
-            double j = mouseX - (double) this.list.getRowLeft();
-            double k = mouseY - (double) this.list.getRowTop(this.list.children().indexOf(this));
+        public boolean mouseClicked(MouseButtonEvent event, boolean pressed) {
+            double j = event.x() - (double) this.list.getRowLeft();
+            double k = event.y() - (double) this.list.getRowTop(this.list.children().indexOf(this));
 
             if (j <= 32.0D) {
                 if (this.onMoveUp == null && this.onMoveDown == null) {
@@ -233,7 +233,7 @@ public abstract class AbstractRegistrySelectionScreen<T> extends Screen {
             }
 
             this.list.setSelected(this);
-            return super.mouseClicked(mouseX, mouseY, button);
+            return super.mouseClicked(event, pressed);
         }
 
         @Override

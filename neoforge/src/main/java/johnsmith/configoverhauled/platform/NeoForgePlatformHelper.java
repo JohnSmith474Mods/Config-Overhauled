@@ -6,7 +6,9 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.fml.ModList;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.loading.FMLLoader;
+import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 public class NeoForgePlatformHelper implements IPlatformHelper {
@@ -18,7 +20,7 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
     public boolean isModLoaded(String modId) { return ModList.get().isLoaded(modId); }
 
     @Override
-    public boolean isDevelopmentEnvironment() { return !FMLLoader.isProduction(); }
+    public boolean isDevelopmentEnvironment() { return !FMLLoader.getCurrent().isProduction(); }
 
     @Override
     public void sendToClient(CustomPacketPayload payload, ServerPlayer player) {
@@ -27,7 +29,9 @@ public class NeoForgePlatformHelper implements IPlatformHelper {
 
     @Override
     public void sendToServer(CustomPacketPayload payload) {
-        PacketDistributor.sendToServer(payload);
+        if (FMLEnvironment.getDist().isClient()) {
+            ClientPacketDistributor.sendToServer(payload);
+        }
     }
 
     @Override

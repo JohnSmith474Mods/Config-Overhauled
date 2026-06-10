@@ -43,7 +43,7 @@ public class ServerEventHandler {
             }
 
             if (!packetsToSend.isEmpty()) {
-                player.getServer().execute(() -> {
+                player.level().getServer().execute(() -> {
                     for (ConfigSyncPacket packet : packetsToSend) {
                         NetworkManager.sendToClient(packet, player);
                     }

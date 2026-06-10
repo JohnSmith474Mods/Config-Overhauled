@@ -146,10 +146,10 @@ public abstract class OptionEntry<T, W extends AbstractWidget> extends Entry {
     }
 
     @Override
-    public void render(@NotNull GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovering, float partialTick) {
-        int y = top + (height - 20) / 2;
+    public void renderContent(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, boolean isHovering, float partialTick) {
+        int y = this.getY() + (this.getHeight() - 20) / 2;
 
-        int rightEdge = left + width;
+        int rightEdge = this.getX() + this.getWidth();
         int resetX = rightEdge - 50 - 10;
 
         this.resetButton.setPosition(resetX, y);
@@ -162,9 +162,9 @@ public abstract class OptionEntry<T, W extends AbstractWidget> extends Entry {
         this.widget.setWidth(widgetWidth);
         this.widget.render(guiGraphics, mouseX, mouseY, partialTick);
 
-        int textY = top + (height - minecraft.font.lineHeight) / 2;
+        int textY = this.getY() + (this.getHeight() - this.minecraft.font.lineHeight) / 2;
 
-        int maxLabelWidth = widgetX - left - 5;
+        int maxLabelWidth = widgetX - this.getX() - 5;
         if (maxLabelWidth > 0) {
             Component displayLabel = this.labelComponent;
             int textColor = 0xFFFFFFFF;
@@ -177,14 +177,14 @@ public abstract class OptionEntry<T, W extends AbstractWidget> extends Entry {
                 displayLabel = Component.translatable(this.property.translationKey()).withStyle(ChatFormatting.ITALIC, isAdmin ? ChatFormatting.YELLOW : ChatFormatting.GRAY);
             }
 
-            guiGraphics.drawString(minecraft.font, displayLabel, left, textY, textColor);
+            guiGraphics.drawString(this.minecraft.font, displayLabel, this.getX(), textY, textColor);
         }
 
         boolean overResetButton = mouseX >= resetX && mouseX < resetX + 50 && mouseY >= y && mouseY < y + 20;
 
         if (overResetButton) {
             this.parentScreen.deferredTooltip = List.of(this.getDefaultValueTooltip().getVisualOrderText());
-        } else if (hovering) {
+        } else if (isHovering) {
             this.parentScreen.deferredTooltip = this.tooltip;
         }
     }
