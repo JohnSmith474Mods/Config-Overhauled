@@ -187,7 +187,7 @@ public abstract class AbstractRegistrySelectionScreen<T> extends Screen {
                 guiGraphics.pose().popPose();
             }
 
-            int maxWidth = width - 38;
+            int maxWidth = 203;
 
             Component trimmedName = AbstractRegistrySelectionScreen.this.trimComponent(this.name, maxWidth);
             guiGraphics.drawString(AbstractRegistrySelectionScreen.this.font, trimmedName, left + 34, top + 1, 0xFFFFFF, false);
