@@ -8,7 +8,7 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.ArrayList;
@@ -69,7 +69,7 @@ public class RegistryListSelectionScreen<T> extends AbstractRegistrySelectionScr
             if (this.selectedItems.contains(element)) continue;
 
             Component name = this.nameProvider.apply(element);
-            ResourceLocation key = this.registry.getKey(element);
+            Identifier key = this.registry.getKey(element);
 
             if (lowerQuery.isEmpty() || name.getString().toLowerCase(Locale.ROOT).contains(lowerQuery) || (key != null && key.toString().contains(lowerQuery))) {
                 this.availableList.addEntry(this.createEntry(this.availableList, element, SELECT_SPRITE, SELECT_HIGHLIGHTED_SPRITE, () -> {
@@ -89,7 +89,7 @@ public class RegistryListSelectionScreen<T> extends AbstractRegistrySelectionScr
         for (int i = 0; i < this.selectedItems.size(); i++) {
             T element = this.selectedItems.get(i);
             Component name = this.nameProvider.apply(element);
-            ResourceLocation key = this.registry.getKey(element);
+            Identifier key = this.registry.getKey(element);
 
             if (lowerQuery.isEmpty() || name.getString().toLowerCase(Locale.ROOT).contains(lowerQuery) || (key != null && key.toString().contains(lowerQuery))) {
                 AbstractRegistrySelectionScreen<T>.ElementEntry entry = this.createEntry(this.selectedList, element, UNSELECT_SPRITE, UNSELECT_HIGHLIGHTED_SPRITE, () -> {

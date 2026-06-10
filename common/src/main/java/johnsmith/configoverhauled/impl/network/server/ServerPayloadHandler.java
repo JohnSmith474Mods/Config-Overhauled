@@ -11,6 +11,7 @@ import johnsmith.configoverhauled.impl.platform.Services;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.permissions.Permissions;
 
 public class ServerPayloadHandler {
     public static void handleUpdateRequestPacket(ConfigUpdateRequestPacket packet, ServerPlayer sender) {
@@ -18,7 +19,7 @@ public class ServerPayloadHandler {
         MinecraftServer server = sender.level().getServer();
 
         // 0. Ignore unauthorized config edits.
-        boolean isAuthorized = sender.hasPermissions(2) || (server != null && server.isSingleplayerOwner(sender.nameAndId()));
+        boolean isAuthorized = sender.permissions().hasPermission(Permissions.COMMANDS_ADMIN) || server.isSingleplayerOwner(sender.nameAndId());
         if (!isAuthorized) {
             return;
         }

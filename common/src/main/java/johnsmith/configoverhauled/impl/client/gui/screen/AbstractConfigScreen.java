@@ -6,6 +6,7 @@ import johnsmith.configoverhauled.Config;
 
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.permissions.Permissions;
 import net.minecraft.util.FormattedCharSequence;
 
 
@@ -38,6 +39,6 @@ public abstract class AbstractConfigScreen extends Screen {
         if (this.minecraft == null || this.minecraft.player == null) {
             return false;
         }
-        return this.minecraft.player.hasPermissions(2);
+        return this.minecraft.player.permissions().hasPermission(Permissions.COMMANDS_ADMIN);
     }
 }

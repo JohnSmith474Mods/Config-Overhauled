@@ -6,7 +6,7 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.Locale;
@@ -52,7 +52,7 @@ public class RegistrySelectionScreen<T> extends AbstractRegistrySelectionScreen<
             if (this.currentSelection != null && this.currentSelection.equals(element)) continue;
 
             Component name = this.nameProvider.apply(element);
-            ResourceLocation key = this.registry.getKey(element);
+            Identifier key = this.registry.getKey(element);
 
             if (lowerQuery.isEmpty() || name.getString().toLowerCase(Locale.ROOT).contains(lowerQuery) || (key != null && key.toString().contains(lowerQuery))) {
                 this.list.addEntry(this.createEntry(this.list, element, SELECT_SPRITE, SELECT_HIGHLIGHTED_SPRITE, () -> {
@@ -87,7 +87,7 @@ public class RegistrySelectionScreen<T> extends AbstractRegistrySelectionScreen<
 
             guiGraphics.drawString(this.font, this.trimComponent(name, maxWidth), left + 34, top + 1, 0xFFFFFFFF, false);
 
-            ResourceLocation key = this.registry.getKey(this.currentSelection);
+            Identifier key = this.registry.getKey(this.currentSelection);
             if (key != null) {
                 guiGraphics.drawString(this.font, this.trimString(key.toString(), maxWidth), left + 34, top + 12, 0xFF888888, false);
             }

@@ -15,18 +15,18 @@ import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 public abstract class AbstractRegistrySelectionScreen<T> extends Screen {
-    public static final ResourceLocation SELECT_HIGHLIGHTED_SPRITE = ResourceLocation.withDefaultNamespace("transferable_list/select_highlighted");
-    public static final ResourceLocation SELECT_SPRITE = ResourceLocation.withDefaultNamespace("transferable_list/select");
-    public static final ResourceLocation UNSELECT_HIGHLIGHTED_SPRITE = ResourceLocation.withDefaultNamespace("transferable_list/unselect_highlighted");
-    public static final ResourceLocation UNSELECT_SPRITE = ResourceLocation.withDefaultNamespace("transferable_list/unselect");
-    public static final ResourceLocation MOVE_UP_SPRITE = ResourceLocation.withDefaultNamespace("transferable_list/move_up");
-    public static final ResourceLocation MOVE_UP_HIGHLIGHTED_SPRITE = ResourceLocation.withDefaultNamespace("transferable_list/move_up_highlighted");
-    public static final ResourceLocation MOVE_DOWN_SPRITE = ResourceLocation.withDefaultNamespace("transferable_list/move_down");
-    public static final ResourceLocation MOVE_DOWN_HIGHLIGHTED_SPRITE = ResourceLocation.withDefaultNamespace("transferable_list/move_down_highlighted");
+    public static final Identifier SELECT_HIGHLIGHTED_SPRITE = Identifier.withDefaultNamespace("transferable_list/select_highlighted");
+    public static final Identifier SELECT_SPRITE = Identifier.withDefaultNamespace("transferable_list/select");
+    public static final Identifier UNSELECT_HIGHLIGHTED_SPRITE = Identifier.withDefaultNamespace("transferable_list/unselect_highlighted");
+    public static final Identifier UNSELECT_SPRITE = Identifier.withDefaultNamespace("transferable_list/unselect");
+    public static final Identifier MOVE_UP_SPRITE = Identifier.withDefaultNamespace("transferable_list/move_up");
+    public static final Identifier MOVE_UP_HIGHLIGHTED_SPRITE = Identifier.withDefaultNamespace("transferable_list/move_up_highlighted");
+    public static final Identifier MOVE_DOWN_SPRITE = Identifier.withDefaultNamespace("transferable_list/move_down");
+    public static final Identifier MOVE_DOWN_HIGHLIGHTED_SPRITE = Identifier.withDefaultNamespace("transferable_list/move_down_highlighted");
 
     protected final Screen parent;
     protected final Registry<T> registry;
@@ -68,7 +68,7 @@ public abstract class AbstractRegistrySelectionScreen<T> extends Screen {
         }).bounds(this.width / 2 + 4, this.height - 26, 150, 20).build());
     }
 
-    protected ElementEntry createEntry(AbstractElementList list, T element, ResourceLocation sprite, ResourceLocation highlightedSprite, Runnable onTransfer) {
+    protected ElementEntry createEntry(AbstractElementList list, T element, Identifier sprite, Identifier highlightedSprite, Runnable onTransfer) {
         return new ElementEntry(list, element, this.nameProvider.apply(element), this.iconProvider.apply(element), sprite, highlightedSprite, onTransfer);
     }
 
@@ -119,13 +119,13 @@ public abstract class AbstractRegistrySelectionScreen<T> extends Screen {
         public final T element;
         public final Component name;
         public final ItemStack icon;
-        private final ResourceLocation sprite;
-        private final ResourceLocation highlightedSprite;
+        private final Identifier sprite;
+        private final Identifier highlightedSprite;
         private final Runnable onTransfer;
         private Runnable onMoveUp;
         private Runnable onMoveDown;
 
-        public ElementEntry(AbstractElementList list, T element, Component name, ItemStack icon, ResourceLocation sprite, ResourceLocation highlightedSprite, Runnable onTransfer) {
+        public ElementEntry(AbstractElementList list, T element, Component name, ItemStack icon, Identifier sprite, Identifier highlightedSprite, Runnable onTransfer) {
             this.list = list;
             this.element = element;
             this.name = name;
@@ -198,7 +198,7 @@ public abstract class AbstractRegistrySelectionScreen<T> extends Screen {
             Component trimmedName = AbstractRegistrySelectionScreen.this.trimComponent(this.name, maxWidth);
             guiGraphics.drawString(AbstractRegistrySelectionScreen.this.font, trimmedName, this.getX() + 34, this.getY() + 1, 0xFFFFFFFF, false);
 
-            ResourceLocation key = AbstractRegistrySelectionScreen.this.registry.getKey(this.element);
+            Identifier key = AbstractRegistrySelectionScreen.this.registry.getKey(this.element);
             if (key != null) {
                 String trimmedKey = AbstractRegistrySelectionScreen.this.trimString(key.toString(), maxWidth);
                 guiGraphics.drawString(AbstractRegistrySelectionScreen.this.font, trimmedKey, this.getX() + 34, this.getY() + 12, 0xFF888888, false);

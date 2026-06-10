@@ -25,6 +25,7 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
 
+import net.minecraft.server.permissions.Permissions;
 import net.minecraft.util.FormattedCharSequence;
 
 import org.jetbrains.annotations.NotNull;
@@ -78,7 +79,7 @@ public abstract class OptionEntry<T, W extends AbstractWidget> extends Entry {
         if (this.property.scope() == ConfigScope.CLIENT) return false;
         if (this.minecraft.player == null) return this.property.scope() == ConfigScope.LEVEL;
         if (this.minecraft.hasSingleplayerServer()) return false;
-        return !this.minecraft.player.hasPermissions(2);
+        return !this.minecraft.player.permissions().hasPermission(Permissions.COMMANDS_ADMIN);
     }
 
     protected abstract W createWidget();
@@ -173,7 +174,7 @@ public abstract class OptionEntry<T, W extends AbstractWidget> extends Entry {
             boolean isRemotelyControlled = this.property.scope() != ConfigScope.CLIENT && isConnectedToRemoteServer;
 
             if (isRemotelyControlled) {
-                boolean isAdmin = this.minecraft.player.hasPermissions(2);
+                boolean isAdmin = this.minecraft.player.permissions().hasPermission(Permissions.COMMANDS_ADMIN);
                 displayLabel = Component.translatable(this.property.translationKey()).withStyle(ChatFormatting.ITALIC, isAdmin ? ChatFormatting.YELLOW : ChatFormatting.GRAY);
             }
 

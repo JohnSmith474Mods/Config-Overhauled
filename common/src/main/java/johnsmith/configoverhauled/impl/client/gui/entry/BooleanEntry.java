@@ -14,10 +14,13 @@ public class BooleanEntry extends OptionEntry<Boolean, CycleButton<Boolean>> {
 
     @Override
     protected CycleButton<Boolean> createWidget() {
-        return CycleButton.onOffBuilder(property.get())
-                .withInitialValue(this.property.get())
+        CycleButton<Boolean> button = CycleButton.onOffBuilder(property.get())
                 .displayOnlyValue()
                 .create(0, 0, 75, 20, Component.empty(), (b, val) -> this.setValue(val));
+
+        button.setValue(this.property.get());
+        
+        return button;
     }
 
     @Override

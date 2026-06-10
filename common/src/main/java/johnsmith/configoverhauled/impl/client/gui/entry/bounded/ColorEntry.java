@@ -69,7 +69,7 @@ public class ColorEntry extends BoundedEntry<Integer> {
             this.renderNextColorPreviewTriangle(guiGraphics, boxX, boxY, boxSize, nextColor);
         }
 
-        guiGraphics.submitOutline(boxX, boxY, boxSize, boxSize, 0xFFAAAAAA);
+        guiGraphics.renderOutline(boxX, boxY, boxSize, boxSize, 0xFFAAAAAA);
     }
 
     protected void renderNextColorPreviewTriangle(GuiGraphics guiGraphics, int boxX, int boxY, int boxSize, int color) {
