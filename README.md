@@ -4,7 +4,7 @@ Welcome to Config Overhauled, a free to use multi-loader configuration library f
 
 The framework replaces manual interface construction and data synchronization with a declarative builder pattern. Properties are constrained by operational scopes (CLIENT, GLOBAL, LEVEL) that dictate data serialization targets and client-server synchronization authority. Built-in utilities handle dynamic GUI rendering and localization key export to eliminate structural boilerplate.
 
-## Quickstart Guide
+## Quickstart Guide 1.21 - 1.21.1
 
 ### Installation
 
@@ -75,12 +75,27 @@ Config Overhauled dynamically constructs localization keys for client-side GUI t
 
 Execute `/config_lang_gen <modid>` in-game to output a structured JSON file containing all required translation keys to the active configuration directory. Transfer these key-value pairs to the mod's `en_us.json` language file.
 
-### GUI Integration
+### Initialization & GUI Integration
 
-The framework dynamically generates a configuration interface populated with registered properties. Register the screen factory on the target platform.
+The configuration manager requires path resolution during the primary boot sequence. Concurrently, the built-in screen factory must be registered to enable graphical interface generation.
 
 #### Fabric
-Requires [ModMenu](https://modrinth.com/mod/modmenu) implementations.
+Path initialization executes within the primary mod entrypoint.
+```java
+package com.example.mod;
+
+import net.fabricmc.api.ModInitializer;
+import net.fabricmc.loader.api.FabricLoader;
+
+public class ExampleMod implements ModInitializer {
+    @Override
+    public void onInitialize() {
+        ExampleConfig.MANAGER.init(FabricLoader.getInstance().getConfigDir());
+    }
+}
+```
+
+GUI integration mandates a discrete [ModMenu](https://modrinth.com/mod/modmenu) implementation.
 ```java
 package com.example.mod.client;
 
@@ -98,21 +113,34 @@ public class ModMenuIntegration implements ModMenuApi {
 
 #### Forge
 ```java
-if (FMLEnvironment.dist == Dist.CLIENT) {
+import net.minecraftforge.fml.loading.FMLPaths;
+
+public ExampleMod() {
+    ExampleConfig.MANAGER.init(FMLPaths.CONFIGDIR.get());
+
+    if (FMLEnvironment.dist == Dist.CLIENT) {
         ModLoadingContext.get().registerExtensionPoint(
-        ConfigScreenHandler.ConfigScreenFactory.class,
-            () -> new ConfigScreenHandler.ConfigScreenFactory((minecraft, parentScreen) ->
-        ExampleConfig.MANAGER.createScreen(parentScreen)
-            )
-    );
+                ConfigScreenHandler.ConfigScreenFactory.class,
+                () -> new ConfigScreenHandler.ConfigScreenFactory((minecraft, parentScreen) ->
+                        ExampleConfig.MANAGER.createScreen(parentScreen)
+                )
+        );
+    }
 }
 ```
 
 #### NeoForge
 ```java
-if (FMLEnvironment.dist == Dist.CLIENT) {
-    modContainer.registerExtensionPoint(IConfigScreenFactory.class, (minecraft, parentScreen) ->
-            ExampleConfig.MANAGER.createScreen(parentScreen)
-    );
+
+import net.minecraftforge.fml.loading.FMLPaths;
+
+public ExampleMod() {
+    ExampleConfig.MANAGER.init(FMLPaths.CONFIGDIR.get());
+
+    if (FMLEnvironment.dist == Dist.CLIENT) {
+        modContainer.registerExtensionPoint(IConfigScreenFactory.class, (minecraft, parentScreen) ->
+                ExampleConfig.MANAGER.createScreen(parentScreen)
+        );
+    }
 }
 ```
