@@ -124,8 +124,8 @@ import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.loading.FMLPaths;
 
 @Mod(Constants.MOD_ID)
-public class Forge {
-    public Forge(FMLJavaModLoadingContext context) {
+public class ExampleMod {
+    public ExampleMod(FMLJavaModLoadingContext context) {
         ExampleConfig.MANAGER.init(FMLPaths.CONFIGDIR.get());
 
         if (FMLEnvironment.dist == Dist.CLIENT) {
@@ -144,24 +144,21 @@ public class Forge {
 ```java
 package com.example.mod;
 
-import net.minecraftforge.api.distmarker.Dist;
-import net.minecraftforge.client.ConfigScreenHandler;
-import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLEnvironment;
-import net.minecraftforge.fml.loading.FMLPaths;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.fml.loading.FMLPaths;
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 
 @Mod(Constants.MOD_ID)
-public class Forge {
-    public Forge(FMLJavaModLoadingContext context) {
+public class ExampleMod {
+    public ExampleMod(ModContainer modContainer) {
         ExampleConfig.MANAGER.init(FMLPaths.CONFIGDIR.get());
 
         if (FMLEnvironment.dist == Dist.CLIENT) {
-            context.registerExtensionPoint(
-                    ConfigScreenHandler.ConfigScreenFactory.class,
-                    () -> new ConfigScreenHandler.ConfigScreenFactory((minecraft, parentScreen) ->
-                            ExampleConfig.MANAGER.createScreen(parentScreen)
-                    )
+            modContainer.registerExtensionPoint(IConfigScreenFactory.class, (minecraft, parentScreen) ->
+                    ExampleConfig.MANAGER.createScreen(parentScreen)
             );
         }
     }
