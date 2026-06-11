@@ -152,7 +152,9 @@ public class ConfigScreen extends AbstractConfigScreen {
         this.deferredTooltip = null;
         super.render(guiGraphics, mouseX, mouseY, partialTick);
 
+        RenderSystem.enableBlend();
         guiGraphics.blit(RenderType::guiTextured, Screen.FOOTER_SEPARATOR, 0, this.height - this.layout.getFooterHeight() - 2, 0.0F, 0.0F, this.width, 2, 32, 2);
+        RenderSystem.disableBlend();
 
         if (this.deferredTooltip != null) {
             guiGraphics.renderTooltip(this.font, this.deferredTooltip, mouseX, mouseY);

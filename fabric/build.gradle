@@ -5,8 +5,8 @@ plugins {
 
 repositories {
     maven {
-        name = "Modrinth"
-        url = "https://api.modrinth.com/maven"
+        name = "Terraformers"
+        url = "https://maven.terraformersmc.com/"
     }
 }
 
@@ -18,7 +18,7 @@ dependencies {
     }
     modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
-    modImplementation "maven.modrinth:modmenu:14.0.2"
+    modImplementation "com.terraformersmc:modmenu:13.0.4"
 
     implementation "com.electronwill.night-config:toml:${night_config_version}"
     include "com.electronwill.night-config:toml:${night_config_version}"
