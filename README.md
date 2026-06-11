@@ -1,6 +1,5 @@
 # Config Overhauled
 
----
 Welcome to Config Overhauled, a free to use multi-loader configuration library for Minecraft mod development! It provides a structured API for property definition, automated graphical interface generation, and network state synchronization for Fabric, Forge, or NeoForge environments.
 
 The framework replaces manual interface construction and data synchronization with a declarative builder pattern. Properties are constrained by operational scopes (CLIENT, GLOBAL, LEVEL) that dictate data serialization targets and client-server synchronization authority. Built-in utilities handle dynamic GUI rendering and localization key export to eliminate structural boilerplate.
@@ -9,7 +8,6 @@ The framework replaces manual interface construction and data synchronization wi
 
 ### Installation
 
----
 Add the Modrinth Maven repository and the library dependency to build.gradle. Replace [VERSION] with the target release version.
 
 ```groovy
@@ -27,7 +25,6 @@ dependencies {
 
 ### Configuration Definition
 
----
 Initialize the manager, define structural boundaries, and register properties.
 
 ```java
@@ -64,7 +61,6 @@ public class ExampleConfig {
 
 ### Operational Scopes
 
----
 Properties mandate an operational scope determining their storage location and network synchronization protocol:
 
 - `CLIENT`: Operates exclusively within the local client environment. Serialized to the root config directory.
@@ -75,14 +71,12 @@ Properties mandate an operational scope determining their storage location and n
 
 ### Language File Generation
 
----
 Config Overhauled dynamically constructs localization keys for client-side GUI translation.
 
 Execute `/config_lang_gen <modid>` in-game to output a structured JSON file containing all required translation keys to the active configuration directory. Transfer these key-value pairs to the mod's `en_us.json` language file.
 
 ### GUI Integration
 
----
 The framework dynamically generates a configuration interface populated with registered properties. Register the screen factory on the target platform.
 
 #### Fabric
