@@ -4,9 +4,9 @@ import johnsmith.configoverhauled.api.ConfigManager;
 import johnsmith.configoverhauled.api.Property;
 import johnsmith.configoverhauled.api.data.ConfigScope;
 import johnsmith.configoverhauled.api.registry.ConfigRegistry;
+import johnsmith.configoverhauled.impl.network.NetworkManager;
 import johnsmith.configoverhauled.impl.network.common.packet.ConfigUpdateRequestPacket;
 import johnsmith.configoverhauled.impl.network.common.packet.ConfigSyncPacket;
-import johnsmith.configoverhauled.impl.platform.Services;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
@@ -18,7 +18,7 @@ public class ServerPayloadHandler {
         MinecraftServer server = sender.level().getServer();
 
         // 0. Ignore unauthorized config edits.
-        boolean isAuthorized = sender.hasPermissions(2) || (server != null && server.isSingleplayerOwner(sender.nameAndId()));
+        boolean isAuthorized = sender.hasPermissions(2) || server.isSingleplayerOwner(sender.nameAndId());
         if (!isAuthorized) {
             return;
         }
@@ -39,7 +39,7 @@ public class ServerPayloadHandler {
 
         // 6. Issue a broadcast sync for this property only.
         ConfigSyncPacket broadcastPacket = createBroadcastPacket(manager, property);
-        Services.PLATFORM.sendToAllClients(broadcastPacket, server);
+        NetworkManager.sendToAllClients(broadcastPacket, server);
     }
 
     private static ConfigSyncPacket createBroadcastPacket(ConfigManager manager, Property<?> property) {
