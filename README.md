@@ -164,3 +164,9 @@ public class ExampleMod {
     }
 }
 ```
+
+## Credits
+
+This project bundles [NightConfig](https://github.com/TheElectronWill/night-config) by [TheElectronWill](https://github.com/TheElectronWill), which is distributed under the GNU Lesser General Public License v3.0 (LGPL-3.0).
+
+This project was created using [jaredlll08](https://modrinth.com/user/jaredlll08)'s [MultiLoader-Template](https://github.com/jaredlll08/MultiLoader-Template).
