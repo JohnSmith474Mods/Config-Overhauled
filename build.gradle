@@ -4,3 +4,21 @@ plugins {
     // see https://projects.neoforged.net/neoforged/moddevgradle for new versions
     id 'net.neoforged.moddev' version '2.0.115' apply false
 }
+
+subprojects {
+    tasks.withType(Jar).configureEach {
+        from(rootProject.file("LICENSE.md")) {
+            into("META-INF")
+        }
+        from(rootProject.file("THIRD-PARTY-NOTICES.md")) {
+            into("META-INF")
+        }
+        from(rootProject.file("LGPL-3.0.txt")) {
+            into("META-INF")
+        }
+        from(rootProject.file("GPL-3.0.txt")) {
+            into("META-INF")
+        }
+    }
+}
+
