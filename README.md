@@ -99,9 +99,10 @@ GUI integration mandates a discrete [ModMenu](https://modrinth.com/mod/modmenu) 
 ```java
 package com.example.mod.client;
 
+import com.example.mod.ExampleConfig;
+
 import com.terraformersmc.modmenu.api.ConfigScreenFactory;
 import com.terraformersmc.modmenu.api.ModMenuApi;
-import com.example.mod.ExampleConfig;
 
 public class ModMenuIntegration implements ModMenuApi {
     @Override
@@ -113,34 +114,55 @@ public class ModMenuIntegration implements ModMenuApi {
 
 #### Forge
 ```java
+package com.example.mod;
+
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.ConfigScreenHandler;
+import net.minecraftforge.eventbus.api.IEventBus;
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.fml.loading.FMLPaths;
 
-public ExampleMod() {
-    ExampleConfig.MANAGER.init(FMLPaths.CONFIGDIR.get());
+@Mod(Constants.MOD_ID)
+public class ExampleMod {
+    public ExampleMod() {
+        ExampleConfig.MANAGER.init(FMLPaths.CONFIGDIR.get());
 
-    if (FMLEnvironment.dist == Dist.CLIENT) {
-        ModLoadingContext.get().registerExtensionPoint(
-                ConfigScreenHandler.ConfigScreenFactory.class,
-                () -> new ConfigScreenHandler.ConfigScreenFactory((minecraft, parentScreen) ->
-                        ExampleConfig.MANAGER.createScreen(parentScreen)
-                )
-        );
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            ModLoadingContext.get().registerExtensionPoint(
+                    ConfigScreenHandler.ConfigScreenFactory.class,
+                    () -> new ConfigScreenHandler.ConfigScreenFactory((minecraft, parentScreen) ->
+                            ExampleConfig.MANAGER.createScreen(parentScreen)
+                    )
+            );
+        }
     }
 }
 ```
 
 #### NeoForge
 ```java
+package com.example.mod;
 
-import net.minecraftforge.fml.loading.FMLPaths;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.common.Mod;
+import net.neoforged.fml.loading.FMLEnvironment;
+import net.neoforged.fml.loading.FMLPaths;
+import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 
-public ExampleMod() {
-    ExampleConfig.MANAGER.init(FMLPaths.CONFIGDIR.get());
+@Mod(Constants.MOD_ID)
+public class ExampleMod {
+    public ExampleMod(ModContainer modContainer) {
+        ExampleConfig.MANAGER.init(FMLPaths.CONFIGDIR.get());
 
-    if (FMLEnvironment.dist == Dist.CLIENT) {
-        modContainer.registerExtensionPoint(IConfigScreenFactory.class, (minecraft, parentScreen) ->
-                ExampleConfig.MANAGER.createScreen(parentScreen)
-        );
+        if (FMLEnvironment.dist == Dist.CLIENT) {
+            modContainer.registerExtensionPoint(IConfigScreenFactory.class, (minecraft, parentScreen) ->
+                    ExampleConfig.MANAGER.createScreen(parentScreen)
+            );
+        }
     }
 }
 ```
