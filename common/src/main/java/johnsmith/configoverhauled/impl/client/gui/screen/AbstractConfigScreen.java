@@ -39,7 +39,7 @@ public abstract class AbstractConfigScreen extends Screen implements ConfigScree
 
         // Render the deferred tooltip at the highest Z-index
         if (this.deferredTooltip != null && !this.deferredTooltip.isEmpty()) {
-            guiGraphics.renderTooltip(this.font, this.deferredTooltip, mouseX, mouseY);
+            guiGraphics.setTooltipForNextFrame(this.font, this.deferredTooltip, mouseX, mouseY);
             // Purge the state to prevent persistence on the subsequent frame
             this.deferredTooltip = null;
         }

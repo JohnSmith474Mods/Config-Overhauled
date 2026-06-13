@@ -35,7 +35,7 @@ public class ServerPayloadHandler {
 
         // 6. Issue a broadcast sync for this property only.
         ConfigSyncPacket broadcastPacket = createBroadcastPacket(manager, property);
-        NetworkManager.sendToAllClients(broadcastPacket, sender.server);
+        NetworkManager.sendToAllClients(broadcastPacket, sender.getServer());
     }
 
     private static ConfigSyncPacket createBroadcastPacket(ConfigManager manager, Property<?> property) {
