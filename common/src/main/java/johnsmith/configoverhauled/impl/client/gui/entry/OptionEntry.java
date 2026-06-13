@@ -183,7 +183,7 @@ public abstract class OptionEntry<T, W extends AbstractWidget> extends AbstractC
             boolean isRemotelyControlled = this.property.scope() != ConfigScope.CLIENT && isConnectedToRemoteServer;
 
             if (isRemotelyControlled) {
-                boolean isAdmin = this.minecraft.player.hasPermissions(2);
+                boolean isAdmin = this.minecraft.player.permissions().hasPermission(Permissions.COMMANDS_ADMIN);
                 displayLabel = Component.translatable(this.property.translationKey()).withStyle(ChatFormatting.ITALIC, isAdmin ? ChatFormatting.YELLOW : ChatFormatting.GRAY);
             }
 
