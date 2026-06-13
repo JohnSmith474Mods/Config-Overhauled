@@ -192,7 +192,7 @@ public abstract class OptionEntry<T, W extends AbstractWidget> extends AbstractC
 
         if (overResetButton) {
             this.parentScreen.setDeferredTooltip(List.of(this.getDefaultValueTooltip().getVisualOrderText()));
-        } else if (hovering) {
+        } else if (isHovering) {
             this.parentScreen.setDeferredTooltip(this.tooltip);
         }
     }
