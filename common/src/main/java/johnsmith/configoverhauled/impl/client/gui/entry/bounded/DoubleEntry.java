@@ -1,7 +1,7 @@
 package johnsmith.configoverhauled.impl.client.gui.entry.bounded;
 
-import johnsmith.configoverhauled.impl.client.gui.screen.AbstractConfigScreen;
-import johnsmith.configoverhauled.impl.core.state.PropertyImpl;
+import johnsmith.configoverhauled.api.client.gui.screen.ConfigScreen;
+import johnsmith.configoverhauled.impl.core.state.DefaultProperty;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
@@ -9,7 +9,7 @@ import net.minecraft.network.chat.Component;
 import java.math.BigDecimal;
 
 public class DoubleEntry extends BoundedEntry<Double> {
-    public DoubleEntry(PropertyImpl.Bounded<Double> type, AbstractConfigScreen parentScreen, Minecraft minecraft, Runnable onValueChanged) {
+    public DoubleEntry(DefaultProperty.Bounded<Double> type, ConfigScreen parentScreen, Minecraft minecraft, Runnable onValueChanged) {
         super(type, parentScreen, minecraft, onValueChanged);
         this.widget.setValue(this.formatValue(type.get()));
         this.widget.setCursorPosition(0);

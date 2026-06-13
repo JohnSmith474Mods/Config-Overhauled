@@ -4,9 +4,9 @@ import johnsmith.configoverhauled.api.ConfigManager;
 import johnsmith.configoverhauled.api.Property;
 import johnsmith.configoverhauled.api.data.ConfigScope;
 import johnsmith.configoverhauled.api.registry.ConfigRegistry;
+import johnsmith.configoverhauled.impl.network.NetworkManager;
 import johnsmith.configoverhauled.impl.network.common.packet.ConfigUpdateRequestPacket;
 import johnsmith.configoverhauled.impl.network.common.packet.ConfigSyncPacket;
-import johnsmith.configoverhauled.impl.platform.Services;
 
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.nbt.CompoundTag;
@@ -35,7 +35,7 @@ public class ServerPayloadHandler {
 
         // 6. Issue a broadcast sync for this property only.
         ConfigSyncPacket broadcastPacket = createBroadcastPacket(manager, property);
-        Services.PLATFORM.sendToAllClients(broadcastPacket, sender.server);
+        NetworkManager.sendToAllClients(broadcastPacket, sender.server);
     }
 
     private static ConfigSyncPacket createBroadcastPacket(ConfigManager manager, Property<?> property) {

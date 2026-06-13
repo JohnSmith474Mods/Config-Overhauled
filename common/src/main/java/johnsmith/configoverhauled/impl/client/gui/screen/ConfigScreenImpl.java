@@ -4,7 +4,8 @@ import com.mojang.blaze3d.systems.RenderSystem;
 import johnsmith.configoverhauled.Constants;
 import johnsmith.configoverhauled.api.Category;
 import johnsmith.configoverhauled.api.ConfigManager;
-import johnsmith.configoverhauled.impl.client.gui.entry.OptionEntry;
+import johnsmith.configoverhauled.api.client.gui.entry.ConfigEntry;
+import johnsmith.configoverhauled.api.client.gui.screen.ConfigScreen;
 import johnsmith.configoverhauled.impl.client.gui.screen.component.ConfigTab;
 
 import net.minecraft.ChatFormatting;
@@ -24,7 +25,7 @@ import net.minecraft.resources.ResourceLocation;
 
 import org.jetbrains.annotations.NotNull;
 
-public class ConfigScreen extends AbstractConfigScreen {
+public class ConfigScreenImpl extends AbstractConfigScreen implements ConfigScreen {
     public static final ResourceLocation TAB_HEADER_BACKGROUND = ResourceLocation.withDefaultNamespace("textures/gui/tab_header_background.png");
 
     private final ConfigManager manager;
@@ -36,7 +37,7 @@ public class ConfigScreen extends AbstractConfigScreen {
     private Button resetButton;
     private EditBox searchBox;
 
-    public ConfigScreen(Screen parentScreen, ConfigManager manager) {
+    public ConfigScreenImpl(Screen parentScreen, ConfigManager manager) {
         super(Component.translatable("config." + manager.modId() + ".title"), parentScreen);
         this.manager = manager;
         this.layout.setHeaderHeight(24);
@@ -109,9 +110,9 @@ public class ConfigScreen extends AbstractConfigScreen {
 
     private void resetCurrentTab() {
         if (this.tabManager.getCurrentTab() instanceof ConfigTab configTab) {
-            for (ContainerObjectSelectionList.Entry<?> entry : configTab.getList().children()) {
-                if (entry instanceof OptionEntry<?, ?> option) {
-                    option.reset();
+            for (var entry : configTab.getList().children()) {
+                if (entry instanceof ConfigEntry option) {
+                    option.resetToDefault();
                 }
             }
         }
@@ -121,8 +122,8 @@ public class ConfigScreen extends AbstractConfigScreen {
     public void updateMasterResetButton() {
         boolean canReset = false;
         if (this.tabManager.getCurrentTab() instanceof ConfigTab configTab) {
-            for (ContainerObjectSelectionList.Entry<?> entry : configTab.getList().children()) {
-                if (entry instanceof OptionEntry<?, ?> option && option.canReset()) {
+            for (var entry : configTab.getList().children()) {
+                if (entry instanceof ConfigEntry option && option.isModified()) {
                     canReset = true;
                     break;
                 }
@@ -149,21 +150,16 @@ public class ConfigScreen extends AbstractConfigScreen {
             }
         }
 
-        this.deferredTooltip = null;
         super.render(guiGraphics, mouseX, mouseY, partialTick);
-
-        RenderSystem.enableBlend();
-        guiGraphics.blit(RenderType::guiTextured, Screen.FOOTER_SEPARATOR, 0, this.height - this.layout.getFooterHeight() - 2, 0.0F, 0.0F, this.width, 2, 32, 2);
-        RenderSystem.disableBlend();
-
-        if (this.deferredTooltip != null) {
-            guiGraphics.renderTooltip(this.font, this.deferredTooltip, mouseX, mouseY);
-        }
     }
 
     @Override
     protected void renderMenuBackground(GuiGraphics guiGraphics) {
         guiGraphics.blit(RenderType::guiTextured, TAB_HEADER_BACKGROUND, 0, 0, 0.0F, 0.0F, this.width, this.layout.getHeaderHeight(), 16, 16);
         this.renderMenuBackground(guiGraphics, 0, this.layout.getHeaderHeight(), this.width, this.height);
+
+        RenderSystem.enableBlend();
+        guiGraphics.blit(RenderType::guiTextured, Screen.FOOTER_SEPARATOR, 0, this.height - this.layout.getFooterHeight() - 2, 0.0F, 0.0F, this.width, 2, 32, 2);
+        RenderSystem.disableBlend();
     }
 }

@@ -6,8 +6,7 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.JsonOps;
 
 import johnsmith.configoverhauled.api.Property;
-import johnsmith.configoverhauled.impl.client.gui.screen.AbstractConfigScreen;
-import johnsmith.configoverhauled.impl.client.gui.screen.ConfigScreen;
+import johnsmith.configoverhauled.api.client.gui.screen.ConfigScreen;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -19,7 +18,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class ListEntry<E> extends AbstractTextEntry<List<E>> {
-    public ListEntry(Property<List<E>> property, AbstractConfigScreen parentScreen, Minecraft minecraft, Runnable onValueChanged) {
+    public ListEntry(Property<List<E>> property, ConfigScreen parentScreen, Minecraft minecraft, Runnable onValueChanged) {
         super(property, parentScreen, minecraft, onValueChanged);
         this.updateWidgetValue();
     }
@@ -85,11 +84,7 @@ public class ListEntry<E> extends AbstractTextEntry<List<E>> {
 
         if (this.widget.isMouseOver(mouseX, mouseY)) {
             List<FormattedCharSequence> boundsTooltip = List.of(this.getContentPreview().getVisualOrderText());
-            if (this.minecraft.screen instanceof ConfigScreen configScreen) {
-                configScreen.deferredTooltip = boundsTooltip;
-            } else {
-                guiGraphics.renderTooltip(this.minecraft.font, boundsTooltip, mouseX, mouseY);
-            }
+            this.parentScreen.setDeferredTooltip(boundsTooltip);
         }
     }
 }

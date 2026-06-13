@@ -29,7 +29,7 @@ public class Config {
 
     public static final Property<Integer> DATA_GEN_LINK_COLOR = GROUP_ACCESSIBILITY.define("data_gen_link_color")
             .clientSide()
-            .asColor(0x00FFFF)
+            .asRGBColor(0x00FFFF)
             .withComment("Specifies the default visualization color for generated data links.")
             .register();
 
@@ -71,7 +71,7 @@ public class Config {
                 .register();
         GROUP_CLIENT_TEST.define("color_test")
                 .clientSide()
-                .asColor(0xC0FFEE)
+                .asRGBColor(0xC0FFEE)
                 .withComment("A test color client property.")
                 .register();
         GROUP_CLIENT_TEST.define("float_test")
@@ -137,7 +137,7 @@ public class Config {
                 .register();
         GROUP_GLOBAL_TEST.define("color_test")
                 .globalSide()
-                .asColor(0xC0FFEE)
+                .asRGBColor(0xC0FFEE)
                 .withComment("A test color global property.")
                 .register();
         GROUP_GLOBAL_TEST.define("float_test")
@@ -203,7 +203,7 @@ public class Config {
                 .register();
         GROUP_LEVEL_TEST.define("color_test")
                 .levelSide()
-                .asColor(0xC0FFEE)
+                .asRGBColor(0xC0FFEE)
                 .withComment("A test color level property.")
                 .register();
         GROUP_LEVEL_TEST.define("float_test")
