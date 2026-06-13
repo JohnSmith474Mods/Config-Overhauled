@@ -5,6 +5,7 @@ import johnsmith.configoverhauled.api.Group;
 
 import com.google.common.collect.ImmutableList;
 
+import johnsmith.configoverhauled.api.client.gui.entry.AbstractConfigEntry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -19,7 +20,7 @@ import org.jetbrains.annotations.NotNull;
 import java.util.Collections;
 import java.util.List;
 
-public class CategoryEntry extends Entry {
+public class CategoryEntry extends AbstractConfigEntry {
     private final Minecraft minecraft;
     private final Component label;
     private final int textWidth;
@@ -29,11 +30,6 @@ public class CategoryEntry extends Entry {
         this.label = Component.translatable(category.translationKey())
                 .withStyle(ChatFormatting.BOLD, ChatFormatting.YELLOW);
         this.textWidth = minecraft.font.width(this.label);
-    }
-
-    @Override
-    public boolean matchesSearch(String query) {
-        return false;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package johnsmith.configoverhauled.api.factory;
 
+import com.mojang.serialization.Codec;
 import johnsmith.configoverhauled.api.Group;
 import johnsmith.configoverhauled.api.Property;
 
@@ -8,7 +9,7 @@ import johnsmith.configoverhauled.api.Property;
  * Utilized by the dynamic registry to construct properties from deserialized network or disk definitions.
  */
 @FunctionalInterface
-public interface PropertyFactory {
+public interface PropertyFactory<T> {
     /**
      * Constructs a specialized property instance matching structural coordinates.
      *
@@ -17,7 +18,8 @@ public interface PropertyFactory {
      * @param defaultValue The baseline value applied prior to network sync or disk loading.
      * @param min          The lower validation boundary. Nullable depending on implementation constraints.
      * @param max          The upper validation boundary. Nullable depending on implementation constraints.
+     * @param codec        The codec required for serialization and deserialization.
      * @return A dynamically allocated configuration property instance.
      */
-    Property<?> create(String resourceName, Group group, Object defaultValue, Object min, Object max);
+    Property<T> create(String resourceName, Group group, Object defaultValue, Object min, Object max, Codec<?> codec);
 }
