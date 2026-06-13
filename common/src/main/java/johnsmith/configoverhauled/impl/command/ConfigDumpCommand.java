@@ -6,7 +6,7 @@ import johnsmith.configoverhauled.api.Category;
 import johnsmith.configoverhauled.api.Group;
 import johnsmith.configoverhauled.api.Property;
 import johnsmith.configoverhauled.api.data.ConfigScope;
-import johnsmith.configoverhauled.impl.core.state.PropertyImpl;
+import johnsmith.configoverhauled.impl.core.state.DefaultProperty;
 import net.minecraft.network.chat.Component;
 
 public class ConfigDumpCommand extends AbstractDataGenCommand {
@@ -33,7 +33,7 @@ public class ConfigDumpCommand extends AbstractDataGenCommand {
                             addValue(propObject, "value", property.get());
                             addValue(propObject, "default_value", property.defaultValue());
 
-                            if (property instanceof PropertyImpl.Bounded<?> bounded) {
+                            if (property instanceof DefaultProperty.Bounded<?> bounded) {
                                 addValue(propObject, "min", bounded.lowerBound);
                                 addValue(propObject, "max", bounded.upperBound);
                             }

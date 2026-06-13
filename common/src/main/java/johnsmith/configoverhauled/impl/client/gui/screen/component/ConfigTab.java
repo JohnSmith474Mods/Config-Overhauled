@@ -4,8 +4,8 @@ import johnsmith.configoverhauled.api.Category;
 import johnsmith.configoverhauled.api.ConfigManager;
 import johnsmith.configoverhauled.api.Group;
 import johnsmith.configoverhauled.api.Property;
+import johnsmith.configoverhauled.api.client.gui.screen.ConfigScreen;
 import johnsmith.configoverhauled.api.data.ConfigScope;
-import johnsmith.configoverhauled.impl.client.gui.screen.ConfigScreen;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
