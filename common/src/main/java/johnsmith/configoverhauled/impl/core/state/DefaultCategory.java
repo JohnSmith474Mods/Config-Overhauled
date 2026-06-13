@@ -4,7 +4,7 @@ import johnsmith.configoverhauled.api.Category;
 import johnsmith.configoverhauled.api.ConfigManager;
 import johnsmith.configoverhauled.api.Group;
 
-public record CategoryImpl(String id, ConfigManager manager) implements Category {
+public record DefaultCategory(String id, ConfigManager manager) implements Category {
     @Override
     public String translationKey() {
         return manager.modId() + ".config." + id;

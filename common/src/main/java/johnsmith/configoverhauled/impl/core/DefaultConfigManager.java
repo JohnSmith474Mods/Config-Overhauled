@@ -10,19 +10,22 @@ import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Function;
 
 import johnsmith.configoverhauled.api.Category;
 import johnsmith.configoverhauled.api.ConfigManager;
 import johnsmith.configoverhauled.api.Group;
 import johnsmith.configoverhauled.api.Property;
+import johnsmith.configoverhauled.api.client.gui.registry.WidgetRegistry;
 import johnsmith.configoverhauled.api.data.ConfigDescription;
 import johnsmith.configoverhauled.api.data.ConfigScope;
 import johnsmith.configoverhauled.api.factory.PropertyFactory;
 import johnsmith.configoverhauled.api.registry.ConfigRegistry;
 import johnsmith.configoverhauled.api.registry.DynamicPropertyTypeRegistry;
-import johnsmith.configoverhauled.impl.core.state.CategoryImpl;
-import johnsmith.configoverhauled.impl.core.state.GroupImpl;
-import johnsmith.configoverhauled.impl.client.gui.screen.ConfigScreen;
+import johnsmith.configoverhauled.impl.client.gui.registry.DefaultWidgetRegistry;
+import johnsmith.configoverhauled.impl.client.gui.screen.ConfigScreenImpl;
+import johnsmith.configoverhauled.impl.core.state.DefaultCategory;
+import johnsmith.configoverhauled.impl.core.state.DefaultGroup;
 
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.server.MinecraftServer;
@@ -30,7 +33,7 @@ import net.minecraft.world.level.storage.LevelResource;
 
 import org.slf4j.Logger;
 
-public class ConfigManagerImpl implements ConfigManager {
+public class DefaultConfigManager implements ConfigManager {
     private final String modId;
     private final Logger logger;
 
@@ -43,7 +46,10 @@ public class ConfigManagerImpl implements ConfigManager {
     private final Map<Category, List<Group>> categoriesToGroups = new ConcurrentHashMap<>();
     private final Map<Group, List<Property<?>>> groupsToProperties = new ConcurrentHashMap<>();
 
-    public ConfigManagerImpl(String modId, Logger logger) {
+    private Function<Object, Object> screenFactory;
+    private WidgetRegistry widgetMapper;
+
+    public DefaultConfigManager(String modId, Logger logger) {
         if (logger == null) throw new IllegalArgumentException("Logger cannot be null");
         this.logger = logger;
 
@@ -52,6 +58,7 @@ public class ConfigManagerImpl implements ConfigManager {
             throw new IllegalArgumentException("Mod ID cannot be null or empty");
         }
         this.modId = modId;
+        this.widgetMapper = new DefaultWidgetRegistry();
 
         ConfigRegistry.registerManager(this);
         logInfo("Initialized ConfigManagerImpl.");
@@ -199,7 +206,7 @@ public class ConfigManagerImpl implements ConfigManager {
         }
         return categories.computeIfAbsent(id, k -> {
             logDebug("Registering new category: {}", id);
-            Category category = new CategoryImpl(id, this);
+            Category category = new DefaultCategory(id, this);
             categoriesToGroups.put(category, new CopyOnWriteArrayList<>());
             return category;
         });
@@ -223,7 +230,7 @@ public class ConfigManagerImpl implements ConfigManager {
                     .findFirst()
                     .orElseGet(() -> {
                         logDebug("Registering new PropertyGroup: {} in Category: {}", id, category.id());
-                        Group group = new GroupImpl(category, id, this);
+                        Group group = new DefaultGroup(category, id, this);
                         groups.add(group);
                         groupsToProperties.put(group, new CopyOnWriteArrayList<>());
                         return group;
@@ -260,7 +267,7 @@ public class ConfigManagerImpl implements ConfigManager {
     }
 
     @Override
-    public Property<?> getOrCreateDynamicProperty(ConfigDescription description, Class<?> configType, Object defaultValue, Object min, Object max) {
+    public Property<?> getOrCreateDynamicProperty(ConfigDescription description, DynamicPropertyTypeRegistry.TypeDefinition<?> typeDefinition, Object defaultValue, Object min, Object max) {
         logDebug("Retrieving or creating dynamic property for resource: {}", description.property());
         Category category = this.define(description.category());
         Group group = this.registerGroup(category, description.group());
@@ -270,8 +277,8 @@ public class ConfigManagerImpl implements ConfigManager {
             for (Property<?> existing : properties) {
                 if (existing.resourceName().equals(description.property())) return existing;
             }
-            PropertyFactory factory = DynamicPropertyTypeRegistry.get(configType);
-            Property<?> dynamicProperty = factory.create(description.property(), group, defaultValue, min, max);
+            PropertyFactory<?> factory = typeDefinition.factory();
+            Property<?> dynamicProperty = factory.create(description.property(), group, defaultValue, min, max, typeDefinition.codec());
             this.registerProperty(dynamicProperty);
             return dynamicProperty;
         }
@@ -355,9 +362,31 @@ public class ConfigManagerImpl implements ConfigManager {
     }
 
     @Override
+    public void setScreenFactory(java.util.function.Function<Object, Object> factory) {
+        this.screenFactory = factory;
+        logInfo("Custom screen factory injected.");
+    }
+
+    @Override
     @SuppressWarnings("unchecked")
     public <S> S createScreen(S parent) {
-        logDebug("Constructing new ConfigScreen instance.");
-        return (S) new ConfigScreen((Screen) parent, this);
+        if (this.screenFactory != null) {
+            logDebug("Constructing GUI via injected custom screen factory.");
+            return (S) this.screenFactory.apply(parent);
+        }
+        logDebug("Constructing default ConfigScreen instance.");
+        return (S) new ConfigScreenImpl((Screen) parent, this);
+    }
+
+    @Override
+    public void setWidgetMapper(WidgetRegistry mapper) {
+        if (mapper == null) throw new IllegalArgumentException("Widget mapper cannot be null.");
+        this.widgetMapper = mapper;
+        logInfo("Custom widget mapper injected.");
+    }
+
+    @Override
+    public WidgetRegistry getWidgetMapper() {
+        return this.widgetMapper;
     }
 }

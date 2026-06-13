@@ -1,28 +1,48 @@
 package johnsmith.configoverhauled.impl.client.gui.screen;
 
-import java.util.List;
-
 import johnsmith.configoverhauled.Config;
+import johnsmith.configoverhauled.api.client.gui.screen.ConfigScreen;
 
+import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
 
+import java.util.List;
 
-public abstract class AbstractConfigScreen extends Screen {
+public abstract class AbstractConfigScreen extends Screen implements ConfigScreen {
     private boolean levelConfigModified = false;
-
     protected final Screen parentScreen;
 
-    public List<FormattedCharSequence> deferredTooltip;
+    // Encapsulated state variable replacing the public field
+    private List<FormattedCharSequence> deferredTooltip;
 
     protected AbstractConfigScreen(Component title, Screen parentScreen) {
         super(title);
         this.parentScreen = parentScreen;
     }
 
+    @Override
     public void markLevelConfigModified() {
         this.levelConfigModified = true;
+    }
+
+    @Override
+    public void setDeferredTooltip(List<FormattedCharSequence> tooltip) {
+        this.deferredTooltip = tooltip;
+    }
+
+    @Override
+    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        // Execute the standard render pipeline (draws background, lists, and widgets)
+        super.render(guiGraphics, mouseX, mouseY, partialTick);
+
+        // Render the deferred tooltip at the highest Z-index
+        if (this.deferredTooltip != null && !this.deferredTooltip.isEmpty()) {
+            guiGraphics.setTooltipForNextFrame(this.font, this.deferredTooltip, mouseX, mouseY);
+            // Purge the state to prevent persistence on the subsequent frame
+            this.deferredTooltip = null;
+        }
     }
 
     @Override

@@ -2,10 +2,9 @@ package johnsmith.configoverhauled.impl.client.gui.entry.bounded;
 
 import java.util.List;
 
-import johnsmith.configoverhauled.impl.client.gui.screen.AbstractConfigScreen;
-import johnsmith.configoverhauled.impl.client.gui.screen.ConfigScreen;
+import johnsmith.configoverhauled.api.client.gui.screen.ConfigScreen;
 import johnsmith.configoverhauled.impl.client.gui.entry.AbstractTextEntry;
-import johnsmith.configoverhauled.impl.core.state.PropertyImpl;
+import johnsmith.configoverhauled.impl.core.state.DefaultProperty;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -16,22 +15,17 @@ import net.minecraft.util.FormattedCharSequence;
 import org.jetbrains.annotations.NotNull;
 
 public abstract class BoundedEntry<T extends Number & Comparable<T>> extends AbstractTextEntry<T> {
-    public BoundedEntry(PropertyImpl.Bounded<T> property, AbstractConfigScreen parentScreen, Minecraft minecraft, Runnable onValueChanged) {
+    public BoundedEntry(DefaultProperty.Bounded<T> property, ConfigScreen parentScreen, Minecraft minecraft, Runnable onValueChanged) {
         super(property, parentScreen, minecraft, onValueChanged);
     }
 
-    protected PropertyImpl.Bounded<T> getBounds() {
-        return (PropertyImpl.Bounded<T>) this.property;
+    protected Boolean isWithinBounds(T value) {
+        DefaultProperty.Bounded<T> bounds = this.getBounds();
+        return value.compareTo(bounds.lowerBound) >= 0 && value.compareTo(bounds.upperBound) <= 0;
     }
 
-    protected T clamp(T value) {
-        if (value.compareTo(this.getBounds().lowerBound) < 0) {
-            return this.getBounds().lowerBound;
-        }
-        if (value.compareTo(this.getBounds().upperBound) > 0) {
-            return this.getBounds().upperBound;
-        }
-        return value;
+    protected DefaultProperty.Bounded<T> getBounds() {
+        return (DefaultProperty.Bounded<T>) this.property;
     }
 
     protected abstract T parse(String input) throws NumberFormatException;
@@ -42,7 +36,6 @@ public abstract class BoundedEntry<T extends Number & Comparable<T>> extends Abs
 
     @Override
     protected void setupEditBox(EditBox box) {
-        PropertyImpl.Bounded<T> bounds = this.getBounds();
         box.setFilter(s -> s.matches(this.getRegexFilter()));
         box.setResponder(s -> {
             try {
@@ -52,7 +45,7 @@ public abstract class BoundedEntry<T extends Number & Comparable<T>> extends Abs
                 }
                 T val = this.parse(s);
 
-                if (val.compareTo(bounds.lowerBound) >= 0 && val.compareTo(bounds.upperBound) <= 0) {
+                if (this.isWithinBounds(val)) {
                     box.setTextColor(0xFFFFFFFF);
                 } else {
                     box.setTextColor(0xFFFF0000);
@@ -72,7 +65,7 @@ public abstract class BoundedEntry<T extends Number & Comparable<T>> extends Abs
             }
             T val = this.parse(input);
 
-            if (val.compareTo(this.getBounds().lowerBound) >= 0 && val.compareTo(this.getBounds().upperBound) <= 0) {
+            if (this.isWithinBounds(val)) {
                 this.setValue(val);
                 this.widget.setTextColor(0xFFFFFFFF);
             } else {
@@ -97,11 +90,7 @@ public abstract class BoundedEntry<T extends Number & Comparable<T>> extends Abs
 
         if (this.widget.isMouseOver(mouseX, mouseY)) {
             List<FormattedCharSequence> boundsTooltip = List.of(this.getBoundsTooltipText().getVisualOrderText(), this.getCurrentValueTooltipText().getVisualOrderText());
-            if (this.minecraft.screen instanceof ConfigScreen configScreen) {
-                configScreen.deferredTooltip = boundsTooltip;
-            } else {
-                guiGraphics.setTooltipForNextFrame(this.minecraft.font, boundsTooltip, mouseX, mouseY);
-            }
+            this.parentScreen.setDeferredTooltip(boundsTooltip);
         }
     }
 }
