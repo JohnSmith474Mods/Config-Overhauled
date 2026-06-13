@@ -1,13 +1,13 @@
 package johnsmith.configoverhauled.impl.client.gui.entry;
 
 import johnsmith.configoverhauled.api.Property;
-import johnsmith.configoverhauled.impl.client.gui.screen.AbstractConfigScreen;
+import johnsmith.configoverhauled.api.client.gui.screen.ConfigScreen;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 
 public abstract class AbstractTextEntry<T> extends OptionEntry<T, EditBox> {
-    public AbstractTextEntry(Property<T> property, AbstractConfigScreen parentScreen, Minecraft minecraft, Runnable onValueChanged) {
+    public AbstractTextEntry(Property<T> property, ConfigScreen parentScreen, Minecraft minecraft, Runnable onValueChanged) {
         super(property, parentScreen, minecraft, onValueChanged);
     }
 

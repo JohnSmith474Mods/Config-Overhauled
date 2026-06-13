@@ -7,7 +7,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Locale;
 
-import johnsmith.configoverhauled.impl.client.gui.screen.AbstractConfigScreen;
+import johnsmith.configoverhauled.api.client.gui.entry.AbstractConfigEntry;
+import johnsmith.configoverhauled.api.client.gui.entry.ConfigEntry;
+import johnsmith.configoverhauled.api.client.gui.screen.ConfigScreen;
 import johnsmith.configoverhauled.api.data.ConfigDescription;
 import johnsmith.configoverhauled.api.data.ConfigScope;
 import johnsmith.configoverhauled.api.Property;
@@ -24,13 +26,12 @@ import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.chat.Component;
-
 import net.minecraft.util.FormattedCharSequence;
 
 import org.jetbrains.annotations.NotNull;
 
-public abstract class OptionEntry<T, W extends AbstractWidget> extends Entry {
-    protected final AbstractConfigScreen parentScreen;
+public abstract class OptionEntry<T, W extends AbstractWidget> extends AbstractConfigEntry implements ConfigEntry {
+    protected final ConfigScreen parentScreen;
     protected final Property<T> property;
     protected final Button resetButton;
     protected final W widget;
@@ -41,7 +42,7 @@ public abstract class OptionEntry<T, W extends AbstractWidget> extends Entry {
 
     protected final boolean isLocked;
 
-    public OptionEntry(Property<T> property, AbstractConfigScreen parentScreen, Minecraft minecraft, Runnable onValueChanged) {
+    public OptionEntry(Property<T> property, ConfigScreen parentScreen, Minecraft minecraft, Runnable onValueChanged) {
         this.parentScreen = parentScreen;
         this.property = property;
         this.minecraft = minecraft;
@@ -59,7 +60,7 @@ public abstract class OptionEntry<T, W extends AbstractWidget> extends Entry {
             this.tooltip = baseTooltip;
         }
 
-        this.resetButton = Button.builder(Component.translatable("controls.reset"), b -> reset())
+        this.resetButton = Button.builder(Component.translatable("controls.reset"), b -> resetToDefault())
                 .bounds(0, 0, 50, 20).build();
         this.widget = createWidget();
 
@@ -72,6 +73,18 @@ public abstract class OptionEntry<T, W extends AbstractWidget> extends Entry {
         String lowerQuery = query.toLowerCase(Locale.ROOT);
         return this.labelComponent.getString().toLowerCase(Locale.ROOT).contains(lowerQuery) ||
                 this.property.resourceName().toLowerCase(Locale.ROOT).contains(lowerQuery);
+    }
+
+    @Override
+    public void resetToDefault() {
+        if (this.isLocked) return;
+        this.setValue(this.property.defaultValue());
+        this.updateWidgetValue();
+    }
+
+    @Override
+    public boolean isModified() {
+        return !this.isDefault();
     }
 
     private boolean determineLockState() {
@@ -123,12 +136,6 @@ public abstract class OptionEntry<T, W extends AbstractWidget> extends Entry {
         this.onValueChanged.run();
     }
 
-    public void reset() {
-        if (this.isLocked) return;
-        this.setValue(this.property.defaultValue());
-        this.updateWidgetValue();
-    }
-
     public boolean isDefault() {
         return Objects.equals(property.get(), property.defaultValue());
     }
@@ -144,6 +151,7 @@ public abstract class OptionEntry<T, W extends AbstractWidget> extends Entry {
     protected Component getDefaultValueTooltip() {
         return Component.literal("Default: " + this.property.defaultValue());
     }
+
 
     @Override
     public void render(@NotNull GuiGraphics guiGraphics, int index, int top, int left, int width, int height, int mouseX, int mouseY, boolean hovering, float partialTick) {
@@ -183,9 +191,9 @@ public abstract class OptionEntry<T, W extends AbstractWidget> extends Entry {
         boolean overResetButton = mouseX >= resetX && mouseX < resetX + 50 && mouseY >= y && mouseY < y + 20;
 
         if (overResetButton) {
-            this.parentScreen.deferredTooltip = List.of(this.getDefaultValueTooltip().getVisualOrderText());
+            this.parentScreen.setDeferredTooltip(List.of(this.getDefaultValueTooltip().getVisualOrderText()));
         } else if (hovering) {
-            this.parentScreen.deferredTooltip = this.tooltip;
+            this.parentScreen.setDeferredTooltip(this.tooltip);
         }
     }
 
@@ -194,4 +202,6 @@ public abstract class OptionEntry<T, W extends AbstractWidget> extends Entry {
 
     @Override
     public @NotNull List<? extends NarratableEntry> narratables() { return ImmutableList.of(widget, resetButton); }
+
+
 }

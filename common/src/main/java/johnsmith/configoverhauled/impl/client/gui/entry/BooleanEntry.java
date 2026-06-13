@@ -1,6 +1,6 @@
 package johnsmith.configoverhauled.impl.client.gui.entry;
 
-import johnsmith.configoverhauled.impl.client.gui.screen.AbstractConfigScreen;
+import johnsmith.configoverhauled.api.client.gui.screen.ConfigScreen;
 import johnsmith.configoverhauled.api.Property;
 
 import net.minecraft.client.Minecraft;
@@ -8,7 +8,7 @@ import net.minecraft.client.gui.components.CycleButton;
 import net.minecraft.network.chat.Component;
 
 public class BooleanEntry extends OptionEntry<Boolean, CycleButton<Boolean>> {
-    public BooleanEntry(Property<Boolean> property, AbstractConfigScreen parentScreen, Minecraft minecraft, Runnable onValueChanged) {
+    public BooleanEntry(Property<Boolean> property, ConfigScreen parentScreen, Minecraft minecraft, Runnable onValueChanged) {
         super(property, parentScreen, minecraft, onValueChanged);
     }
 

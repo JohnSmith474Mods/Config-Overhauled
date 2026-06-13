@@ -5,9 +5,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
+import johnsmith.configoverhauled.api.client.gui.registry.WidgetRegistry;
 import johnsmith.configoverhauled.api.data.ConfigDescription;
 import johnsmith.configoverhauled.api.data.ConfigScope;
 
+import johnsmith.configoverhauled.api.registry.DynamicPropertyTypeRegistry;
 import net.minecraft.server.MinecraftServer;
 
 import org.slf4j.Logger;
@@ -109,14 +111,14 @@ public interface ConfigManager {
      * Allocates a dynamic property instance at runtime, matching specific coordinate definitions.
      * Utilized primarily for datapack injection or authoritative server synchronization.
      *
-     * @param description  The absolute coordinate map.
-     * @param configType   The underlying data class.
-     * @param defaultValue The baseline state value.
-     * @param min          The lower validation boundary.
-     * @param max          The upper validation boundary.
+     * @param description    The absolute coordinate map.
+     * @param typeDefinition The underlying data class.
+     * @param defaultValue   The baseline state value.
+     * @param min            The lower validation boundary.
+     * @param max            The upper validation boundary.
      * @return The dynamically constructed Property instance.
      */
-    Property<?> getOrCreateDynamicProperty(ConfigDescription description, Class<?> configType, Object defaultValue, Object min, Object max);
+    Property<?> getOrCreateDynamicProperty(ConfigDescription description, DynamicPropertyTypeRegistry.TypeDefinition<?> typeDefinition, Object defaultValue, Object min, Object max);
 
     /**
      * Executes hierarchical teardown and unbinds a target category and all dependencies.
@@ -162,10 +164,28 @@ public interface ConfigManager {
     Property<?> findProperty(ConfigDescription description);
 
     /**
+     * Injects a custom screen factory to override default interface rendering protocols.
+     * Execute binding prior to platform-specific GUI endpoint registration.
+     *
+     * @param factory The functional screen construction sequence.
+     */
+    void setScreenFactory(java.util.function.Function<Object, Object> factory);
+
+    /**
      * Triggers dynamic GUI generation for the active configuration hierarchy.
      *
      * @param parent The preceding menu screen entity.
      * @return The constructed configuration screen entity.
      */
     <S> S createScreen(S parent);
+
+    /**
+     * Injects a specialized widget resolution map, overriding the default implementation.
+     */
+    void setWidgetMapper(WidgetRegistry mapper);
+
+    /**
+     * Resolves the active widget mapper bound to this specific manager instance.
+     */
+    WidgetRegistry getWidgetMapper();
 }
