@@ -12,7 +12,7 @@ import net.minecraft.world.level.block.Block;
 import java.util.List;
 import java.util.function.Function;
 
-public record GroupImpl(Category parent, String id, ConfigManager manager) implements Group {
+public record DefaultGroup(Category parent, String id, ConfigManager manager) implements Group {
     @Override
     public String translationKey() {
         return parent.translationKey() + "." + this.id;
@@ -35,11 +35,11 @@ public record GroupImpl(Category parent, String id, ConfigManager manager) imple
     }
 
     private static class BuilderPipeline implements IScopeStep, ITypeStep {
-        private final GroupImpl group;
+        private final DefaultGroup group;
         private final String resourceName;
         private ConfigScope scope;
 
-        private BuilderPipeline(GroupImpl group, String resourceName) {
+        private BuilderPipeline(DefaultGroup group, String resourceName) {
             this.group = group;
             this.resourceName = resourceName;
         }
@@ -56,96 +56,101 @@ public record GroupImpl(Category parent, String id, ConfigManager manager) imple
 
         @Override
         public IPropertyBuilder<Boolean> asBoolean(boolean defaultValue) {
-            return new PropertyBuilderImpl<>(group, comment -> new PropertyImpl.Boolean(resourceName, group, scope, comment, defaultValue, false));
+            return new PropertyBuilderImpl<>(group, comment -> new DefaultProperty.Boolean(resourceName, group, scope, comment, defaultValue, false));
         }
 
         @Override
         public IPropertyBuilder<Integer> asInteger(int defaultValue) {
-            return new PropertyBuilderImpl<>(group, comment -> new PropertyImpl.Integer(resourceName, group, scope, comment, defaultValue, false));
+            return new PropertyBuilderImpl<>(group, comment -> new DefaultProperty.Integer(resourceName, group, scope, comment, defaultValue, false));
         }
 
         @Override
         public IPropertyBuilder<Integer> asInteger(int defaultValue, int min, int max) {
-            return new PropertyBuilderImpl<>(group, comment -> new PropertyImpl.Integer(resourceName, group, scope, comment, defaultValue, min, max, false));
+            return new PropertyBuilderImpl<>(group, comment -> new DefaultProperty.Integer(resourceName, group, scope, comment, defaultValue, min, max, false));
         }
 
         @Override
         public IPropertyBuilder<Double> asDouble(double defaultValue) {
-            return new PropertyBuilderImpl<>(group, comment -> new PropertyImpl.Double(resourceName, group, scope, comment, defaultValue, false));
+            return new PropertyBuilderImpl<>(group, comment -> new DefaultProperty.Double(resourceName, group, scope, comment, defaultValue, false));
         }
 
         @Override
         public IPropertyBuilder<Double> asDouble(double defaultValue, double min, double max) {
-            return new PropertyBuilderImpl<>(group, comment -> new PropertyImpl.Double(resourceName, group, scope, comment, defaultValue, min, max, false));
+            return new PropertyBuilderImpl<>(group, comment -> new DefaultProperty.Double(resourceName, group, scope, comment, defaultValue, min, max, false));
         }
 
         @Override
         public IPropertyBuilder<Float> asFloat(float defaultValue) {
-            return new PropertyBuilderImpl<>(group, comment -> new PropertyImpl.Float(resourceName, group, scope, comment, defaultValue, false));
+            return new PropertyBuilderImpl<>(group, comment -> new DefaultProperty.Float(resourceName, group, scope, comment, defaultValue, false));
         }
 
         @Override
         public IPropertyBuilder<Float> asFloat(float defaultValue, float min, float max) {
-            return new PropertyBuilderImpl<>(group, comment -> new PropertyImpl.Float(resourceName, group, scope, comment, defaultValue, min, max, false));
+            return new PropertyBuilderImpl<>(group, comment -> new DefaultProperty.Float(resourceName, group, scope, comment, defaultValue, min, max, false));
         }
 
         @Override
         public IPropertyBuilder<Long> asLong(long defaultValue) {
-            return new PropertyBuilderImpl<>(group, comment -> new PropertyImpl.Long(resourceName, group, scope, comment, defaultValue, false));
+            return new PropertyBuilderImpl<>(group, comment -> new DefaultProperty.Long(resourceName, group, scope, comment, defaultValue, false));
         }
 
         @Override
         public IPropertyBuilder<Long> asLong(long defaultValue, long min, long max) {
-            return new PropertyBuilderImpl<>(group, comment -> new PropertyImpl.Long(resourceName, group, scope, comment, defaultValue, min, max, false));
+            return new PropertyBuilderImpl<>(group, comment -> new DefaultProperty.Long(resourceName, group, scope, comment, defaultValue, min, max, false));
         }
 
         @Override
-        public IPropertyBuilder<Integer> asColor(int defaultValue) {
-            return new PropertyBuilderImpl<>(group, comment -> new PropertyImpl.Color(resourceName, group, scope, comment, defaultValue, false));
+        public IPropertyBuilder<Integer> asRGBColor(int defaultValue) {
+            return new PropertyBuilderImpl<>(group, comment -> new DefaultProperty.RGBColor(resourceName, group, scope, comment, defaultValue, false));
+        }
+
+        @Override
+        public IPropertyBuilder<Integer> asARGBColor(int defaultValue) {
+            return new PropertyBuilderImpl<>(group, comment -> new DefaultProperty.ARGBColor(resourceName, group, scope, comment, defaultValue, false));
         }
 
         @Override
         public IPropertyBuilder<String> asString(String defaultValue) {
-            return new PropertyBuilderImpl<>(group, comment -> new PropertyImpl.String(resourceName, group, scope, comment, defaultValue, false));
+            return new PropertyBuilderImpl<>(group, comment -> new DefaultProperty.String(resourceName, group, scope, comment, defaultValue, false));
         }
 
         @Override
         public <E extends Enum<E>> IPropertyBuilder<E> asEnum(E defaultValue, Codec<E> codec) {
-            return new PropertyBuilderImpl<>(group, comment -> new PropertyImpl.Enum<>(resourceName, group, scope, comment, defaultValue, codec, false));
+            return new PropertyBuilderImpl<>(group, comment -> new DefaultProperty.Enum<>(resourceName, group, scope, comment, defaultValue, codec, false));
         }
 
         @Override
         public <E> IPropertyBuilder<List<E>> asList(List<E> defaultValue, Codec<E> elementCodec) {
-            return new PropertyBuilderImpl<>(group, comment -> new PropertyImpl.List<>(resourceName, group, scope, comment, defaultValue, elementCodec, false));
+            return new PropertyBuilderImpl<>(group, comment -> new DefaultProperty.List<>(resourceName, group, scope, comment, defaultValue, elementCodec, false));
         }
 
         @Override
         public IPropertyBuilder<Block> asBlock(Block defaultValue) {
-            return new PropertyBuilderImpl<>(group, comment -> new PropertyImpl.Block(resourceName, group, scope, comment, defaultValue, false));
+            return new PropertyBuilderImpl<>(group, comment -> new DefaultProperty.Block(resourceName, group, scope, comment, defaultValue, false));
         }
 
         @Override
         public IPropertyBuilder<Item> asItem(Item defaultValue) {
-            return new PropertyBuilderImpl<>(group, comment -> new PropertyImpl.Item(resourceName, group, scope, comment, defaultValue, false));
+            return new PropertyBuilderImpl<>(group, comment -> new DefaultProperty.Item(resourceName, group, scope, comment, defaultValue, false));
         }
 
         @Override
         public IPropertyBuilder<List<Block>> asBlocks(List<Block> defaultValue) {
-            return new PropertyBuilderImpl<>(group, comment -> new PropertyImpl.Blocks(resourceName, group, scope, comment, defaultValue, false));
+            return new PropertyBuilderImpl<>(group, comment -> new DefaultProperty.Blocks(resourceName, group, scope, comment, defaultValue, false));
         }
 
         @Override
         public IPropertyBuilder<List<Item>> asItems(List<Item> defaultValue) {
-            return new PropertyBuilderImpl<>(group, comment -> new PropertyImpl.Items(resourceName, group, scope, comment, defaultValue, false));
+            return new PropertyBuilderImpl<>(group, comment -> new DefaultProperty.Items(resourceName, group, scope, comment, defaultValue, false));
         }
     }
 
     private static class PropertyBuilderImpl<T> implements IPropertyBuilder<T> {
-        private final GroupImpl group;
-        private final Function<String, PropertyImpl<T>> factory;
+        private final DefaultGroup group;
+        private final Function<String, DefaultProperty<T>> factory;
         private String comment = "";
 
-        private PropertyBuilderImpl(GroupImpl group, Function<String, PropertyImpl<T>> factory) {
+        private PropertyBuilderImpl(DefaultGroup group, Function<String, DefaultProperty<T>> factory) {
             this.group = group;
             this.factory = factory;
         }
@@ -163,7 +168,7 @@ public record GroupImpl(Category parent, String id, ConfigManager manager) imple
 
         @Override
         public Property<T> register() {
-            PropertyImpl<T> property = factory.apply(this.comment);
+            DefaultProperty<T> property = factory.apply(this.comment);
             this.group.manager().registerProperty(property);
             return property;
         }

@@ -1,10 +1,11 @@
 package johnsmith.configoverhauled.impl.client.gui.entry.registry;
 
 import johnsmith.configoverhauled.api.Property;
+import johnsmith.configoverhauled.api.client.gui.screen.ConfigScreen;
 import johnsmith.configoverhauled.impl.client.gui.entry.AbstractRegistryEntry;
-import johnsmith.configoverhauled.impl.client.gui.screen.AbstractConfigScreen;
 import johnsmith.configoverhauled.impl.client.gui.screen.RegistrySelectionScreen;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -13,7 +14,7 @@ import java.util.function.Function;
 
 public class RegistryEntry<T> extends AbstractRegistryEntry<T, T> {
 
-    public RegistryEntry(Property<T> property, AbstractConfigScreen parentScreen, Minecraft minecraft, Runnable onValueChanged, Registry<T> registry, Function<T, ItemStack> iconProvider, Function<T, Component> nameProvider) {
+    public RegistryEntry(Property<T> property, ConfigScreen parentScreen, Minecraft minecraft, Runnable onValueChanged, Registry<T> registry, Function<T, ItemStack> iconProvider, Function<T, Component> nameProvider) {
         super(property, parentScreen, minecraft, onValueChanged, registry, iconProvider, nameProvider);
         this.updateWidgetValue();
     }
@@ -21,7 +22,7 @@ public class RegistryEntry<T> extends AbstractRegistryEntry<T, T> {
     @Override
     protected void openSelectionScreen() {
         this.minecraft.setScreen(new RegistrySelectionScreen<>(
-                this.parentScreen,
+                (Screen) this.parentScreen,
                 Component.translatable(this.property.translationKey()),
                 this.registry,
                 this.property.get(),

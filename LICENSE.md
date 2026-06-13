@@ -7,9 +7,10 @@ This configuration management library and API ("The Library") is the property of
    * **API Integration:** Developers ("Users") are granted a limited, non-exclusive, royalty-free license to link against The Library's API, reference its classes, and utilize its framework within their own modifications ("User Mods"). This integration does not render the User Mod a derivative work of The Library.
 
 ### 2. Source Access and Visibility
-   * **Authorized View Access**: The source code of The Library is made publicly visible for transparency, educational purposes, and API reference.
-   Local Compilation: Users may download and compile the source code locally for the sole purpose of debugging or troubleshooting integration issues with User Mods.
-   Contributions: Users may fork the official repository strictly to submit Pull Requests directly to The Owner. Forking to create a separate, public, or competitive distribution is explicitly prohibited.
+   * **Authorized View Access:** The source code of The Library is made publicly visible for transparency, educational purposes, and API reference.
+   * **Local Compilation:** Users may download and compile the source code locally for the sole purpose of debugging or troubleshooting integration issues with User Mods.
+   * **Contributions:** Users may fork the official repository strictly to submit Pull Requests directly to The Owner. Forking to create a separate, public, or competitive distribution is explicitly prohibited.
+   * **Notice Preservation:** All authorized local copies, compilations, and private forks must retain this Agreement and all original copyright notices unmodified.
 
 ### 3. Distribution Restrictions
    * **Authorized Channels:** The Library may ONLY be downloaded from its official project pages, as designated by The Owner.

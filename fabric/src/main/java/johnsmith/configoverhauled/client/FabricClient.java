@@ -3,7 +3,6 @@ package johnsmith.configoverhauled.client;
 import com.mojang.brigadier.arguments.StringArgumentType;
 
 import johnsmith.configoverhauled.Constants;
-import johnsmith.configoverhauled.impl.client.gui.registry.ConfigWidgetRegistry;
 import johnsmith.configoverhauled.impl.command.AbstractDataGenCommand;
 import johnsmith.configoverhauled.impl.command.ConfigDumpCommand;
 import johnsmith.configoverhauled.impl.command.ConfigLangGenCommand;
@@ -22,7 +21,6 @@ public class FabricClient implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        ConfigWidgetRegistry.registerWidgets();
         ClientLifecycleEvents.CLIENT_STOPPING.register(client -> ClientEventHandler.onClientStopping());
 
         ClientPlayNetworking.registerGlobalReceiver(ConfigSyncPacket.TYPE, (payload, context) -> {

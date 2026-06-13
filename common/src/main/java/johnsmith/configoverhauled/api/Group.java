@@ -188,7 +188,15 @@ public interface Group {
          * @param defaultValue The baseline color state as a primitive integer.
          * @return The subsequent optional configuration step.
          */
-        IPropertyBuilder<Integer> asColor(int defaultValue);
+        IPropertyBuilder<Integer> asRGBColor(int defaultValue);
+
+        /**
+         * Binds the property to an ARGB color integer.
+         *
+         * @param defaultValue The baseline color state as a primitive integer.
+         * @return The subsequent optional configuration step.
+         */
+        IPropertyBuilder<Integer> asARGBColor(int defaultValue);
 
         /**
          * Binds the property to a string literal.
