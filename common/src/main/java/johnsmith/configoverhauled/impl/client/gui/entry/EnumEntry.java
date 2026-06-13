@@ -3,8 +3,7 @@ package johnsmith.configoverhauled.impl.client.gui.entry;
 import java.util.List;
 
 import johnsmith.configoverhauled.api.Property;
-import johnsmith.configoverhauled.impl.client.gui.screen.AbstractConfigScreen;
-import johnsmith.configoverhauled.impl.client.gui.screen.ConfigScreen;
+import johnsmith.configoverhauled.api.client.gui.screen.ConfigScreen;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -15,7 +14,7 @@ import net.minecraft.util.FormattedCharSequence;
 import org.jetbrains.annotations.NotNull;
 
 public class EnumEntry<E extends Enum<E>> extends OptionEntry<E, CycleButton<E>> {
-    public EnumEntry(Property<E> property, AbstractConfigScreen parentScreen, Minecraft minecraft, Runnable onValueChanged) {
+    public EnumEntry(Property<E> property, ConfigScreen parentScreen, Minecraft minecraft, Runnable onValueChanged) {
         super(property, parentScreen, minecraft, onValueChanged);
         this.updateWidgetValue();
     }
@@ -60,11 +59,7 @@ public class EnumEntry<E extends Enum<E>> extends OptionEntry<E, CycleButton<E>>
 
         if (this.widget.isMouseOver(mouseX, mouseY)) {
             List<FormattedCharSequence> boundsTooltip = List.of(this.getValueRange().getVisualOrderText());
-            if (this.minecraft.screen instanceof ConfigScreen configScreen) {
-                configScreen.deferredTooltip = boundsTooltip;
-            } else {
-                guiGraphics.setTooltipForNextFrame(this.minecraft.font, boundsTooltip, mouseX, mouseY);
-            }
+            this.parentScreen.setDeferredTooltip(boundsTooltip);
         }
     }
 }

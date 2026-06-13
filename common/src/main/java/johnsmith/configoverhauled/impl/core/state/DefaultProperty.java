@@ -20,7 +20,7 @@ import johnsmith.configoverhauled.api.data.ConfigScope;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.nbt.Tag;
 
-public abstract sealed class PropertyImpl<T> implements Property<T> permits PropertyImpl.Boolean, PropertyImpl.Bounded, PropertyImpl.Enum, PropertyImpl.List, PropertyImpl.String, PropertyImpl.Block, PropertyImpl.Item {
+public abstract sealed class DefaultProperty<T> implements Property<T> permits DefaultProperty.Boolean, DefaultProperty.Bounded, DefaultProperty.Enum, DefaultProperty.List, DefaultProperty.String, DefaultProperty.Block, DefaultProperty.Item {
     private final java.lang.String resourceName;
     private final Group parentGroup;
     private final T defaultValue;
@@ -34,7 +34,7 @@ public abstract sealed class PropertyImpl<T> implements Property<T> permits Prop
     private boolean isSynced = false;
     private final Set<Listener> listeners = Collections.synchronizedSet(Collections.newSetFromMap(new WeakHashMap<>()));
 
-    protected PropertyImpl(java.lang.String resourceName, Group category, ConfigScope scope, java.lang.String comment, T defaultValue, Codec<T> codec, boolean isDynamic) {
+    protected DefaultProperty(java.lang.String resourceName, Group category, ConfigScope scope, java.lang.String comment, T defaultValue, Codec<T> codec, boolean isDynamic) {
         this.resourceName = resourceName;
         this.parentGroup = category;
         this.scope = scope;
@@ -201,7 +201,7 @@ public abstract sealed class PropertyImpl<T> implements Property<T> permits Prop
         }
     }
 
-    public static non-sealed abstract class Bounded<T extends Number & Comparable<T>> extends PropertyImpl<T> {
+    public static non-sealed abstract class Bounded<T extends Number & Comparable<T>> extends DefaultProperty<T> {
         public final T lowerBound;
         public final T upperBound;
 
@@ -228,20 +228,45 @@ public abstract sealed class PropertyImpl<T> implements Property<T> permits Prop
         }
     }
 
-    public static final class Boolean extends PropertyImpl<java.lang.Boolean> {
+    public static final class Boolean extends DefaultProperty<java.lang.Boolean> {
         public Boolean(java.lang.String resourceName, Group group, ConfigScope scope, java.lang.String comment, java.lang.Boolean defaultValue, boolean isDynamic) {
             super(resourceName, group, scope, comment, defaultValue, Codec.BOOL, isDynamic);
         }
     }
 
-    public static final class Color extends Bounded<java.lang.Integer> {
-        public Color(java.lang.String resourceName, Group group, ConfigScope scope, java.lang.String comment, java.lang.Integer defaultValue, boolean isDynamic) {
-            super(resourceName, group, scope, comment, defaultValue, johnsmith.configoverhauled.api.data.Color.LOWER_BOUND, johnsmith.configoverhauled.api.data.Color.UPPER_BOUND, johnsmith.configoverhauled.api.data.Color.CODEC, isDynamic);
+    public static final class RGBColor extends Bounded<java.lang.Integer> {
+        public RGBColor(java.lang.String resourceName, Group group, ConfigScope scope, java.lang.String comment, java.lang.Integer defaultValue, boolean isDynamic) {
+            super(resourceName, group, scope, comment, defaultValue, johnsmith.configoverhauled.api.data.Color.RGB_LOWER_BOUND, johnsmith.configoverhauled.api.data.Color.RGB_UPPER_BOUND, johnsmith.configoverhauled.api.data.Color.RGB_CODEC, isDynamic);
         }
 
         @Override
         protected java.lang.String formatBound(java.lang.Integer value) {
             return java.lang.String.format("#%06X", value);
+        }
+
+        @Override
+        protected java.lang.Integer validate(java.lang.Integer value) {
+            if (java.lang.Integer.compareUnsigned(value, this.lowerBound) < 0) return this.lowerBound;
+            if (java.lang.Integer.compareUnsigned(value, this.upperBound) > 0) return this.upperBound;
+            return value;
+        }
+    }
+
+    public static final class ARGBColor extends Bounded<java.lang.Integer> {
+        public ARGBColor(java.lang.String resourceName, Group group, ConfigScope scope, java.lang.String comment, java.lang.Integer defaultValue, boolean isDynamic) {
+            super(resourceName, group, scope, comment, defaultValue, johnsmith.configoverhauled.api.data.Color.ARGB_LOWER_BOUND, johnsmith.configoverhauled.api.data.Color.ARGB_UPPER_BOUND, johnsmith.configoverhauled.api.data.Color.ARGB_CODEC, isDynamic);
+        }
+
+        @Override
+        protected java.lang.String formatBound(java.lang.Integer value) {
+            return java.lang.String.format("#%08X", value);
+        }
+
+        @Override
+        protected java.lang.Integer validate(java.lang.Integer value) {
+            if (java.lang.Integer.compareUnsigned(value, this.lowerBound) < 0) return this.lowerBound;
+            if (java.lang.Integer.compareUnsigned(value, this.upperBound) > 0) return this.upperBound;
+            return value;
         }
     }
 
@@ -281,19 +306,19 @@ public abstract sealed class PropertyImpl<T> implements Property<T> permits Prop
         }
     }
 
-    public static final class String extends PropertyImpl<java.lang.String> {
+    public static final class String extends DefaultProperty<java.lang.String> {
         public String(java.lang.String resourceName, Group group, ConfigScope scope, java.lang.String comment, java.lang.String defaultValue, boolean isDynamic) {
             super(resourceName, group, scope, comment, defaultValue, Codec.STRING, isDynamic);
         }
     }
 
-    public static final class Enum<E extends java.lang.Enum<E>> extends PropertyImpl<E> {
+    public static final class Enum<E extends java.lang.Enum<E>> extends DefaultProperty<E> {
         public Enum(java.lang.String resourceName, Group group, ConfigScope scope, java.lang.String comment, E defaultValue, Codec<E> codec, boolean isDynamic) {
             super(resourceName, group, scope, comment, defaultValue, codec, isDynamic);
         }
     }
 
-    public static non-sealed class List<E> extends PropertyImpl<java.util.List<E>> {
+    public static non-sealed class List<E> extends DefaultProperty<java.util.List<E>> {
         private final Codec<E> elementCodec;
 
         public List(java.lang.String resourceName, Group group, ConfigScope scope, java.lang.String comment, java.util.List<E> defaultValue, Codec<E> elementCodec, boolean isDynamic) {
@@ -315,13 +340,13 @@ public abstract sealed class PropertyImpl<T> implements Property<T> permits Prop
         }
     }
 
-    public static final class Block extends PropertyImpl<net.minecraft.world.level.block.Block> {
+    public static final class Block extends DefaultProperty<net.minecraft.world.level.block.Block> {
         public Block(java.lang.String resourceName, Group group, ConfigScope scope, java.lang.String comment, net.minecraft.world.level.block.Block defaultValue, boolean isDynamic) {
             super(resourceName, group, scope, comment, defaultValue, net.minecraft.core.registries.BuiltInRegistries.BLOCK.byNameCodec(), isDynamic);
         }
     }
 
-    public static final class Item extends PropertyImpl<net.minecraft.world.item.Item> {
+    public static final class Item extends DefaultProperty<net.minecraft.world.item.Item> {
         public Item(java.lang.String resourceName, Group group, ConfigScope scope, java.lang.String comment, net.minecraft.world.item.Item defaultValue, boolean isDynamic) {
             super(resourceName, group, scope, comment, defaultValue, net.minecraft.core.registries.BuiltInRegistries.ITEM.byNameCodec(), isDynamic);
         }

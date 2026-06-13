@@ -1,13 +1,13 @@
 package johnsmith.configoverhauled.impl.client.gui.entry.bounded;
 
-import johnsmith.configoverhauled.impl.client.gui.screen.AbstractConfigScreen;
-import johnsmith.configoverhauled.impl.core.state.PropertyImpl;
+import johnsmith.configoverhauled.api.client.gui.screen.ConfigScreen;
+import johnsmith.configoverhauled.impl.core.state.DefaultProperty;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
 
 public class LongEntry extends BoundedEntry<Long> {
-    public LongEntry(PropertyImpl.Long property, AbstractConfigScreen parentScreen, Minecraft minecraft, Runnable onValueChanged) {
+    public LongEntry(DefaultProperty.Long property, ConfigScreen parentScreen, Minecraft minecraft, Runnable onValueChanged) {
         super(property, parentScreen, minecraft, onValueChanged);
         this.widget.setValue(String.valueOf(property.get()));
         this.widget.setCursorPosition(0);

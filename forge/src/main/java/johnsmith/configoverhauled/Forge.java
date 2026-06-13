@@ -1,7 +1,6 @@
 package johnsmith.configoverhauled;
 
 import johnsmith.configoverhauled.client.event.ForgeClientEvents;
-import johnsmith.configoverhauled.client.event.ForgeClientModEvents;
 import johnsmith.configoverhauled.event.ForgeGameEvents;
 import johnsmith.configoverhauled.network.ForgeNetworkRegistration;
 import net.minecraftforge.api.distmarker.Dist;
@@ -12,7 +11,6 @@ import net.minecraftforge.event.entity.player.PlayerEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
 import net.minecraftforge.event.server.ServerStoppingEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
@@ -31,7 +29,6 @@ public class Forge {
         FMLCommonSetupEvent.getBus(modBusGroup).addListener(ForgeNetworkRegistration::setup);
 
         if (FMLEnvironment.dist == Dist.CLIENT) {
-            FMLClientSetupEvent.getBus(modBusGroup).addListener(ForgeClientModEvents::onClientSetup);
 
             context.registerExtensionPoint(
                     ConfigScreenHandler.ConfigScreenFactory.class,
