@@ -8,7 +8,7 @@ import johnsmith.configoverhauled.api.client.gui.screen.ConfigScreen;
 import johnsmith.configoverhauled.impl.client.gui.screen.component.ConfigTab;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.*;
 import net.minecraft.client.gui.components.tabs.Tab;
 import net.minecraft.client.gui.components.tabs.TabManager;
@@ -91,7 +91,7 @@ public class ConfigScreenImpl extends AbstractConfigScreen implements ConfigScre
     @Override
     protected void repositionElements() {
         if (this.tabNavigationBar != null) {
-            this.tabNavigationBar.setWidth(this.width);
+            this.tabNavigationBar.updateWidth(this.width);
             this.tabNavigationBar.arrangeElements();
             this.layout.setHeaderHeight(this.tabNavigationBar.getRectangle().bottom());
         }
@@ -140,7 +140,7 @@ public class ConfigScreenImpl extends AbstractConfigScreen implements ConfigScre
     }
 
     @Override
-    public void render(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void extractRenderState(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         if (this.tabManager.getCurrentTab() != this.lastTab) {
             this.lastTab = this.tabManager.getCurrentTab();
             this.updateMasterResetButton();
@@ -149,13 +149,13 @@ public class ConfigScreenImpl extends AbstractConfigScreen implements ConfigScre
             }
         }
 
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTick);
     }
 
     @Override
-    protected void renderMenuBackground(GuiGraphics guiGraphics) {
+    protected void extractMenuBackground(GuiGraphicsExtractor guiGraphics) {
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TAB_HEADER_BACKGROUND, 0, 0, 0.0F, 0.0F, this.width, this.layout.getHeaderHeight(), 16, 16);
-        this.renderMenuBackground(guiGraphics, 0, this.layout.getHeaderHeight(), this.width, this.height);
+        this.extractMenuBackground(guiGraphics, 0, this.layout.getHeaderHeight(), this.width, this.height);
 
         guiGraphics.blit(RenderPipelines.GUI_TEXTURED, Screen.FOOTER_SEPARATOR, 0, this.height - this.layout.getFooterHeight() - 2, 0.0F, 0.0F, this.width, 2, 32, 2);
     }

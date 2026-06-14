@@ -7,7 +7,7 @@ import com.google.common.collect.ImmutableList;
 import johnsmith.configoverhauled.api.client.gui.entry.AbstractConfigEntry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.events.GuiEventListener;
 import net.minecraft.client.gui.narration.NarratableEntry;
 import net.minecraft.client.gui.narration.NarratedElementType;
@@ -32,10 +32,10 @@ public class CategoryEntry extends AbstractConfigEntry {
     }
 
     @Override
-    public void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY, boolean isHovering, float partialTick) {
+    public void extractContent(GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, boolean isHovering, float partialTick) {
         int textY = this.getY() + (this.getHeight() - minecraft.font.lineHeight) / 2;
         int screenWidth = minecraft.getWindow().getGuiScaledWidth();
-        guiGraphics.drawString(minecraft.font, this.label, screenWidth / 2 - this.textWidth / 2, textY, 0xFFFFFFFF, false);
+        guiGraphicsExtractor.text(minecraft.font, this.label, screenWidth / 2 - this.textWidth / 2, textY, 0xFFFFFFFF, false);
     }
 
     @Override

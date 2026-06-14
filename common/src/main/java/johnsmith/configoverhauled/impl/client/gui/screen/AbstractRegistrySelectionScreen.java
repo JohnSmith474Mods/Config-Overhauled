@@ -3,9 +3,10 @@ package johnsmith.configoverhauled.impl.client.gui.screen;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import johnsmith.configoverhauled.impl.client.gui.entry.registry.RenderableIcon;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.components.ObjectSelectionList;
@@ -30,10 +31,10 @@ public abstract class AbstractRegistrySelectionScreen<T> extends Screen {
 
     protected final Screen parent;
     protected final Registry<T> registry;
-    protected final Function<T, ItemStack> iconProvider;
+    protected final Function<T, RenderableIcon> iconProvider;
     protected final Function<T, Component> nameProvider;
 
-    protected AbstractRegistrySelectionScreen(Screen parent, Component title, Registry<T> registry, Function<T, ItemStack> iconProvider, Function<T, Component> nameProvider) {
+    protected AbstractRegistrySelectionScreen(Screen parent, Component title, Registry<T> registry, Function<T, RenderableIcon> iconProvider, Function<T, Component> nameProvider) {
         super(title);
         this.parent = parent;
         this.registry = registry;
@@ -118,14 +119,14 @@ public abstract class AbstractRegistrySelectionScreen<T> extends Screen {
         public final AbstractElementList list;
         public final T element;
         public final Component name;
-        public final ItemStack icon;
+        public final RenderableIcon icon;
         private final Identifier sprite;
         private final Identifier highlightedSprite;
         private final Runnable onTransfer;
         private Runnable onMoveUp;
         private Runnable onMoveDown;
 
-        public ElementEntry(AbstractElementList list, T element, Component name, ItemStack icon, Identifier sprite, Identifier highlightedSprite, Runnable onTransfer) {
+        public ElementEntry(AbstractElementList list, T element, Component name, RenderableIcon icon, Identifier sprite, Identifier highlightedSprite, Runnable onTransfer) {
             this.list = list;
             this.element = element;
             this.name = name;
@@ -142,68 +143,66 @@ public abstract class AbstractRegistrySelectionScreen<T> extends Screen {
         }
 
         @Override
-        public void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY, boolean isHovering, float partialTick) {
+        public void extractContent(GuiGraphicsExtractor guiGraphicExtractor, int mouseX, int mouseY, boolean isHovering, float partialTick) {
             int left = this.getX() + 2;
             int top = this.getY() + 2;
             if (isHovering) {
-                guiGraphics.fill(left, top, left + 32, top + 32, -1601138544);
+                guiGraphicExtractor.fill(left, top, left + 32, top + 32, -1601138544);
             }
 
-            guiGraphics.pose().pushMatrix();
-            guiGraphics.pose().translate(left, top);
-            guiGraphics.pose().scale(2.0F, 2.0F);
-            guiGraphics.renderItem(this.icon, 0, 0);
-            guiGraphics.pose().popMatrix();
+            guiGraphicExtractor.nextStratum();
+            this.icon.render(guiGraphicExtractor, left, top);
+            guiGraphicExtractor.nextStratum();
 
             if (isHovering && this.sprite != null && this.highlightedSprite != null) {
-                guiGraphics.pose().pushMatrix();
-                guiGraphics.pose().translate(0, 0);
+                guiGraphicExtractor.pose().pushMatrix();
+                guiGraphicExtractor.pose().translate(0, 0);
 
                 int j = mouseX - this.getX();
                 int k = mouseY - this.getY();
 
                 if (this.onMoveUp == null && this.onMoveDown == null) {
                     if (j < 32) {
-                        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, this.highlightedSprite, left, top, 32, 32);
+                        guiGraphicExtractor.blitSprite(RenderPipelines.GUI_TEXTURED, this.highlightedSprite, left, top, 32, 32);
                     } else {
-                        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, this.sprite, left, top, 32, 32);
+                        guiGraphicExtractor.blitSprite(RenderPipelines.GUI_TEXTURED, this.sprite, left, top, 32, 32);
                     }
                 } else {
                     if (j < 16) {
-                        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, this.highlightedSprite, left, top, 32, 32);
+                        guiGraphicExtractor.blitSprite(RenderPipelines.GUI_TEXTURED, this.highlightedSprite, left, top, 32, 32);
                     } else {
-                        guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, this.sprite, left, top, 32, 32);
+                        guiGraphicExtractor.blitSprite(RenderPipelines.GUI_TEXTURED, this.sprite, left, top, 32, 32);
                     }
 
                     if (this.onMoveUp != null) {
                         if (j < 32 && j > 16 && k < 16) {
-                            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, MOVE_UP_HIGHLIGHTED_SPRITE, left, top, 32, 32);
+                            guiGraphicExtractor.blitSprite(RenderPipelines.GUI_TEXTURED, MOVE_UP_HIGHLIGHTED_SPRITE, left, top, 32, 32);
                         } else {
-                            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, MOVE_UP_SPRITE, left, top, 32, 32);
+                            guiGraphicExtractor.blitSprite(RenderPipelines.GUI_TEXTURED, MOVE_UP_SPRITE, left, top, 32, 32);
                         }
                     }
 
                     if (this.onMoveDown != null) {
                         if (j < 32 && j > 16 && k > 16) {
-                            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, MOVE_DOWN_HIGHLIGHTED_SPRITE, left, top, 32, 32);
+                            guiGraphicExtractor.blitSprite(RenderPipelines.GUI_TEXTURED, MOVE_DOWN_HIGHLIGHTED_SPRITE, left, top, 32, 32);
                         } else {
-                            guiGraphics.blitSprite(RenderPipelines.GUI_TEXTURED, MOVE_DOWN_SPRITE, left, top, 32, 32);
+                            guiGraphicExtractor.blitSprite(RenderPipelines.GUI_TEXTURED, MOVE_DOWN_SPRITE, left, top, 32, 32);
                         }
                     }
                 }
 
-                guiGraphics.pose().popMatrix();
+                guiGraphicExtractor.pose().popMatrix();
             }
 
             int maxWidth = 203;
 
             Component trimmedName = AbstractRegistrySelectionScreen.this.trimComponent(this.name, maxWidth);
-            guiGraphics.drawString(AbstractRegistrySelectionScreen.this.font, trimmedName, left + 34, top + 1, 0xFFFFFFFF, false);
+            guiGraphicExtractor.text(AbstractRegistrySelectionScreen.this.font, trimmedName, left + 34, top + 1, 0xFFFFFFFF, false);
 
             Identifier key = AbstractRegistrySelectionScreen.this.registry.getKey(this.element);
             if (key != null) {
                 String trimmedKey = AbstractRegistrySelectionScreen.this.trimString(key.toString(), maxWidth);
-                guiGraphics.drawString(AbstractRegistrySelectionScreen.this.font, trimmedKey, left + 34, top + 12, 0xFF888888, false);
+                guiGraphicExtractor.text(AbstractRegistrySelectionScreen.this.font, trimmedKey, left + 34, top + 12, 0xFF888888, false);
             }
         }
 

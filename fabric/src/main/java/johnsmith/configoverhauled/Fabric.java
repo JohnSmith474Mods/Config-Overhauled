@@ -22,8 +22,8 @@ public class Fabric implements ModInitializer {
         ServerLifecycleEvents.SERVER_STARTING.register(ServerEventHandler::onServerStarting);
         ServerLifecycleEvents.SERVER_STOPPING.register(ServerEventHandler::onServerStopping);
 
-        PayloadTypeRegistry.playS2C().register(ConfigSyncPacket.TYPE, ConfigSyncPacket.STREAM_CODEC);
-        PayloadTypeRegistry.playC2S().register(ConfigUpdateRequestPacket.TYPE, ConfigUpdateRequestPacket.STREAM_CODEC);
+        PayloadTypeRegistry.clientboundPlay().register(ConfigSyncPacket.TYPE, ConfigSyncPacket.STREAM_CODEC);
+        PayloadTypeRegistry.serverboundPlay().register(ConfigUpdateRequestPacket.TYPE, ConfigUpdateRequestPacket.STREAM_CODEC);
 
         ServerPlayNetworking.registerGlobalReceiver(ConfigUpdateRequestPacket.TYPE, (payload, context) -> {
             context.server().execute(() -> ServerPayloadHandler.handleUpdateRequestPacket(payload, context.player()));

@@ -7,7 +7,7 @@ import johnsmith.configoverhauled.impl.client.gui.entry.AbstractTextEntry;
 import johnsmith.configoverhauled.impl.core.state.DefaultProperty;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
@@ -34,10 +34,20 @@ public abstract class BoundedEntry<T extends Number & Comparable<T>> extends Abs
 
     protected abstract boolean isPartialInput(String input);
 
+    private String lastValidInput = "";
+
     @Override
     protected void setupEditBox(EditBox box) {
-        box.setFilter(s -> s.matches(this.getRegexFilter()));
+        this.lastValidInput = box.getValue();
+
         box.setResponder(s -> {
+            if (!s.matches(this.getRegexFilter())) {
+                box.setValue(this.lastValidInput);
+                return;
+            }
+
+            this.lastValidInput = s;
+
             try {
                 if (this.isPartialInput(s)) {
                     box.setTextColor(0xFFFFFFFF);
@@ -85,8 +95,8 @@ public abstract class BoundedEntry<T extends Number & Comparable<T>> extends Abs
     }
 
     @Override
-    public void renderContent(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, boolean isHovering, float partialTick) {
-        super.renderContent(guiGraphics, mouseX, mouseY, isHovering, partialTick);
+    public void extractContent(@NotNull GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, boolean isHovering, float partialTick) {
+        super.extractContent(guiGraphicsExtractor, mouseX, mouseY, isHovering, partialTick);
 
         if (this.widget.isMouseOver(mouseX, mouseY)) {
             List<FormattedCharSequence> boundsTooltip = List.of(this.getBoundsTooltipText().getVisualOrderText(), this.getCurrentValueTooltipText().getVisualOrderText());

@@ -14,10 +14,8 @@ import java.util.List;
 import java.util.function.Function;
 
 public class RegistryListEntry<T> extends AbstractRegistryEntry<T, List<T>> {
-
-    public RegistryListEntry(Property<List<T>> property, ConfigScreen parentScreen, Minecraft minecraft, Runnable onValueChanged, Registry<T> registry, Function<T, ItemStack> iconProvider, Function<T, Component> nameProvider) {
+    public RegistryListEntry(Property<List<T>> property, ConfigScreen parentScreen, Minecraft minecraft, Runnable onValueChanged, Registry<T> registry, Function<T, RenderableIcon> iconProvider, Function<T, Component> nameProvider) {
         super(property, parentScreen, minecraft, onValueChanged, registry, iconProvider, nameProvider);
-        this.updateWidgetValue();
     }
 
     @Override

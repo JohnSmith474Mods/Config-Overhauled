@@ -1,15 +1,17 @@
 package johnsmith.configoverhauled.impl.client.gui.entry;
 
+import java.util.List;
+
 import johnsmith.configoverhauled.api.Property;
 import johnsmith.configoverhauled.api.client.gui.screen.ConfigScreen;
+
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
-import org.jetbrains.annotations.NotNull;
 
-import java.util.List;
+import org.jetbrains.annotations.NotNull;
 
 public class StringEntry extends AbstractTextEntry<String> {
     public StringEntry(Property<String> property, ConfigScreen parentScreen, Minecraft minecraft, Runnable onValueChanged) {
@@ -45,8 +47,8 @@ public class StringEntry extends AbstractTextEntry<String> {
     }
 
     @Override
-    public void renderContent(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, boolean isHovering, float partialTick) {
-        super.renderContent(guiGraphics, mouseX, mouseY, isHovering, partialTick);
+    public void extractContent(@NotNull GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, boolean isHovering, float partialTick) {
+        super.extractContent(guiGraphicsExtractor, mouseX, mouseY, isHovering, partialTick);
 
         if (this.widget.isMouseOver(mouseX, mouseY)) {
             List<FormattedCharSequence> boundsTooltip = List.of(this.getContentPreview().getVisualOrderText());

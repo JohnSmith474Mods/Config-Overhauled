@@ -11,7 +11,7 @@ import johnsmith.configoverhauled.api.data.ConfigScope;
 import johnsmith.configoverhauled.impl.client.gui.entry.CategoryEntry;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.ContainerObjectSelectionList;
 import net.minecraft.network.chat.Component;
 
@@ -66,11 +66,11 @@ public class ConfigList extends ContainerObjectSelectionList<AbstractConfigEntry
     }
 
     @Override
-    protected void renderListBackground(GuiGraphics guiGraphics) {
+    protected void extractListBackground(GuiGraphicsExtractor guiGraphicsExtractor) {
     }
 
     @Override
-    protected void renderListSeparators(GuiGraphics guiGraphics) {
+    protected void extractListSeparators(GuiGraphicsExtractor guiGraphicsExtractor) {
     }
 
     @Override
