@@ -51,13 +51,7 @@ public class ConfigList extends ContainerObjectSelectionList<AbstractConfigEntry
                         groupAdded = true;
                     }
 
-                    // Execute widget resolution via the manager's instanced mapper
-                    ConfigEntry widget = this.manager.getWidgetMapper().createEntry(
-                            property,
-                            this.configScreen,
-                            this.minecraft,
-                            this.configScreen::updateMasterResetButton
-                    );
+                    ConfigEntry widget = this.configScreen.createEntry(property);
 
                     this.addEntry((AbstractConfigEntry) widget);
                 }

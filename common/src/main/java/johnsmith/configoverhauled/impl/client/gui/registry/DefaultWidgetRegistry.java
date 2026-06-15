@@ -25,6 +25,7 @@ public class DefaultWidgetRegistry implements WidgetRegistry {
         this.registerDefaults();
     }
 
+    @Override
     public <P extends Property<?>> void register(Class<P> propertyClass, WidgetFactory<? super P> factory) {
         this.registry.putIfAbsent(propertyClass, factory);
     }
