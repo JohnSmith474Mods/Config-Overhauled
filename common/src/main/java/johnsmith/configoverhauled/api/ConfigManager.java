@@ -4,6 +4,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
 
 import johnsmith.configoverhauled.api.client.gui.registry.WidgetRegistry;
 import johnsmith.configoverhauled.api.data.ConfigDescription;
@@ -169,7 +170,7 @@ public interface ConfigManager {
      *
      * @param factory The functional screen construction sequence.
      */
-    void setScreenFactory(java.util.function.Function<Object, Object> factory);
+    void setScreenFactory(Function<Object, Object> factory);
 
     /**
      * Triggers dynamic GUI generation for the active configuration hierarchy.
@@ -178,14 +179,4 @@ public interface ConfigManager {
      * @return The constructed configuration screen entity.
      */
     <S> S createScreen(S parent);
-
-    /**
-     * Injects a specialized widget resolution map, overriding the default implementation.
-     */
-    void setWidgetMapper(WidgetRegistry mapper);
-
-    /**
-     * Resolves the active widget mapper bound to this specific manager instance.
-     */
-    WidgetRegistry getWidgetMapper();
 }
