@@ -4,6 +4,7 @@ import johnsmith.configoverhauled.Constants;
 import johnsmith.configoverhauled.api.Category;
 import johnsmith.configoverhauled.api.ConfigManager;
 import johnsmith.configoverhauled.api.client.gui.entry.ConfigEntry;
+import johnsmith.configoverhauled.api.client.gui.registry.WidgetRegistry;
 import johnsmith.configoverhauled.api.client.gui.screen.ConfigScreen;
 import johnsmith.configoverhauled.impl.client.gui.screen.component.ConfigTab;
 
@@ -24,7 +25,7 @@ import net.minecraft.resources.Identifier;
 
 import org.jetbrains.annotations.NotNull;
 
-public class ConfigScreenImpl extends AbstractConfigScreen implements ConfigScreen {
+public class DefaultConfigScreen extends AbstractConfigScreen implements ConfigScreen {
     public static final Identifier TAB_HEADER_BACKGROUND = Identifier.withDefaultNamespace("textures/gui/tab_header_background.png");
 
     private final ConfigManager manager;
@@ -36,8 +37,14 @@ public class ConfigScreenImpl extends AbstractConfigScreen implements ConfigScre
     private Button resetButton;
     private EditBox searchBox;
 
-    public ConfigScreenImpl(Screen parentScreen, ConfigManager manager) {
+    public DefaultConfigScreen(Screen parentScreen, ConfigManager manager) {
         super(Component.translatable("config." + manager.modId() + ".title"), parentScreen);
+        this.manager = manager;
+        this.layout.setHeaderHeight(24);
+    }
+
+    public DefaultConfigScreen(Screen parentScreen, ConfigManager manager, WidgetRegistry widgetRegistry) {
+        super(Component.translatable("config." + manager.modId() + ".title"), parentScreen, widgetRegistry);
         this.manager = manager;
         this.layout.setHeaderHeight(24);
     }
