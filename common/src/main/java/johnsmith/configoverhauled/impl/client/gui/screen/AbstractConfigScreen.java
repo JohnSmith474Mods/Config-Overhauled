@@ -1,7 +1,12 @@
 package johnsmith.configoverhauled.impl.client.gui.screen;
 
 import johnsmith.configoverhauled.Config;
+import johnsmith.configoverhauled.api.Property;
+import johnsmith.configoverhauled.api.client.gui.entry.ConfigEntry;
+import johnsmith.configoverhauled.api.client.gui.factory.WidgetFactory;
+import johnsmith.configoverhauled.api.client.gui.registry.WidgetRegistry;
 import johnsmith.configoverhauled.api.client.gui.screen.ConfigScreen;
+import johnsmith.configoverhauled.impl.client.gui.registry.DefaultWidgetRegistry;
 
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
@@ -12,14 +17,49 @@ import java.util.List;
 
 public abstract class AbstractConfigScreen extends Screen implements ConfigScreen {
     private boolean levelConfigModified = false;
-    protected final Screen parentScreen;
-
-    // Encapsulated state variable replacing the public field
     private List<FormattedCharSequence> deferredTooltip;
+    private WidgetRegistry widgetRegistry;
+
+    protected final Screen parentScreen;
 
     protected AbstractConfigScreen(Component title, Screen parentScreen) {
         super(title);
         this.parentScreen = parentScreen;
+        this.widgetRegistry = new DefaultWidgetRegistry();
+    }
+
+    protected AbstractConfigScreen(Component title, Screen parentScreen, WidgetRegistry widgetRegistry) {
+        super(title);
+        this.parentScreen = parentScreen;
+        this.widgetRegistry = widgetRegistry;
+    }
+
+    /**
+     * Utility method for subclasses to easily create UI entries from properties.
+     */
+    @Override
+    public <T> ConfigEntry createEntry(Property<T> property) {
+        return this.widgetRegistry.createEntry(property, this, this.minecraft, this::updateMasterResetButton);
+    }
+
+    @Override
+    public <P extends Property<?>> void registerWidget(Class<P> propertyClass, WidgetFactory<? super P> factory) {
+        this.widgetRegistry.register(propertyClass, factory);
+    }
+
+    @Override
+    public void setWidgetRegistry(WidgetRegistry registry) {
+        if (registry == null) {
+            throw new IllegalArgumentException("WidgetRegistry cannot be null.");
+        }
+        this.widgetRegistry = registry;
+    }
+
+    /**
+     * Callback triggered when a widget modifies a property's value.
+     */
+    protected void onValueChanged() {
+        // Subclasses can override this to track specific save states or trigger immediate updates
     }
 
     @Override
