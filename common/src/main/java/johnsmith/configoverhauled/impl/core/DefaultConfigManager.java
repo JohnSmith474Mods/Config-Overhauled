@@ -16,14 +16,12 @@ import johnsmith.configoverhauled.api.Category;
 import johnsmith.configoverhauled.api.ConfigManager;
 import johnsmith.configoverhauled.api.Group;
 import johnsmith.configoverhauled.api.Property;
-import johnsmith.configoverhauled.api.client.gui.registry.WidgetRegistry;
 import johnsmith.configoverhauled.api.data.ConfigDescription;
 import johnsmith.configoverhauled.api.data.ConfigScope;
 import johnsmith.configoverhauled.api.factory.PropertyFactory;
 import johnsmith.configoverhauled.api.registry.ConfigRegistry;
 import johnsmith.configoverhauled.api.registry.DynamicPropertyTypeRegistry;
-import johnsmith.configoverhauled.impl.client.gui.registry.DefaultWidgetRegistry;
-import johnsmith.configoverhauled.impl.client.gui.screen.ConfigScreenImpl;
+import johnsmith.configoverhauled.impl.client.gui.screen.DefaultConfigScreen;
 import johnsmith.configoverhauled.impl.core.state.DefaultCategory;
 import johnsmith.configoverhauled.impl.core.state.DefaultGroup;
 
@@ -47,7 +45,6 @@ public class DefaultConfigManager implements ConfigManager {
     private final Map<Group, List<Property<?>>> groupsToProperties = new ConcurrentHashMap<>();
 
     private Function<Object, Object> screenFactory;
-    private WidgetRegistry widgetMapper;
 
     public DefaultConfigManager(String modId, Logger logger) {
         if (logger == null) throw new IllegalArgumentException("Logger cannot be null");
@@ -58,7 +55,6 @@ public class DefaultConfigManager implements ConfigManager {
             throw new IllegalArgumentException("Mod ID cannot be null or empty");
         }
         this.modId = modId;
-        this.widgetMapper = new DefaultWidgetRegistry();
 
         ConfigRegistry.registerManager(this);
         logInfo("Initialized ConfigManagerImpl.");
@@ -362,7 +358,7 @@ public class DefaultConfigManager implements ConfigManager {
     }
 
     @Override
-    public void setScreenFactory(java.util.function.Function<Object, Object> factory) {
+    public void setScreenFactory(Function<Object, Object> factory) {
         this.screenFactory = factory;
         logInfo("Custom screen factory injected.");
     }
@@ -375,18 +371,6 @@ public class DefaultConfigManager implements ConfigManager {
             return (S) this.screenFactory.apply(parent);
         }
         logDebug("Constructing default ConfigScreen instance.");
-        return (S) new ConfigScreenImpl((Screen) parent, this);
-    }
-
-    @Override
-    public void setWidgetMapper(WidgetRegistry mapper) {
-        if (mapper == null) throw new IllegalArgumentException("Widget mapper cannot be null.");
-        this.widgetMapper = mapper;
-        logInfo("Custom widget mapper injected.");
-    }
-
-    @Override
-    public WidgetRegistry getWidgetMapper() {
-        return this.widgetMapper;
+        return (S) new DefaultConfigScreen((Screen) parent, this);
     }
 }
