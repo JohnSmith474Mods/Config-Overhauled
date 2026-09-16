@@ -1,8 +1,9 @@
 package johnsmith.configoverhauled.impl.client.gui.screen;
 
+import johnsmith.configoverhauled.impl.client.gui.entry.registry.RenderableIcon;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Registry;
@@ -25,7 +26,7 @@ public class RegistryListSelectionScreen<T> extends AbstractRegistrySelectionScr
     private ElementList selectedList;
     private final Consumer<List<T>> onSelect;
 
-    public RegistryListSelectionScreen(Screen parent, Component title, Registry<T> registry, List<T> initialSelection, Consumer<List<T>> onSelect, Function<T, ItemStack> iconProvider, Function<T, Component> nameProvider) {
+    public RegistryListSelectionScreen(Screen parent, Component title, Registry<T> registry, List<T> initialSelection, Consumer<List<T>> onSelect, Function<T, RenderableIcon> iconProvider, Function<T, Component> nameProvider) {
         super(parent, title, registry, iconProvider, nameProvider);
         this.selectedItems = new ArrayList<>(initialSelection);
         this.onSelect = onSelect;
@@ -118,25 +119,25 @@ public class RegistryListSelectionScreen<T> extends AbstractRegistrySelectionScr
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
+    public void extractRenderState(GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
+        super.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, partialTick);
 
         // Draw screen title
-        guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 8, 0xFFFFFF);
+        guiGraphicsExtractor.centeredText(this.font, this.title, this.width / 2, 8, 0xFFFFFF);
 
         // Draw headers for the two lists
-        drawListHeader(guiGraphics, this.availableList, Component.translatable("pack.available.title"));
-        drawListHeader(guiGraphics, this.selectedList,  Component.translatable("pack.selected.title"));
+        drawListHeader(guiGraphicsExtractor, this.availableList, Component.translatable("pack.available.title"));
+        drawListHeader(guiGraphicsExtractor, this.selectedList,  Component.translatable("pack.selected.title"));
     }
 
-    private void drawListHeader(GuiGraphics guiGraphics, ElementList list, MutableComponent title) {
+    private void drawListHeader(GuiGraphicsExtractor guiGraphicsExtractor, ElementList list, MutableComponent title) {
         Component formattedTitle = title
                 .withStyle(ChatFormatting.BOLD)
                 .withStyle(ChatFormatting.UNDERLINE);
 
         // y is calculated based on the list's position (e.g., list.getY() - headerHeight)
         int headerY = list.getY() - 16;
-        guiGraphics.drawCenteredString(this.minecraft.font, formattedTitle, list.getX() + list.getRowWidth() / 2, headerY + 2, 0xFFFFFFFF);
+        guiGraphicsExtractor.centeredText(this.minecraft.font, formattedTitle, list.getX() + list.getRowWidth() / 2, headerY + 2, 0xFFFFFFFF);
     }
 
     private class ElementList extends AbstractElementList {

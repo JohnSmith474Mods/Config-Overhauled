@@ -1,13 +1,13 @@
 package johnsmith.configoverhauled.impl.client.gui.screen;
 
+import johnsmith.configoverhauled.impl.client.gui.entry.registry.RenderableIcon;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.ItemStack;
 
 import java.util.Locale;
 import java.util.function.Consumer;
@@ -19,7 +19,7 @@ public class RegistrySelectionScreen<T> extends AbstractRegistrySelectionScreen<
     private ElementList list;
     private final Consumer<T> onSelect;
 
-    public RegistrySelectionScreen(Screen parent, Component title, Registry<T> registry, T initialSelection, Consumer<T> onSelect, Function<T, ItemStack> iconProvider, Function<T, Component> nameProvider) {
+    public RegistrySelectionScreen(Screen parent, Component title, Registry<T> registry, T initialSelection, Consumer<T> onSelect, Function<T, RenderableIcon> iconProvider, Function<T, Component> nameProvider) {
         super(parent, title, registry, iconProvider, nameProvider);
         this.currentSelection = initialSelection;
         this.onSelect = onSelect;
@@ -65,31 +65,29 @@ public class RegistrySelectionScreen<T> extends AbstractRegistrySelectionScreen<
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
-        guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 8, 0xFFFFFFFF);
+    public void extractRenderState(GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
+        super.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, partialTick);
+        guiGraphicsExtractor.centeredText(this.font, this.title, this.width / 2, 8, 0xFFFFFFFF);
 
         if (this.currentSelection != null) {
             int left = this.width / 2 - 118;
             int top = 24;
 
-            guiGraphics.fill(left - 2, top - 2, left + 238, top + 34, 0xFFFFFFFF);
-            guiGraphics.fill(left - 1, top - 1, left + 237, top + 33, 0xFF000000);
+            guiGraphicsExtractor.fill(left - 2, top - 2, left + 238, top + 34, 0xFFFFFFFF);
+            guiGraphicsExtractor.fill(left - 1, top - 1, left + 237, top + 33, 0xFF000000);
 
-            guiGraphics.pose().pushMatrix();
-            guiGraphics.pose().translate(left, top);
-            guiGraphics.pose().scale(2.0F, 2.0F);
-            guiGraphics.renderItem(this.iconProvider.apply(this.currentSelection), 0, 0);
-            guiGraphics.pose().popMatrix();
+            guiGraphicsExtractor.nextStratum();
+            this.iconProvider.apply(this.currentSelection).render(guiGraphicsExtractor, left, top);
+            guiGraphicsExtractor.nextStratum();
 
             int maxWidth = 203;
             Component name = this.nameProvider.apply(this.currentSelection);
 
-            guiGraphics.drawString(this.font, this.trimComponent(name, maxWidth), left + 34, top + 1, 0xFFFFFFFF, false);
+            guiGraphicsExtractor.text(this.font, this.trimComponent(name, maxWidth), left + 34, top + 1, 0xFFFFFFFF, false);
 
             Identifier key = this.registry.getKey(this.currentSelection);
             if (key != null) {
-                guiGraphics.drawString(this.font, this.trimString(key.toString(), maxWidth), left + 34, top + 12, 0xFF888888, false);
+                guiGraphicsExtractor.text(this.font, this.trimString(key.toString(), maxWidth), left + 34, top + 12, 0xFF888888, false);
             }
         }
     }

@@ -13,10 +13,8 @@ import net.minecraft.world.item.ItemStack;
 import java.util.function.Function;
 
 public class RegistryEntry<T> extends AbstractRegistryEntry<T, T> {
-
-    public RegistryEntry(Property<T> property, ConfigScreen parentScreen, Minecraft minecraft, Runnable onValueChanged, Registry<T> registry, Function<T, ItemStack> iconProvider, Function<T, Component> nameProvider) {
+    public RegistryEntry(Property<T> property, ConfigScreen parentScreen, Minecraft minecraft, Runnable onValueChanged, Registry<T> registry, Function<T, RenderableIcon> iconProvider, Function<T, Component> nameProvider) {
         super(property, parentScreen, minecraft, onValueChanged, registry, iconProvider, nameProvider);
-        this.updateWidgetValue();
     }
 
     @Override
@@ -41,6 +39,4 @@ public class RegistryEntry<T> extends AbstractRegistryEntry<T, T> {
     protected Component getDefaultValueTooltip() {
         return Component.literal("Default: ").append(this.nameProvider.apply(this.property.defaultValue()));
     }
-
-
 }

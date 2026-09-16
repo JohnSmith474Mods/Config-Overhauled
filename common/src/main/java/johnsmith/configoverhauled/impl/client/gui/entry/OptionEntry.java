@@ -18,7 +18,7 @@ import johnsmith.configoverhauled.impl.network.common.packet.ConfigUpdateRequest
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.components.events.GuiEventListener;
@@ -156,21 +156,21 @@ public abstract class OptionEntry<T, W extends AbstractWidget> extends AbstractC
 
 
     @Override
-    public void renderContent(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, boolean isHovering, float partialTick) {
+    public void extractContent(@NotNull GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, boolean isHovering, float partialTick) {
         int y = this.getY() + (this.getHeight() - 20) / 2;
 
         int rightEdge = this.getX() + this.getWidth();
         int resetX = rightEdge - 50 - 10;
 
         this.resetButton.setPosition(resetX, y);
-        this.resetButton.render(guiGraphics, mouseX, mouseY, partialTick);
+        this.resetButton.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, partialTick);
 
         int widgetWidth = 75;
         int widgetX = resetX - 5 - widgetWidth;
         this.widget.setX(widgetX);
         this.widget.setY(y);
         this.widget.setWidth(widgetWidth);
-        this.widget.render(guiGraphics, mouseX, mouseY, partialTick);
+        this.widget.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, partialTick);
 
         int textY = this.getY() + (this.getHeight() - this.minecraft.font.lineHeight) / 2;
 
@@ -187,7 +187,7 @@ public abstract class OptionEntry<T, W extends AbstractWidget> extends AbstractC
                 displayLabel = Component.translatable(this.property.translationKey()).withStyle(ChatFormatting.ITALIC, isAdmin ? ChatFormatting.YELLOW : ChatFormatting.GRAY);
             }
 
-            guiGraphics.drawString(this.minecraft.font, displayLabel, this.getX(), textY, textColor);
+            guiGraphicsExtractor.text(this.minecraft.font, displayLabel, this.getX(), textY, textColor);
         }
 
         boolean overResetButton = mouseX >= resetX && mouseX < resetX + 50 && mouseY >= y && mouseY < y + 20;

@@ -8,7 +8,7 @@ import johnsmith.configoverhauled.api.client.gui.registry.WidgetRegistry;
 import johnsmith.configoverhauled.api.client.gui.screen.ConfigScreen;
 import johnsmith.configoverhauled.impl.client.gui.registry.DefaultWidgetRegistry;
 
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.permissions.Permissions;
@@ -74,13 +74,13 @@ public abstract class AbstractConfigScreen extends Screen implements ConfigScree
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+    public void extractRenderState(GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, float partialTick) {
         // Execute the standard render pipeline (draws background, lists, and widgets)
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
+        super.extractRenderState(guiGraphicsExtractor, mouseX, mouseY, partialTick);
 
         // Render the deferred tooltip at the highest Z-index
         if (this.deferredTooltip != null && !this.deferredTooltip.isEmpty()) {
-            guiGraphics.setTooltipForNextFrame(this.font, this.deferredTooltip, mouseX, mouseY);
+            guiGraphicsExtractor.setTooltipForNextFrame(this.font, this.deferredTooltip, mouseX, mouseY);
             // Purge the state to prevent persistence on the subsequent frame
             this.deferredTooltip = null;
         }

@@ -5,7 +5,7 @@ import johnsmith.configoverhauled.api.client.gui.screen.ConfigScreen;
 import johnsmith.configoverhauled.impl.core.state.DefaultProperty;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
@@ -209,8 +209,8 @@ public abstract class ColorEntry<P extends Property<Integer>> extends BoundedEnt
         return super.keyPressed(event);
     }
 
-    protected void renderColorPreview(GuiGraphics guiGraphics, int boxX, int boxY, int boxSize, int baseColor, int mouseX, int mouseY) {
-        guiGraphics.fill(boxX, boxY, boxX + boxSize, boxY + boxSize, baseColor);
+    protected void renderColorPreview(GuiGraphicsExtractor guiGraphicsExtractor, int boxX, int boxY, int boxSize, int baseColor, int mouseX, int mouseY) {
+        guiGraphicsExtractor.fill(boxX, boxY, boxX + boxSize, boxY + boxSize, baseColor);
 
         boolean overResetButton = mouseX >= this.resetButton.getX() && mouseX < this.resetButton.getX() + this.resetButton.getWidth() &&
                 mouseY >= this.resetButton.getY() && mouseY < this.resetButton.getY() + this.resetButton.getHeight();
@@ -229,19 +229,19 @@ public abstract class ColorEntry<P extends Property<Integer>> extends BoundedEnt
         }
 
         if (nextColor != baseColor) {
-            this.renderNextColorPreviewTriangle(guiGraphics, boxX, boxY, boxSize, nextColor);
+            this.renderNextColorPreviewTriangle(guiGraphicsExtractor, boxX, boxY, boxSize, nextColor);
         }
 
-        guiGraphics.renderOutline(boxX, boxY, boxSize, boxSize, 0xFFAAAAAA);
+        guiGraphicsExtractor.outline(boxX, boxY, boxSize, boxSize, 0xFFAAAAAA);
     }
 
-    protected void renderNextColorPreviewTriangle(GuiGraphics guiGraphics, int boxX, int boxY, int boxSize, int color) {
+    protected void renderNextColorPreviewTriangle(GuiGraphicsExtractor guiGraphicsExtractor, int boxX, int boxY, int boxSize, int color) {
         for (int row = 0; row < boxSize; row++) {
             int y1 = boxY + row;
             int y2 = y1 + 1;
             int x1 = boxX + boxSize - row - 1;
             int x2 = boxX + boxSize;
-            guiGraphics.fill(x1, y1, x2, y2, color);
+            guiGraphicsExtractor.fill(x1, y1, x2, y2, color);
         }
     }
 
@@ -261,8 +261,8 @@ public abstract class ColorEntry<P extends Property<Integer>> extends BoundedEnt
     }
 
     @Override
-    public void renderContent(@NotNull GuiGraphics guiGraphics, int mouseX, int mouseY, boolean isHovering, float partialTick) {
-        super.renderContent(guiGraphics, mouseX, mouseY, isHovering, partialTick);
+    public void extractContent(@NotNull GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, boolean isHovering, float partialTick) {
+        super.extractContent(guiGraphicsExtractor, mouseX, mouseY, isHovering, partialTick);
 
         int boxSize = 20;
         int padding = 5;
@@ -271,6 +271,6 @@ public abstract class ColorEntry<P extends Property<Integer>> extends BoundedEnt
 
         int color = this.getPreviewColor(this.property.get());
 
-        this.renderColorPreview(guiGraphics, boxX, boxY, boxSize, color, mouseX, mouseY);
+        this.renderColorPreview(guiGraphicsExtractor, boxX, boxY, boxSize, color, mouseX, mouseY);
     }
 }
