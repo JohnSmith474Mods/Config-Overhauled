@@ -4,7 +4,7 @@ Welcome to Config Overhauled, a free to use multi-loader configuration library f
 
 The framework replaces manual interface construction and data synchronization with a declarative builder pattern. Properties are constrained by operational scopes (CLIENT, GLOBAL, LEVEL) that dictate data serialization targets and client-server synchronization authority. Built-in utilities handle dynamic GUI rendering and localization key export to eliminate structural boilerplate.
 
-## Quickstart Guide 1.21.4
+## Quickstart Guide 1.21.5
 
 ### Installation
 

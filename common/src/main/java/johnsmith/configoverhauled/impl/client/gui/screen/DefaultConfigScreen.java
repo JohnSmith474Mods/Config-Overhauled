@@ -165,8 +165,6 @@ public class DefaultConfigScreen extends AbstractConfigScreen implements ConfigS
         guiGraphics.blit(RenderType::guiTextured, TAB_HEADER_BACKGROUND, 0, 0, 0.0F, 0.0F, this.width, this.layout.getHeaderHeight(), 16, 16);
         this.renderMenuBackground(guiGraphics, 0, this.layout.getHeaderHeight(), this.width, this.height);
 
-        RenderSystem.enableBlend();
         guiGraphics.blit(RenderType::guiTextured, Screen.FOOTER_SEPARATOR, 0, this.height - this.layout.getFooterHeight() - 2, 0.0F, 0.0F, this.width, 2, 32, 2);
-        RenderSystem.disableBlend();
     }
 }

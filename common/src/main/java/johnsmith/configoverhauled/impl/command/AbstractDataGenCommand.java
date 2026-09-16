@@ -56,8 +56,8 @@ public abstract class AbstractDataGenCommand {
             Component pathComponent = Component.literal(fileName)
                     .withStyle(style -> style.withUnderlined(true)
                             .withColor(TextColor.fromRgb(Config.DATA_GEN_LINK_COLOR.get()))
-                            .withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, targetDir.toString()))
-                            .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal("Click to open folder"))));
+                            .withClickEvent(new ClickEvent.OpenFile(targetDir.toString()))
+                            .withHoverEvent(new HoverEvent.ShowText(Component.literal("Click to open folder"))));
 
             return Component.literal(successPrefix).append(pathComponent);
         } catch (Exception e) {
