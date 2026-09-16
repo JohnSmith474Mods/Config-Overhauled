@@ -1,0 +1,23 @@
+plugins {
+    // see https://fabricmc.net/develop/ for new versions
+    id 'fabric-loom' version '1.8.13' apply false
+    // see https://projects.neoforged.net/neoforged/moddevgradle for new versions
+    id 'net.neoforged.moddev' version '2.0.49-beta' apply false
+}
+
+subprojects {
+    tasks.withType(Jar).configureEach {
+        from(rootProject.file("LICENSE.md")) {
+            into("META-INF")
+        }
+        from(rootProject.file("THIRD-PARTY-NOTICES.md")) {
+            into("META-INF")
+        }
+        from(rootProject.file("third-party/LGPL-3.0.txt")) {
+            into("META-INF")
+        }
+        from(rootProject.file("third-party/GPL-3.0.txt")) {
+            into("META-INF")
+        }
+    }
+}

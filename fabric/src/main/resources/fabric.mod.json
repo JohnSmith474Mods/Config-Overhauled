@@ -1,0 +1,46 @@
+{
+  "schemaVersion": 1,
+  "id": "${mod_id}",
+  "version": "${version}",
+  "name": "${mod_name}",
+  "description": "${description}",
+  "authors": [
+    "${mod_author}"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+  "license": "${license}",
+  "icon": "${mod_id}.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "johnsmith.configoverhauled.Fabric"
+    ],
+    "client": [
+      "johnsmith.configoverhauled.client.FabricClient"
+    ],
+    "modmenu": [
+      "johnsmith.configoverhauled.client.ModMenuIntegration"
+    ]
+  },
+  "mixins": [
+    "${mod_id}.mixins.json",
+    "${mod_id}.fabric.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${fabric_loader_version}",
+    "fabric-api": "*",
+    "minecraft": ["1.21", "1.21.1"],
+    "java": ">=${java_version}"
+  },
+  "custom": {
+    "modmenu": {
+      "badges": ["library"]
+    }
+  },
+  "suggests": {
+    "another-mod": "*"
+  }
+}
