@@ -24,5 +24,5 @@ jobs:
         with:
           path-to-signatures: 'signatures/version1/cla.json'
           path-to-document: 'https://gist.github.com/Byoune/b31907669bb969a2684aecabb76cb573'
-          branch: '1.21'
+          branch: 'management'
           allowlist: 'bot*,dependabot[bot]'
