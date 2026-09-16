@@ -1,4 +1,4 @@
-# Quickstart Guide 1.21.11
+# Quickstart Guide 26.1
 
 Welcome to the Config Overhauled Quickstart Guide!
 
