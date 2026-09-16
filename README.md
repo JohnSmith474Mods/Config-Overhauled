@@ -4,7 +4,7 @@ Welcome to Config Overhauled, a free to use multi-loader configuration library f
 
 The framework replaces manual interface construction and data synchronization with a declarative builder pattern. Properties are constrained by operational scopes (CLIENT, GLOBAL, LEVEL) that dictate data serialization targets and client-server synchronization authority. Built-in utilities handle dynamic GUI rendering and localization key export to eliminate structural boilerplate.
 
-## Quickstart Guide 1.21 - 1.21.1
+## Quickstart Guide 1.21.2 - 1.21.3
 
 ### Installation
 
@@ -118,8 +118,6 @@ package com.example.mod;
 
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.ConfigScreenHandler;
-import net.minecraftforge.eventbus.api.IEventBus;
-import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.fml.loading.FMLEnvironment;
@@ -127,11 +125,11 @@ import net.minecraftforge.fml.loading.FMLPaths;
 
 @Mod(Constants.MOD_ID)
 public class ExampleMod {
-    public ExampleMod() {
+    public ExampleMod(FMLJavaModLoadingContext context) {
         ExampleConfig.MANAGER.init(FMLPaths.CONFIGDIR.get());
 
         if (FMLEnvironment.dist == Dist.CLIENT) {
-            ModLoadingContext.get().registerExtensionPoint(
+            context.registerExtensionPoint(
                     ConfigScreenHandler.ConfigScreenFactory.class,
                     () -> new ConfigScreenHandler.ConfigScreenFactory((minecraft, parentScreen) ->
                             ExampleConfig.MANAGER.createScreen(parentScreen)
