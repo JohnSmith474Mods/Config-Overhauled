@@ -5,16 +5,14 @@ import johnsmith.configoverhauled.impl.network.client.ClientPayloadHandler;
 import johnsmith.configoverhauled.impl.network.common.packet.ConfigSyncPacket;
 import johnsmith.configoverhauled.impl.network.common.packet.ConfigUpdateRequestPacket;
 import johnsmith.configoverhauled.impl.network.server.ServerPayloadHandler;
+
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.network.ChannelBuilder;
 import net.minecraftforge.network.NetworkDirection;
 import net.minecraftforge.network.SimpleChannel;
 
-@EventBusSubscriber(modid = Constants.MOD_ID, bus = EventBusSubscriber.Bus.MOD)
 public class ForgeNetworkRegistration {
 
     public static final SimpleChannel CHANNEL = ChannelBuilder
@@ -22,7 +20,6 @@ public class ForgeNetworkRegistration {
             .networkProtocolVersion(1)
             .simpleChannel();
 
-    @SubscribeEvent
     public static void setup(final FMLCommonSetupEvent event) {
         int id = 0;
 
