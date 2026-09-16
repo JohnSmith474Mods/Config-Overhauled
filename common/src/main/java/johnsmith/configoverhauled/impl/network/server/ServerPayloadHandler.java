@@ -8,13 +8,17 @@ import johnsmith.configoverhauled.impl.network.NetworkManager;
 import johnsmith.configoverhauled.impl.network.common.packet.ConfigUpdateRequestPacket;
 import johnsmith.configoverhauled.impl.network.common.packet.ConfigSyncPacket;
 
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.nbt.CompoundTag;
 
 public class ServerPayloadHandler {
     public static void handleUpdateRequestPacket(ConfigUpdateRequestPacket packet, ServerPlayer sender) {
+        // Retrieve the server instance from the player's level
+        MinecraftServer server = sender.level().getServer();
+
         // 0. Ignore unauthorized config edits.
-        boolean isAuthorized = sender.hasPermissions(2) || sender.getServer().isSingleplayerOwner(sender.getGameProfile());
+        boolean isAuthorized = sender.hasPermissions(2) || server.isSingleplayerOwner(sender.nameAndId());
         if (!isAuthorized) {
             return;
         }
@@ -35,7 +39,7 @@ public class ServerPayloadHandler {
 
         // 6. Issue a broadcast sync for this property only.
         ConfigSyncPacket broadcastPacket = createBroadcastPacket(manager, property);
-        NetworkManager.sendToAllClients(broadcastPacket, sender.getServer());
+        NetworkManager.sendToAllClients(broadcastPacket, server);
     }
 
     private static ConfigSyncPacket createBroadcastPacket(ConfigManager manager, Property<?> property) {

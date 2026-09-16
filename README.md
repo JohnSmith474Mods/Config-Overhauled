@@ -4,7 +4,7 @@ Welcome to Config Overhauled, a free to use multi-loader configuration library f
 
 The framework replaces manual interface construction and data synchronization with a declarative builder pattern. Properties are constrained by operational scopes (CLIENT, GLOBAL, LEVEL) that dictate data serialization targets and client-server synchronization authority. Built-in utilities handle dynamic GUI rendering and localization key export to eliminate structural boilerplate.
 
-## Quickstart Guide 1.21.6 - 1.21.8
+## Quickstart Guide 1.21.9 - 1.21.10
 
 ### Installation
 
@@ -156,7 +156,7 @@ public class ExampleMod {
     public ExampleMod(ModContainer modContainer) {
         ExampleConfig.MANAGER.init(FMLPaths.CONFIGDIR.get());
 
-        if (FMLEnvironment.dist == Dist.CLIENT) {
+        if (FMLEnvironment.getDist() == Dist.CLIENT) {
             modContainer.registerExtensionPoint(IConfigScreenFactory.class, (minecraft, parentScreen) ->
                     ExampleConfig.MANAGER.createScreen(parentScreen)
             );

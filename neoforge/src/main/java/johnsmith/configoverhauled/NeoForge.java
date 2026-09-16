@@ -14,7 +14,7 @@ public class NeoForge {
 
         Config.MANAGER.init(FMLPaths.CONFIGDIR.get());
 
-        if (FMLEnvironment.dist == Dist.CLIENT) {
+        if (FMLEnvironment.getDist() == Dist.CLIENT) {
             modContainer.registerExtensionPoint(IConfigScreenFactory.class, (minecraft, parentScreen) ->
                     Config.MANAGER.createScreen(parentScreen)
             );

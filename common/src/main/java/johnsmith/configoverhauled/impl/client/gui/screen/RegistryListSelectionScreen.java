@@ -7,6 +7,7 @@ import net.minecraft.client.gui.components.EditBox;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.core.Registry;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.ItemStack;
 
@@ -34,10 +35,10 @@ public class RegistryListSelectionScreen<T> extends AbstractRegistrySelectionScr
     protected void init() {
         int halfWidth = this.width / 2 - 12;
 
-        this.availableList = new ElementList(this.minecraft, halfWidth, this.height - 84, 24, 36, 8, Component.translatable("pack.available.title"));
+        this.availableList = new ElementList(this.minecraft, halfWidth, this.height - 84, 24, 36, 8);
         this.addRenderableWidget(this.availableList);
 
-        this.selectedList = new ElementList(this.minecraft, halfWidth, this.height - 84, 24, 36, this.width / 2 + 4, Component.translatable("pack.selected.title"));
+        this.selectedList = new ElementList(this.minecraft, halfWidth, this.height - 84, 24, 36, this.width / 2 + 4);
         this.addRenderableWidget(this.selectedList);
 
         this.availableSearchBox = this.addSearchBarWithClear(8, this.height - 52, halfWidth, query -> {
@@ -119,24 +120,29 @@ public class RegistryListSelectionScreen<T> extends AbstractRegistrySelectionScr
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         super.render(guiGraphics, mouseX, mouseY, partialTick);
-        guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 8, 0xFFFFFFFF);
+
+        // Draw screen title
+        guiGraphics.drawCenteredString(this.font, this.title, this.width / 2, 8, 0xFFFFFF);
+
+        // Draw headers for the two lists
+        drawListHeader(guiGraphics, this.availableList, Component.translatable("pack.available.title"));
+        drawListHeader(guiGraphics, this.selectedList,  Component.translatable("pack.selected.title"));
+    }
+
+    private void drawListHeader(GuiGraphics guiGraphics, ElementList list, MutableComponent title) {
+        Component formattedTitle = title
+                .withStyle(ChatFormatting.BOLD)
+                .withStyle(ChatFormatting.UNDERLINE);
+
+        // y is calculated based on the list's position (e.g., list.getY() - headerHeight)
+        int headerY = list.getY() - 16;
+        guiGraphics.drawCenteredString(this.minecraft.font, formattedTitle, list.getX() + list.getRowWidth() / 2, headerY + 2, 0xFFFFFFFF);
     }
 
     private class ElementList extends AbstractElementList {
-        private final Component listTitle;
-
-        public ElementList(Minecraft minecraft, int width, int height, int y, int itemHeight, int x, Component listTitle) {
+        public ElementList(Minecraft minecraft, int width, int height, int y, int itemHeight, int x) {
             super(minecraft, width, height, y, itemHeight, 16);
             this.setX(x);
-            this.listTitle = listTitle;
-        }
-
-        @Override
-        protected void renderHeader(GuiGraphics guiGraphics, int x, int y) {
-            Component formattedTitle = this.listTitle.copy()
-                    .withStyle(ChatFormatting.BOLD)
-                    .withStyle(ChatFormatting.UNDERLINE);
-            guiGraphics.drawCenteredString(this.minecraft.font, formattedTitle, x + this.getRowWidth() / 2, y + 2, 0xFFFFFFFF);
         }
 
         @Override

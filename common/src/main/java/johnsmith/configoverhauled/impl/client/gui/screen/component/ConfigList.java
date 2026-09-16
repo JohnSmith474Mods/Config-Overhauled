@@ -69,7 +69,9 @@ public class ConfigList extends ContainerObjectSelectionList<AbstractConfigEntry
 
     @Override
     public void updateSizeAndPosition(int width, int height, int top) {
-        super.updateSizeAndPosition(width, height, top);
+        this.setSize(width, height);
+        this.setY(top);
+        this.setScrollAmount(this.scrollAmount());
     }
 
     @Override

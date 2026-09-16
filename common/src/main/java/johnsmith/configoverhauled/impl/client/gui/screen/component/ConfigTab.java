@@ -47,8 +47,8 @@ public class ConfigTab implements Tab {
 
     @Override
     public void doLayout(ScreenRectangle rectangle) {
-        this.list.updateSizeAndPosition(rectangle.width(), rectangle.height(), rectangle.top());
         this.list.setX(rectangle.left());
+        this.list.updateSizeAndPosition(rectangle.width(), rectangle.height(), rectangle.top());
     }
 
     public boolean isAvailable() {
