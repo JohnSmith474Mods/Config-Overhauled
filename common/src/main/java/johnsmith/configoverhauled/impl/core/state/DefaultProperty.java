@@ -190,14 +190,22 @@ public abstract sealed class DefaultProperty<T> implements Property<T> permits D
     public void removeListener(Listener listener) { this.listeners.remove(listener); }
 
     protected void invalidate() {
+        java.util.List<Listener> snapshot;
         synchronized (this.listeners) {
-            for (Listener listener : listeners) listener.onPropertyInvalidated();
+            snapshot = new java.util.ArrayList<>(this.listeners);
+        }
+        for (Listener listener : snapshot) {
+            if (listener != null) listener.onPropertyInvalidated();
         }
     }
 
     protected void notifyChange() {
+        java.util.List<Listener> snapshot;
         synchronized (this.listeners) {
-            for (Listener listener : listeners) listener.onPropertyChanged();
+            snapshot = new java.util.ArrayList<>(this.listeners);
+        }
+        for (Listener listener : snapshot) {
+            if (listener != null) listener.onPropertyChanged();
         }
     }
 
