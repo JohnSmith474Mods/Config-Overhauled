@@ -232,7 +232,7 @@ public abstract class ColorEntry<P extends Property<Integer>> extends BoundedEnt
             this.renderNextColorPreviewTriangle(guiGraphics, boxX, boxY, boxSize, nextColor);
         }
 
-        guiGraphics.submitOutline(boxX, boxY, boxSize, boxSize, 0xFFAAAAAA);
+        guiGraphics.renderOutline(boxX, boxY, boxSize, boxSize, 0xFFAAAAAA);
     }
 
     protected void renderNextColorPreviewTriangle(GuiGraphics guiGraphics, int boxX, int boxY, int boxSize, int color) {

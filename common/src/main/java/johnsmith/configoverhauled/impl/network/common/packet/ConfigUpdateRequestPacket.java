@@ -6,12 +6,12 @@ import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public record ConfigUpdateRequestPacket(ConfigDescription metadata, CompoundTag payload) implements CustomPacketPayload {
 
     public static final CustomPacketPayload.Type<ConfigUpdateRequestPacket> TYPE =
-            new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath("config_overhauled", "update_request"));
+            new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath("config_overhauled", "update_request"));
 
     public static final StreamCodec<FriendlyByteBuf, ConfigUpdateRequestPacket> STREAM_CODEC = StreamCodec.ofMember(
             ConfigUpdateRequestPacket::write,
