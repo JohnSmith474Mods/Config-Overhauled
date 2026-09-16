@@ -78,7 +78,5 @@ public class ConfigList extends ContainerObjectSelectionList<AbstractConfigEntry
     }
 
     @Override
-    protected int getScrollbarPosition() {
-        return super.getScrollbarPosition() - 3;
-    }
+    protected int scrollBarX() { return super.scrollBarX() - 3; }
 }

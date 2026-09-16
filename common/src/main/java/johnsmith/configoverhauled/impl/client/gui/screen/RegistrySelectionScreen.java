@@ -44,7 +44,7 @@ public class RegistrySelectionScreen<T> extends AbstractRegistrySelectionScreen<
     }
 
     private void updateSearch(String query) {
-        double scroll = this.list.getScrollAmount();
+        double scroll = this.list.scrollAmount();
         this.list.clearEntries();
         String lowerQuery = query.toLowerCase(Locale.ROOT);
 
@@ -105,7 +105,7 @@ public class RegistrySelectionScreen<T> extends AbstractRegistrySelectionScreen<
         }
 
         @Override
-        protected int getScrollbarPosition() {
+        protected int scrollBarX() {
             return this.width / 2 + 124;
         }
     }
