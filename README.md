@@ -1,14 +1,14 @@
-# Config Overhauled
+# Quickstart Guide 1.21 - 1.21.1
 
-Welcome to Config Overhauled, a free to use multi-loader configuration library for Minecraft mod development! It provides a structured API for property definition, automated graphical interface generation, and network state synchronization for Fabric, Forge, or NeoForge environments.
+Welcome to the Config Overhauled Quickstart Guide!
 
-The framework replaces manual interface construction and data synchronization with a declarative builder pattern. Properties are constrained by operational scopes (CLIENT, GLOBAL, LEVEL) that dictate data serialization targets and client-server synchronization authority. Built-in utilities handle dynamic GUI rendering and localization key export to eliminate structural boilerplate.
+If you are new to the framework, we highly recommend reviewing the full documentation on our project [Wiki](https://github.com/JohnSmith474Mods/Config-Overhauled/wiki) first. It provides comprehensive explanations, advanced use cases, and everything you need to master the library's capabilities.
 
-## Quickstart Guide 1.21 - 1.21.1
+If you are a seasoned user returning for a quick refresher or you just want to dive straight into the code, you're in the right place! Peruse the sections below to get your configuration setup up and running in a breeze.
 
 ### Installation
 
-Add the Modrinth Maven repository and the library dependency to build.gradle. Replace [VERSION] with the target release version.
+Add the Modrinth Maven repository and the library dependency to build.gradle. Replace [MOD_VERSION], [GAME_VERSION], and [PLATFORM] with the target release version.
 
 ```groovy
 repositories {
@@ -19,7 +19,7 @@ repositories {
 }
 
 dependencies {
-    modImplementation "maven.modrinth:configoverhauled:[VERSION]"
+    modImplementation "maven.modrinth:config-overhauled:[MOD_VERSION]+[GAME_VERSION]-[PLATFORM]"
 }
 ```
 
@@ -166,9 +166,3 @@ public class ExampleMod {
     }
 }
 ```
-
-## Credits
-
-This project bundles [NightConfig](https://github.com/TheElectronWill/night-config) by [TheElectronWill](https://github.com/TheElectronWill), which is distributed under the GNU Lesser General Public License v3.0 (LGPL-3.0).
-
-This project was created using [jaredlll08](https://modrinth.com/user/jaredlll08)'s [MultiLoader-Template](https://github.com/jaredlll08/MultiLoader-Template).
