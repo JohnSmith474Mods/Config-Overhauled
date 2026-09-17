@@ -20,7 +20,7 @@ public class RegistryListEntry<T> extends AbstractRegistryEntry<T, List<T>> {
 
     @Override
     protected void openSelectionScreen() {
-        this.minecraft.setScreen(new RegistryListSelectionScreen<>(
+        this.minecraft.gui.setScreen(new RegistryListSelectionScreen<>(
                 (Screen) this.parentScreen,
                 Component.translatable(this.property.translationKey()),
                 this.registry,

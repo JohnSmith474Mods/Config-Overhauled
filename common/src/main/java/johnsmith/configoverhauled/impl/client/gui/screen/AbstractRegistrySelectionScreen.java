@@ -60,12 +60,12 @@ public abstract class AbstractRegistrySelectionScreen<T> extends Screen {
     }
 
     protected void addFooterButtons(Runnable onDone) {
-        this.addRenderableWidget(Button.builder(CommonComponents.GUI_CANCEL, b -> this.minecraft.setScreen(this.parent))
+        this.addRenderableWidget(Button.builder(CommonComponents.GUI_CANCEL, b -> this.minecraft.gui.setScreen(this.parent))
                 .bounds(this.width / 2 - 154, this.height - 26, 150, 20).build());
 
         this.addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, b -> {
             onDone.run();
-            this.minecraft.setScreen(this.parent);
+            this.minecraft.gui.setScreen(this.parent);
         }).bounds(this.width / 2 + 4, this.height - 26, 150, 20).build());
     }
 

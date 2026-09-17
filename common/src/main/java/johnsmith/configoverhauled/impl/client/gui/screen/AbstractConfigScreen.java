@@ -89,9 +89,9 @@ public abstract class AbstractConfigScreen extends Screen implements ConfigScree
     @Override
     public void onClose() {
         if (this.levelConfigModified && this.hasReloadPermission() && Config.SHOW_RELOAD_ALERT.get()) {
-            this.minecraft.setScreen(new ReloadNotificationScreen(this.parentScreen));
+            this.minecraft.gui.setScreen(new ReloadNotificationScreen(this.parentScreen));
         } else {
-            this.minecraft.setScreen(this.parentScreen);
+            this.minecraft.gui.setScreen(this.parentScreen);
         }
     }
 

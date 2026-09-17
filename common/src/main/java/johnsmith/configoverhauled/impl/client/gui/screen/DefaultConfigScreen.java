@@ -11,6 +11,7 @@ import johnsmith.configoverhauled.impl.client.gui.screen.component.ConfigTab;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.*;
+import net.minecraft.client.gui.components.tabs.MenuTabBar;
 import net.minecraft.client.gui.components.tabs.Tab;
 import net.minecraft.client.gui.components.tabs.TabManager;
 import net.minecraft.client.gui.components.tabs.TabNavigationBar;
@@ -51,7 +52,7 @@ public class DefaultConfigScreen extends AbstractConfigScreen implements ConfigS
 
     @Override
     protected void init() {
-        TabNavigationBar.Builder tabBuilder = TabNavigationBar.builder(this.tabManager, this.width);
+        MenuTabBar.Builder tabBuilder = MenuTabBar.builder(this.tabManager, this.width);
 
         for (Category category : this.manager.getCategories()) {
             ConfigTab tab = new ConfigTab(this, category, this.manager);
@@ -98,8 +99,7 @@ public class DefaultConfigScreen extends AbstractConfigScreen implements ConfigS
     @Override
     protected void repositionElements() {
         if (this.tabNavigationBar != null) {
-            this.tabNavigationBar.updateWidth(this.width);
-            this.tabNavigationBar.arrangeElements();
+            this.tabNavigationBar.arrangeElements(this.width);
             this.layout.setHeaderHeight(this.tabNavigationBar.getRectangle().bottom());
         }
 

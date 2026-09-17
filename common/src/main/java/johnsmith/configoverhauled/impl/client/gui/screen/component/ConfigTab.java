@@ -10,6 +10,8 @@ import johnsmith.configoverhauled.api.data.ConfigScope;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.components.AbstractWidget;
 import net.minecraft.client.gui.components.tabs.Tab;
+import net.minecraft.client.gui.layouts.FrameLayout;
+import net.minecraft.client.gui.layouts.Layout;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.network.chat.Component;
 
@@ -20,14 +22,16 @@ import java.util.function.Consumer;
 public class ConfigTab implements Tab {
     private final Component title;
     private final ConfigList list;
+    private final FrameLayout layout;
 
     public ConfigTab(ConfigScreen screen, Category category, ConfigManager manager) {
         this.title = Component.translatable(category.translationKey());
         this.list = new ConfigList(screen, Minecraft.getInstance(), category, manager);
+        this.layout = new FrameLayout();
     }
 
     public ConfigList getList() {
-        return  this.list;
+        return this.list;
     }
 
     @Override
@@ -49,6 +53,11 @@ public class ConfigTab implements Tab {
     public void doLayout(ScreenRectangle rectangle) {
         this.list.setX(rectangle.left());
         this.list.updateSizeAndPosition(rectangle.width(), rectangle.height(), rectangle.top());
+    }
+
+    @Override
+    public Layout getLayout() {
+        return this.layout;
     }
 
     public boolean isAvailable() {
