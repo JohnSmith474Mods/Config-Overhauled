@@ -2,7 +2,17 @@
 
 Welcome to Config Overhauled, a free to use multi-loader configuration library for Minecraft mod development! It provides a structured API for property definition, automated graphical interface generation, and network state synchronization for Fabric, Forge, or NeoForge environments.
 
-The framework replaces manual interface construction and data synchronization with a declarative builder pattern. Properties are constrained by operational scopes (CLIENT, GLOBAL, LEVEL) that dictate data serialization targets and client-server synchronization authority. Built-in utilities handle dynamic GUI rendering and localization key export to eliminate structural boilerplate.
+The framework replaces manual interface construction and data synchronization with a declarative builder pattern. Properties are constrained by operational scopes (`CLIENT`, `GLOBAL`, `LEVEL`) that dictate data serialization targets and client-server synchronization authority. Built-in utilities handle dynamic GUI rendering and localization key export to eliminate structural boilerplate.
+
+## Mod Versioning Schema
+ 
+To keep things predictable, our releases follow a strict `[API]`.`[FEATURE]`.`[PATCH]` format (for example, `2.7.3`). Understanding this schema is crucial for setting up your project dependencies correctly:
+ 
+* **`API` :** This number increments whenever breaking changes are introduced to the framework. Your mod's required `API` version must match the library's `API` version identically!
+* **`FEATURE` :** This number increases when we add shiny new features and tools, without breaking anything in the current `API`. Your mod's required `FEATURE` version can safely be lower than or equal to the installed library version.
+* **`PATCH` :** This final number signifies minor internal bug squashing and error corrections. The `PATCH` version imposes no strict requirements at all.
+ 
+To summarize: your `API` version must match exactly, your `FEATURE` version must be less than or equal to the installed library, and the `PATCH` version requires no strict alignment.
 
 ## Repository Structure & Branching
 
@@ -22,16 +32,17 @@ Please note that all contributions require a signed Contributor License Agreemen
 
 Here is a quick overview of our current branches and their support status. Right now, all listed versions are actively supported!
 
-| Branch                  | Game Version Range   | Support Status |
-| ----------------------- | -------------------- | -------------- |
-| [1.21](tree/1.21)       | 1.21 - 1.21.1        | Active         |
-| [1.21.2](tree/1.21.2)   | 1.21.2 - 1.21.3      | Active         |
-| [1.21.4](tree/1.21.4)   | 1.21.4               | Active         |
-| [1.21.5](tree/1.21.5)   | 1.21.5               | Active         |
-| [1.21.6](tree/1.21.6)   | 1.21.6 - 1.21.8      | Active         |
-| [1.21.9](tree/1.21.9)   | 1.21.9 - 1.21.10     | Active         |
-| [1.21.11](tree/1.21.11) | 1.21.11              | Active         |
-| [26.1](tree/26.1)       | 26.1 - 26.1.2        | Active         |
+| Branch                                                                        | Game Version Range   | Support Status |
+| ----------------------------------------------------------------------------- | -------------------- | -------------- |
+| [1.21](https://github.com/JohnSmith474Mods/Config-Overhauled/tree/1.21)       | 1.21 - 1.21.1        | Active         |
+| [1.21.2](https://github.com/JohnSmith474Mods/Config-Overhauled/tree/1.21.2)   | 1.21.2 - 1.21.3      | Active         |
+| [1.21.4](https://github.com/JohnSmith474Mods/Config-Overhauled/tree/1.21.4)   | 1.21.4               | Active         |
+| [1.21.5](https://github.com/JohnSmith474Mods/Config-Overhauled/tree/1.21.5)   | 1.21.5               | Active         |
+| [1.21.6](https://github.com/JohnSmith474Mods/Config-Overhauled/tree/1.21.6)   | 1.21.6 - 1.21.8      | Active         |
+| [1.21.9](https://github.com/JohnSmith474Mods/Config-Overhauled/tree/1.21.9)   | 1.21.9 - 1.21.10     | Active         |
+| [1.21.11](https://github.com/JohnSmith474Mods/Config-Overhauled/tree/1.21.11) | 1.21.11              | Active         |
+| [26.1](https://github.com/JohnSmith474Mods/Config-Overhauled/tree/26.1)       | 26.1 - 26.1.2        | Active         |
+| [26.2](https://github.com/JohnSmith474Mods/Config-Overhauled/tree/26.2)       | 26.2                 | Active         |
 
 ## Third-Party Licenses & Credits
 
