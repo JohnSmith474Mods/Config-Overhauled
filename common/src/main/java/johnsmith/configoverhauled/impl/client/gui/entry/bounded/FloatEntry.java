@@ -49,7 +49,8 @@ public class FloatEntry extends BoundedEntry<Float> {
         return Component.translatable("config_overhauled.word.default").append(Component.literal(": " + this.formatValue(this.property.defaultValue())));
     }
 
-    private String formatValue(Float value) {
+    @Override
+    protected String formatValue(Float value) {
         String plain = BigDecimal.valueOf(value).toPlainString();
         if (plain.contains(".")) {
             plain = plain.replaceAll("0*$", "");

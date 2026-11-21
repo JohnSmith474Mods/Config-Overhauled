@@ -3,6 +3,7 @@ package johnsmith.configoverhauled.api.client.gui.screen;
 import johnsmith.configoverhauled.api.Property;
 import johnsmith.configoverhauled.api.client.gui.entry.ConfigEntry;
 import johnsmith.configoverhauled.api.client.gui.factory.WidgetFactory;
+import johnsmith.configoverhauled.api.client.gui.popup.ConfigPopup;
 import johnsmith.configoverhauled.api.client.gui.registry.WidgetRegistry;
 import net.minecraft.util.FormattedCharSequence;
 import java.util.List;
@@ -59,4 +60,28 @@ public interface ConfigScreen {
      * @param registry The custom registry implementation to use.
      */
     void setWidgetRegistry(WidgetRegistry registry);
+
+    /**
+     * Opens an overlay modal popup on top of this configuration screen without replacing the active screen.
+     * If a popup is already open, it will be closed before opening the new one.
+     *
+     * @param popup The popup to display.
+     */
+    default void openPopup(ConfigPopup popup) {
+    }
+
+    /**
+     * Closes the currently active overlay modal popup, if any.
+     */
+    default void closePopup() {
+    }
+
+    /**
+     * Checks whether an overlay modal popup is currently open on this screen.
+     *
+     * @return {@code true} if a popup is currently active.
+     */
+    default boolean hasActivePopup() {
+        return false;
+    }
 }

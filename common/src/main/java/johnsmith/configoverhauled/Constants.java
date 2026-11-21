@@ -8,7 +8,12 @@ public class Constants {
 	public static final String MOD_NAME = "Config Overhauled";
 	public static final Logger LOG = LoggerFactory.getLogger(MOD_NAME);
 
-    public static final String CONFIG_DUMP = "config_dump";
-    public static final String CONFIG_LANG_GEN = "config_lang_gen";
-    public static final String NAMESPACE = "namespace";
+    public static final String COMMAND_ROOT = MOD_ID;
+    public static final String COMMAND_LOCALIZATION = "localization";
+    public static final String COMMAND_DUMP = "dump";
+
+    public static final String ARG_MOD_ID = "mod_id";
+    public static final String ARG_ONLY_MISSING_ENTRIES = "onlyMissingEntries";
+    public static final String ARG_FORMAT = "format";
+    public static final String ARG_SCOPE = "scope";
 }

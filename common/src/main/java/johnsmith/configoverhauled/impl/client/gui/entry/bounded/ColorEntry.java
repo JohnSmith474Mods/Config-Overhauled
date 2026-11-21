@@ -1,25 +1,48 @@
 package johnsmith.configoverhauled.impl.client.gui.entry.bounded;
 
+import com.google.common.collect.ImmutableList;
+
 import johnsmith.configoverhauled.api.Property;
 import johnsmith.configoverhauled.api.client.gui.screen.ConfigScreen;
+import johnsmith.configoverhauled.impl.client.gui.popup.ColorPickerPopup;
 import johnsmith.configoverhauled.impl.core.state.DefaultProperty;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.components.EditBox;
+import net.minecraft.client.gui.components.events.GuiEventListener;
+import net.minecraft.client.gui.narration.NarratableEntry;
+import net.minecraft.client.gui.narration.NarratedElementType;
+import net.minecraft.client.gui.narration.NarrationElementOutput;
 import net.minecraft.client.input.CharacterEvent;
 import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.network.chat.Component;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.FormattedCharSequence;
 
 import org.jetbrains.annotations.NotNull;
 
 import org.lwjgl.glfw.GLFW;
 
+import java.util.List;
+
 public abstract class ColorEntry<P extends Property<Integer>> extends BoundedEntry<Integer> {
+    private final ColorSwatchButton swatchButton = new ColorSwatchButton();
+
     public ColorEntry(P property, ConfigScreen parentScreen, Minecraft minecraft, Runnable onValueChanged) {
         super((DefaultProperty.Bounded<Integer>) property, parentScreen, minecraft, onValueChanged);
         this.updateWidgetValue();
+    }
+
+    @Override
+    protected boolean hasDetailPopup() {
+        return false;
+    }
+
+    protected boolean hasAlpha() {
+        return false;
     }
 
     protected abstract String getHexFormatString();
@@ -27,6 +50,32 @@ public abstract class ColorEntry<P extends Property<Integer>> extends BoundedEnt
     protected abstract int getPreviewColor(int rawValue);
 
     protected abstract FormattedCharSequence formatColorString(String text, int cursorOffset);
+
+    protected void openColorPicker() {
+        this.minecraft.getSoundManager().play(SimpleSoundInstance.forUI(SoundEvents.UI_BUTTON_CLICK, 1.0F));
+
+        int initialColor = this.property.get();
+        try {
+            String input = this.widget.getValue();
+            if (!this.isPartialInput(input)) {
+                int candidate = this.parse(input);
+                if (this.isWithinBounds(candidate)) {
+                    initialColor = candidate;
+                }
+            }
+        } catch (NumberFormatException ignored) {
+        }
+
+        this.parentScreen.openPopup(new ColorPickerPopup(
+                this.parentScreen,
+                this.minecraft,
+                this.getBounds(),
+                initialColor,
+                this.hasAlpha(),
+                this.isLocked,
+                this::applyPopupValue
+        ));
+    }
 
     @Override
     protected Integer parse(String input) throws NumberFormatException {
@@ -209,7 +258,11 @@ public abstract class ColorEntry<P extends Property<Integer>> extends BoundedEnt
         return super.keyPressed(event);
     }
 
-    protected void renderColorPreview(GuiGraphicsExtractor guiGraphicsExtractor, int boxX, int boxY, int boxSize, int baseColor, int mouseX, int mouseY) {
+    protected void renderColorPreview(GuiGraphicsExtractor guiGraphicsExtractor, int boxX, int boxY, int boxSize, int baseColor, int mouseX, int mouseY, boolean highlighted) {
+        if (this.hasAlpha()) {
+            ColorPickerPopup.drawCheckerboard(guiGraphicsExtractor, boxX, boxY, boxSize, boxSize, 5);
+        }
+
         guiGraphicsExtractor.fill(boxX, boxY, boxX + boxSize, boxY + boxSize, baseColor);
 
         boolean overResetButton = mouseX >= this.resetButton.getX() && mouseX < this.resetButton.getX() + this.resetButton.getWidth() &&
@@ -232,7 +285,7 @@ public abstract class ColorEntry<P extends Property<Integer>> extends BoundedEnt
             this.renderNextColorPreviewTriangle(guiGraphicsExtractor, boxX, boxY, boxSize, nextColor);
         }
 
-        guiGraphicsExtractor.outline(boxX, boxY, boxSize, boxSize, 0xFFAAAAAA);
+        guiGraphicsExtractor.outline(boxX, boxY, boxSize, boxSize, highlighted ? 0xFFFFFFFF : 0xFFAAAAAA);
     }
 
     protected void renderNextColorPreviewTriangle(GuiGraphicsExtractor guiGraphicsExtractor, int boxX, int boxY, int boxSize, int color) {
@@ -261,6 +314,13 @@ public abstract class ColorEntry<P extends Property<Integer>> extends BoundedEnt
     }
 
     @Override
+    protected int getMaxLabelWidth(int widgetX) {
+        int boxSize = 20;
+        int padding = 5;
+        return widgetX - padding - boxSize - this.getX() - 5;
+    }
+
+    @Override
     public void extractContent(@NotNull GuiGraphicsExtractor guiGraphicsExtractor, int mouseX, int mouseY, boolean isHovering, float partialTick) {
         super.extractContent(guiGraphicsExtractor, mouseX, mouseY, isHovering, partialTick);
 
@@ -269,8 +329,98 @@ public abstract class ColorEntry<P extends Property<Integer>> extends BoundedEnt
         int boxX = this.widget.getX() - padding - boxSize;
         int boxY = this.widget.getY();
 
-        int color = this.getPreviewColor(this.property.get());
+        this.swatchButton.updateBounds(boxX, boxY, boxSize, boxSize);
+        boolean overSwatch = this.swatchButton.isMouseOver(mouseX, mouseY);
+        this.swatchButton.hovered = overSwatch;
 
-        this.renderColorPreview(guiGraphicsExtractor, boxX, boxY, boxSize, color, mouseX, mouseY);
+        int color = this.getPreviewColor(this.property.get());
+        this.renderColorPreview(guiGraphicsExtractor, boxX, boxY, boxSize, color, mouseX, mouseY, overSwatch || this.swatchButton.isFocused());
+
+        if (overSwatch) {
+            Component hint = Component.translatable(this.isLocked
+                    ? "config_overhauled.popup.color.inspect_picker"
+                    : "config_overhauled.popup.color.open_picker");
+            this.parentScreen.setDeferredTooltip(List.of(
+                    hint.getVisualOrderText(),
+                    this.getCurrentValueTooltipText().getVisualOrderText()
+            ));
+        }
+    }
+
+    @Override
+    public @NotNull List<? extends GuiEventListener> children() {
+        return ImmutableList.of(this.swatchButton, this.widget, this.resetButton);
+    }
+
+    @Override
+    public @NotNull List<? extends NarratableEntry> narratables() {
+        return ImmutableList.of(this.swatchButton, this.widget, this.resetButton);
+    }
+
+    private final class ColorSwatchButton implements GuiEventListener, NarratableEntry {
+        private int x;
+        private int y;
+        private int width;
+        private int height;
+        private boolean focused;
+        private boolean hovered;
+
+        private void updateBounds(int x, int y, int width, int height) {
+            this.x = x;
+            this.y = y;
+            this.width = width;
+            this.height = height;
+        }
+
+        @Override
+        public boolean isMouseOver(double mouseX, double mouseY) {
+            return mouseX >= this.x && mouseX < this.x + this.width
+                    && mouseY >= this.y && mouseY < this.y + this.height;
+        }
+
+        @Override
+        public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+            if (event.button() == GLFW.GLFW_MOUSE_BUTTON_LEFT && this.isMouseOver(event.x(), event.y())) {
+                ColorEntry.this.openColorPicker();
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public boolean keyPressed(KeyEvent event) {
+            if (this.focused && (event.key() == GLFW.GLFW_KEY_ENTER
+                    || event.key() == GLFW.GLFW_KEY_KP_ENTER
+                    || event.key() == GLFW.GLFW_KEY_SPACE)) {
+                ColorEntry.this.openColorPicker();
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public void setFocused(boolean focused) {
+            this.focused = focused;
+        }
+
+        @Override
+        public boolean isFocused() {
+            return this.focused;
+        }
+
+        @Override
+        public @NotNull NarrationPriority narrationPriority() {
+            if (this.focused) {
+                return NarrationPriority.FOCUSED;
+            }
+            return this.hovered ? NarrationPriority.HOVERED : NarrationPriority.NONE;
+        }
+
+        @Override
+        public void updateNarration(@NotNull NarrationElementOutput output) {
+            output.add(NarratedElementType.TITLE, Component.translatable(ColorEntry.this.isLocked
+                    ? "config_overhauled.popup.color.inspect_picker"
+                    : "config_overhauled.popup.color.open_picker"));
+        }
     }
 }

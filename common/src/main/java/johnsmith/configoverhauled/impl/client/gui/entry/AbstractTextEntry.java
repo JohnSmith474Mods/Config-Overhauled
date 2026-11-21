@@ -55,4 +55,14 @@ public abstract class AbstractTextEntry<T> extends OptionEntry<T, EditBox> {
     protected void restoreCurrentValue() {
         this.updateWidgetValue();
     }
+
+    @Override
+    protected boolean hasDetailPopup() {
+        return true;
+    }
+
+    protected void applyPopupValue(T value) {
+        this.setValue(value);
+        this.updateWidgetValue();
+    }
 }

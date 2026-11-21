@@ -69,10 +69,15 @@ public class Config {
                 .asLong(0)
                 .withComment("A test long client property.")
                 .register();
-        GROUP_CLIENT_TEST.define("color_test")
+        GROUP_CLIENT_TEST.define("rgb_test")
                 .clientSide()
                 .asRGBColor(0xC0FFEE)
-                .withComment("A test color client property.")
+                .withComment("A test RGB color client property.")
+                .register();
+        GROUP_CLIENT_TEST.define("argb_test")
+                .clientSide()
+                .asARGBColor(0x80C0FFEE)
+                .withComment("A test ARGB color client property.")
                 .register();
         GROUP_CLIENT_TEST.define("float_test")
                 .clientSide()
@@ -135,10 +140,15 @@ public class Config {
                 .asLong(0)
                 .withComment("A test long global property.")
                 .register();
-        GROUP_GLOBAL_TEST.define("color_test")
+        GROUP_GLOBAL_TEST.define("rgb_test")
                 .globalSide()
                 .asRGBColor(0xC0FFEE)
-                .withComment("A test color global property.")
+                .withComment("A test RGB color global property.")
+                .register();
+        GROUP_GLOBAL_TEST.define("argb_test")
+                .globalSide()
+                .asARGBColor(0x80C0FFEE)
+                .withComment("A test ARGB color global property.")
                 .register();
         GROUP_GLOBAL_TEST.define("float_test")
                 .globalSide()
@@ -201,10 +211,15 @@ public class Config {
                 .asLong(0)
                 .withComment("A test long level property.")
                 .register();
-        GROUP_LEVEL_TEST.define("color_test")
+        GROUP_LEVEL_TEST.define("rgb_test")
                 .levelSide()
                 .asRGBColor(0xC0FFEE)
-                .withComment("A test color level property.")
+                .withComment("A test RGB color level property.")
+                .register();
+        GROUP_LEVEL_TEST.define("argb_test")
+                .levelSide()
+                .asARGBColor(0x80C0FFEE)
+                .withComment("A test ARGB color level property.")
                 .register();
         GROUP_LEVEL_TEST.define("float_test")
                 .levelSide()

@@ -1,5 +1,6 @@
 package johnsmith.configoverhauled.client.event;
 
+import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 
 import johnsmith.configoverhauled.Constants;
@@ -23,21 +24,35 @@ public class ForgeClientEvents {
 
     // Removed @SubscribeEvent
     public static void onClientCommands(RegisterClientCommandsEvent event) {
-        event.getDispatcher().register(Commands.literal(Constants.CONFIG_DUMP)
-                .then(Commands.argument(Constants.NAMESPACE, StringArgumentType.word())
-                        .suggests(AbstractDataGenCommand::suggestModIds)
-                        .executes(context -> {
-                            String modId = StringArgumentType.getString(context, Constants.NAMESPACE);
-                            context.getSource().sendSystemMessage(ConfigDumpCommand.executeDump(modId));
-                            return 1;
-                        })));
-        event.getDispatcher().register(Commands.literal(Constants.CONFIG_LANG_GEN)
-                .then(Commands.argument(Constants.NAMESPACE, StringArgumentType.word())
-                        .suggests(AbstractDataGenCommand::suggestModIds)
-                        .executes(context -> {
-                            String modId = StringArgumentType.getString(context, Constants.NAMESPACE);
-                            context.getSource().sendSystemMessage(ConfigLangGenCommand.executeLang(modId));
-                            return 1;
-                        })));
+        event.getDispatcher().register(Commands.literal(Constants.COMMAND_ROOT)
+                .then(Commands.literal(Constants.COMMAND_LOCALIZATION)
+                        .then(Commands.argument(Constants.ARG_MOD_ID, StringArgumentType.word())
+                                .suggests(AbstractDataGenCommand::suggestModIds)
+                                .executes(context -> {
+                                    String modId = StringArgumentType.getString(context, Constants.ARG_MOD_ID);
+                                    context.getSource().sendSystemMessage(ConfigLangGenCommand.executeLang(modId, true));
+                                    return 1;
+                                })
+                                .then(Commands.argument(Constants.ARG_ONLY_MISSING_ENTRIES, BoolArgumentType.bool())
+                                        .executes(context -> {
+                                            String modId = StringArgumentType.getString(context, Constants.ARG_MOD_ID);
+                                            boolean onlyMissing = BoolArgumentType.getBool(context, Constants.ARG_ONLY_MISSING_ENTRIES);
+                                            context.getSource().sendSystemMessage(ConfigLangGenCommand.executeLang(modId, onlyMissing));
+                                            return 1;
+                                        }))))
+                .then(Commands.literal(Constants.COMMAND_DUMP)
+                        .then(Commands.argument(Constants.ARG_MOD_ID, StringArgumentType.word())
+                                .suggests(AbstractDataGenCommand::suggestModIds)
+                                .then(Commands.argument(Constants.ARG_FORMAT, StringArgumentType.word())
+                                        .suggests(ConfigDumpCommand::suggestFormats)
+                                        .then(Commands.argument(Constants.ARG_SCOPE, StringArgumentType.word())
+                                                .suggests(ConfigDumpCommand::suggestScopes)
+                                                .executes(context -> {
+                                                    String modId = StringArgumentType.getString(context, Constants.ARG_MOD_ID);
+                                                    String format = StringArgumentType.getString(context, Constants.ARG_FORMAT);
+                                                    String scope = StringArgumentType.getString(context, Constants.ARG_SCOPE);
+                                                    context.getSource().sendSystemMessage(ConfigDumpCommand.executeDump(modId, format, scope));
+                                                    return 1;
+                                                }))))));
     }
 }
