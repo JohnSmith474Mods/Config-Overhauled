@@ -4,7 +4,7 @@ plugins {
 }
 
 base {
-    archivesName = project.normalized_mod_name
+    archivesName = project.mod_name_normalized
     version = "${project.version}+${project.minecraft_version}-${project.name}"
 }
 
@@ -33,13 +33,13 @@ repositories {
 }
 
 sourcesJar {
-    from(rootProject.file('LICENSE')) {
+    from(rootProject.file("LICENSE")) {
         rename { "${it}_${mod_name}" }
     }
 }
 
 jar {
-    from(rootProject.file('LICENSE')) {
+    from(rootProject.file("LICENSE")) {
         rename { "${it}_${mod_name}" }
     }
 
@@ -58,23 +58,30 @@ jar {
 
 processResources {
     var expandProps = [
-            'version'                      : version,
-            'group'                        : project.group, //Else we target the task's group.
-            'minecraft_version'            : minecraft_version,
-            'minecraft_version_range'      : minecraft_version_range,
-            'fabric_version'               : fabric_version,
-            'fabric_loader_version'        : fabric_loader_version,
-            'mod_name'                     : mod_name,
-            'mod_author'                   : mod_author,
-            'mod_id'                       : mod_id,
-            'license'                      : license,
-            'description'                  : project.description,
-            'neoforge_version'             : neoforge_version,
-            'neoforge_loader_version_range': neoforge_loader_version_range,
-            "forge_version"                : forge_version,
-            "forge_loader_version_range"   : forge_loader_version_range,
-            'credits'                      : credits,
-            'java_version'                 : java_version
+            // Project
+            'version'                       : version,
+            'group'                         : project.group,
+            'java_version'                  : java_version,
+            // Minecraft
+            'minecraft_version'             : minecraft_version,
+            'minecraft_version_supremum'    : minecraft_version_supremum,
+            'minecraft_version_upper_limit' : minecraft_version_upper_limit,
+            // Common
+            'mod_name'                      : mod_name,
+            'mod_author'                    : mod_author,
+            'mod_id'                        : mod_id,
+            'license'                       : license,
+            'credits'                       : credits,
+            'description'                   : project.description,
+            // Fabric
+            'fabric_version'                : fabric_version,
+            'fabric_loader_version'         : fabric_loader_version,
+            // Forge
+            "forge_version"                 : forge_version,
+            "forge_loader_version_range"    : forge_loader_version_range,
+            // NeoForge
+            'neoforge_version'              : neoforge_version,
+            'neoforge_loader_version_range' : neoforge_loader_version_range
     ]
 
     var jsonExpandProps = expandProps.collectEntries {
