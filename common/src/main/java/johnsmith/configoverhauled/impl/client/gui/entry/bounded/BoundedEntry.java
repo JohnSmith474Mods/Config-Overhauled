@@ -4,6 +4,7 @@ import java.util.List;
 
 import johnsmith.configoverhauled.api.client.gui.screen.ConfigScreen;
 import johnsmith.configoverhauled.impl.client.gui.entry.AbstractTextEntry;
+import johnsmith.configoverhauled.impl.client.gui.popup.NumericDetailPopup;
 import johnsmith.configoverhauled.impl.core.state.DefaultProperty;
 
 import net.minecraft.client.Minecraft;
@@ -33,6 +34,26 @@ public abstract class BoundedEntry<T extends Number & Comparable<T>> extends Abs
     protected abstract String getRegexFilter();
 
     protected abstract boolean isPartialInput(String input);
+
+    protected String formatValue(T value) {
+        return String.valueOf(value);
+    }
+
+    @Override
+    protected void openDetailPopup() {
+        this.parentScreen.openPopup(new NumericDetailPopup<>(
+                this.parentScreen,
+                this.minecraft,
+                this.getBounds(),
+                this.widget.getValue(),
+                this::parse,
+                this::isPartialInput,
+                this.getRegexFilter(),
+                this::formatValue,
+                this.isLocked,
+                this::applyPopupValue
+        ));
+    }
 
     private String lastValidInput = "";
 

@@ -3,10 +3,12 @@ package johnsmith.configoverhauled.impl.client.gui.screen;
 import johnsmith.configoverhauled.Constants;
 import johnsmith.configoverhauled.api.Category;
 import johnsmith.configoverhauled.api.ConfigManager;
-import johnsmith.configoverhauled.api.client.gui.entry.ConfigEntry;
 import johnsmith.configoverhauled.api.client.gui.registry.WidgetRegistry;
 import johnsmith.configoverhauled.api.client.gui.screen.ConfigScreen;
+import johnsmith.configoverhauled.impl.client.gui.popup.ConfirmPopup;
+import johnsmith.configoverhauled.impl.client.gui.screen.component.ConfigList;
 import johnsmith.configoverhauled.impl.client.gui.screen.component.ConfigTab;
+import johnsmith.configoverhauled.impl.client.gui.screen.component.SearchSuggestionPopup;
 
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -18,12 +20,17 @@ import net.minecraft.client.gui.layouts.HeaderAndFooterLayout;
 import net.minecraft.client.gui.layouts.LinearLayout;
 import net.minecraft.client.gui.navigation.ScreenRectangle;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.CharacterEvent;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 
 import org.jetbrains.annotations.NotNull;
+
+import java.util.List;
 
 public class DefaultConfigScreen extends AbstractConfigScreen implements ConfigScreen {
     public static final Identifier TAB_HEADER_BACKGROUND = Identifier.withDefaultNamespace("textures/gui/tab_header_background.png");
@@ -35,7 +42,9 @@ public class DefaultConfigScreen extends AbstractConfigScreen implements ConfigS
     private TabNavigationBar tabNavigationBar;
     private Tab lastTab;
     private Button resetButton;
+    private Button collapseToggleButton;
     private EditBox searchBox;
+    private SearchSuggestionPopup suggestionPopup;
 
     public DefaultConfigScreen(Screen parentScreen, ConfigManager manager) {
         super(Component.translatable("config." + manager.modId() + ".title"), parentScreen);
@@ -66,14 +75,23 @@ public class DefaultConfigScreen extends AbstractConfigScreen implements ConfigS
         LinearLayout footerColumn = LinearLayout.vertical().spacing(6);
 
         LinearLayout searchRow = LinearLayout.horizontal().spacing(4);
-        this.searchBox = new EditBox(this.font, 0, 0, 284, 20, Component.empty());
+        this.collapseToggleButton = Button.builder(Component.literal("[-]"), button -> this.toggleAllGroups())
+                .width(20)
+                .build();
+        searchRow.addChild(this.collapseToggleButton);
+
+        this.searchBox = new EditBox(this.font, 0, 0, 260, 20, Component.empty());
         this.searchBox.setHint(Component.translatable("config_overhauled.config.search_by_name").withStyle(ChatFormatting.ITALIC, ChatFormatting.DARK_GRAY));
         this.searchBox.setResponder(this::onSearchChange);
         searchRow.addChild(this.searchBox);
 
+        this.suggestionPopup = new SearchSuggestionPopup(this.minecraft, this.font, this.searchBox, this::getActiveConfigList);
+
         Button clearButton = Button.builder(Component.literal("X"), button -> {
             this.searchBox.setValue("");
+            this.setFocused(this.searchBox);
             this.searchBox.setFocused(true);
+            this.suggestionPopup.onSearchTextChanged();
         }).width(20).build();
         searchRow.addChild(clearButton);
 
@@ -81,7 +99,7 @@ public class DefaultConfigScreen extends AbstractConfigScreen implements ConfigS
 
         String resetKey = Constants.MOD_ID + ".config.reset";
         LinearLayout buttonRow = LinearLayout.horizontal().spacing(8);
-        this.resetButton = buttonRow.addChild(Button.builder(Component.translatable(resetKey), button -> this.resetCurrentTab()).width(150).build());
+        this.resetButton = buttonRow.addChild(Button.builder(Component.translatable(resetKey), button -> this.confirmResetCurrentTab()).width(150).build());
         buttonRow.addChild(Button.builder(CommonComponents.GUI_DONE, button -> this.onClose()).width(150).build());
 
         footerColumn.addChild(buttonRow);
@@ -93,6 +111,14 @@ public class DefaultConfigScreen extends AbstractConfigScreen implements ConfigS
         this.tabNavigationBar.selectTab(0, false);
         this.repositionElements();
         this.updateMasterResetButton();
+        this.updateCollapseToggleButton();
+    }
+
+    private ConfigList getActiveConfigList() {
+        if (this.tabManager.getCurrentTab() instanceof ConfigTab configTab) {
+            return configTab.getList();
+        }
+        return null;
     }
 
     @Override
@@ -112,15 +138,53 @@ public class DefaultConfigScreen extends AbstractConfigScreen implements ConfigS
 
         ScreenRectangle tabArea = new ScreenRectangle(contentLeft, tabTop, contentWidth, tabHeight);
         this.tabManager.setTabArea(tabArea);
+        this.repositionActivePopup();
+    }
+
+    private void toggleAllGroups() {
+        ConfigList list = this.getActiveConfigList();
+        if (list == null || !list.hasVisibleGroups()) {
+            return;
+        }
+        boolean allCollapsed = list.areAllVisibleGroupsCollapsed();
+        list.setAllVisibleGroupsCollapsed(!allCollapsed);
+        this.updateCollapseToggleButton();
+    }
+
+    private void updateCollapseToggleButton() {
+        if (this.collapseToggleButton == null) {
+            return;
+        }
+        ConfigList list = this.getActiveConfigList();
+        boolean hasGroups = list != null && list.hasVisibleGroups();
+        boolean allCollapsed = hasGroups && list.areAllVisibleGroupsCollapsed();
+        this.collapseToggleButton.active = hasGroups;
+        this.collapseToggleButton.setMessage(Component.literal(allCollapsed ? "[+]" : "[-]"));
+    }
+
+    private void confirmResetCurrentTab() {
+        ConfigList list = this.getActiveConfigList();
+        if (list == null) {
+            return;
+        }
+        int resettableCount = list.countResettableEntries();
+        if (resettableCount <= 0) {
+            return;
+        }
+
+        this.openPopup(new ConfirmPopup(
+                this,
+                this.minecraft,
+                Component.translatable("config_overhauled.popup.confirm_reset.title"),
+                Component.translatable("config_overhauled.popup.confirm_reset.message", resettableCount),
+                Component.translatable(Constants.MOD_ID + ".config.reset"),
+                this::resetCurrentTab
+        ));
     }
 
     private void resetCurrentTab() {
         if (this.tabManager.getCurrentTab() instanceof ConfigTab configTab) {
-            for (var entry : configTab.getList().children()) {
-                if (entry instanceof ConfigEntry option) {
-                    option.resetToDefault();
-                }
-            }
+            configTab.getList().resetMatchingEntries();
         }
         this.updateMasterResetButton();
     }
@@ -128,12 +192,7 @@ public class DefaultConfigScreen extends AbstractConfigScreen implements ConfigS
     public void updateMasterResetButton() {
         boolean canReset = false;
         if (this.tabManager.getCurrentTab() instanceof ConfigTab configTab) {
-            for (var entry : configTab.getList().children()) {
-                if (entry instanceof ConfigEntry option && option.isModified()) {
-                    canReset = true;
-                    break;
-                }
-            }
+            canReset = configTab.getList().hasModifiedEntries();
         }
         if (this.resetButton != null) {
             this.resetButton.active = canReset;
@@ -143,20 +202,82 @@ public class DefaultConfigScreen extends AbstractConfigScreen implements ConfigS
     private void onSearchChange(String query) {
         if (this.tabManager.getCurrentTab() instanceof ConfigTab configTab) {
             configTab.getList().filter(query);
+            this.updateMasterResetButton();
+            this.updateCollapseToggleButton();
         }
+        if (this.suggestionPopup != null) {
+            this.suggestionPopup.onSearchTextChanged();
+        }
+    }
+
+    @Override
+    public boolean keyPressed(KeyEvent event) {
+        if (!this.hasActivePopup() && this.suggestionPopup != null && this.suggestionPopup.keyPressed(event)) {
+            return true;
+        }
+        return super.keyPressed(event);
+    }
+
+    @Override
+    public boolean charTyped(CharacterEvent event) {
+        if (!this.hasActivePopup() && this.suggestionPopup != null && this.suggestionPopup.charTyped(event)) {
+            return true;
+        }
+        return super.charTyped(event);
+    }
+
+    @Override
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        if (!this.hasActivePopup() && this.suggestionPopup != null && this.suggestionPopup.mouseClicked(event)) {
+            return true;
+        }
+        return super.mouseClicked(event, doubleClick);
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double scrollX, double scrollY) {
+        if (!this.hasActivePopup() && this.suggestionPopup != null && this.suggestionPopup.mouseScrolled(mouseX, mouseY, scrollY)) {
+            return true;
+        }
+        return super.mouseScrolled(mouseX, mouseY, scrollX, scrollY);
     }
 
     @Override
     public void extractRenderState(@NotNull GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
         if (this.tabManager.getCurrentTab() != this.lastTab) {
             this.lastTab = this.tabManager.getCurrentTab();
-            this.updateMasterResetButton();
             if (this.searchBox != null) {
                 this.onSearchChange(this.searchBox.getValue());
+            } else {
+                this.updateMasterResetButton();
+            }
+            if (this.suggestionPopup != null) {
+                this.suggestionPopup.onTabChanged();
             }
         }
 
-        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTick);
+        this.updateCollapseToggleButton();
+
+        boolean modalOpen = this.hasActivePopup();
+        boolean overSuggestion = !modalOpen && this.suggestionPopup != null && this.suggestionPopup.isMouseOver(mouseX, mouseY);
+        int bgMouseX = overSuggestion ? -1 : mouseX;
+        int bgMouseY = overSuggestion ? -1 : mouseY;
+
+        if (!modalOpen && !overSuggestion && this.collapseToggleButton != null
+                && this.collapseToggleButton.active && this.collapseToggleButton.isMouseOver(mouseX, mouseY)) {
+            ConfigList list = this.getActiveConfigList();
+            boolean allCollapsed = list != null && list.areAllVisibleGroupsCollapsed();
+            Component tooltip = Component.translatable(allCollapsed
+                    ? "config_overhauled.config.groups.expand_all"
+                    : "config_overhauled.config.groups.collapse_all");
+            this.setDeferredTooltip(List.of(tooltip.getVisualOrderText()));
+        }
+
+        super.extractRenderState(guiGraphics, bgMouseX, bgMouseY, partialTick);
+
+        if (!modalOpen && this.suggestionPopup != null) {
+            this.suggestionPopup.extractRenderState(guiGraphics, mouseX, mouseY);
+        }
     }
 
     @Override

@@ -16,11 +16,13 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.network.chat.TextColor;
 
-import java.io.FileWriter;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
 
@@ -29,29 +31,57 @@ public abstract class AbstractDataGenCommand {
     protected static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd-HH-mm-ss");
 
     public static <S> CompletableFuture<Suggestions> suggestModIds(CommandContext<S> context, SuggestionsBuilder builder) {
+        String remaining = builder.getRemainingLowerCase();
         for (String modId : ConfigRegistry.getDependentModIDs()) {
-            builder.suggest(modId);
+            if (modId.toLowerCase(Locale.ROOT).startsWith(remaining)) {
+                builder.suggest(modId);
+            }
         }
         return builder.buildFuture();
     }
 
+    @FunctionalInterface
+    protected interface FileWriterCallback {
+        void write(ConfigManager manager, Path outPath) throws Exception;
+    }
+
     protected static Component executeDatagen(String modId, String subDirectory, String successPrefix, Function<ConfigManager, JsonObject> payloadGenerator) {
+        return executeDatagen(modId, subDirectory, "json", successPrefix, manager -> GSON.toJson(payloadGenerator.apply(manager)));
+    }
+
+    protected static Component executeDatagen(String modId, String subDirectory, String extension, String successPrefix, Function<ConfigManager, String> contentGenerator) {
+        return executeDatagenFile(modId, subDirectory, modId, extension, successPrefix, (manager, outPath) -> {
+            String content = contentGenerator.apply(manager);
+            Files.writeString(outPath, content, StandardCharsets.UTF_8);
+        });
+    }
+
+    protected static Component executeDatagenFile(
+            String modId,
+            String subDirectory,
+            String fileNamePrefix,
+            String extension,
+            String successPrefix,
+            FileWriterCallback writerCallback
+    ) {
         ConfigManager manager = ConfigRegistry.getManager(modId);
         if (manager == null) return Component.literal("Unrecognized mod ID: " + modId).withStyle(ChatFormatting.RED);
 
-        JsonObject payload = payloadGenerator.apply(manager);
+        Optional<Path> configDirOpt = manager.getConfigDirectory();
+        if (configDirOpt.isEmpty()) {
+            return Component.literal("Configuration directory is not initialized for mod ID: " + modId).withStyle(ChatFormatting.RED);
+        }
 
         try {
-            Path rootDir = manager.getConfigDirectory().get();
+            Path rootDir = configDirOpt.get();
             Path targetDir = rootDir.resolve(modId).resolve(subDirectory);
             Files.createDirectories(targetDir);
 
-            String fileName = String.format("%s-%s.json", modId, LocalDateTime.now().format(FORMATTER));
+            String normalizedExt = extension.startsWith(".") ? extension.substring(1) : extension;
+            String fileName = String.format("%s-%s.%s", fileNamePrefix, LocalDateTime.now().format(FORMATTER), normalizedExt);
             Path outPath = targetDir.resolve(fileName).toAbsolutePath();
 
-            try (FileWriter writer = new FileWriter(outPath.toFile())) {
-                GSON.toJson(payload, writer);
-            }
+            writerCallback.write(manager, outPath);
 
             Component pathComponent = Component.literal(fileName)
                     .withStyle(style -> style.withUnderlined(true)

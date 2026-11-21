@@ -49,7 +49,8 @@ public class DoubleEntry extends BoundedEntry<Double> {
         return Component.translatable("config_overhauled.word.default").append(Component.literal(": " + this.formatValue(this.property.defaultValue())));
     }
 
-    private String formatValue(Double value) {
+    @Override
+    protected String formatValue(Double value) {
         String plain = BigDecimal.valueOf(value).toPlainString();
         if (plain.contains(".")) {
             plain = plain.replaceAll("0*$", "");

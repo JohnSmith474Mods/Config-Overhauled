@@ -7,6 +7,7 @@ import com.mojang.serialization.JsonOps;
 
 import johnsmith.configoverhauled.api.Property;
 import johnsmith.configoverhauled.api.client.gui.screen.ConfigScreen;
+import johnsmith.configoverhauled.impl.client.gui.popup.ListDetailPopup;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -65,6 +66,18 @@ public class ListEntry<E> extends AbstractTextEntry<List<E>> {
             this.widget.setCursorPosition(0);
             this.widget.setHighlightPos(0);
         });
+    }
+
+    @Override
+    protected void openDetailPopup() {
+        this.parentScreen.openPopup(new ListDetailPopup<>(
+                this.parentScreen,
+                this.minecraft,
+                this.property,
+                this.widget.getValue(),
+                this.isLocked,
+                this::applyPopupValue
+        ));
     }
 
     @Override

@@ -15,6 +15,11 @@ public class ARGBColorEntry extends ColorEntry<Property<Integer>> {
     }
 
     @Override
+    protected boolean hasAlpha() {
+        return true;
+    }
+
+    @Override
     protected String getHexFormatString() {
         return "#%08X";
     }

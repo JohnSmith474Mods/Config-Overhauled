@@ -4,6 +4,7 @@ import java.util.List;
 
 import johnsmith.configoverhauled.api.Property;
 import johnsmith.configoverhauled.api.client.gui.screen.ConfigScreen;
+import johnsmith.configoverhauled.impl.client.gui.popup.StringDetailPopup;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
@@ -35,6 +36,18 @@ public class StringEntry extends AbstractTextEntry<String> {
         this.widget.setTextColor(0xFFFFFFFF);
         this.widget.setCursorPosition(0);
         this.widget.setHighlightPos(0);
+    }
+
+    @Override
+    protected void openDetailPopup() {
+        this.parentScreen.openPopup(new StringDetailPopup(
+                this.parentScreen,
+                this.minecraft,
+                this.property,
+                this.widget.getValue(),
+                this.isLocked,
+                this::applyPopupValue
+        ));
     }
 
     @Override
