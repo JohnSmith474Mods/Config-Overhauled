@@ -3,6 +3,8 @@ plugins {
     id 'net.neoforged.moddev'
 }
 
+dependencies {}
+
 neoForge {
     version = neoforge_version
     // Automatically enable neoforge AccessTransformers if the file exists
@@ -21,17 +23,13 @@ neoForge {
         }
         client {
             client()
-            gameDirectory = project.file('run/client')
         }
         clientData {
             clientData()
-
-            // DataGen can be run via "./gradlew :neoforge:runClientData" in the Terminal.
             programArguments.addAll '--mod', project.mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
         }
         server {
             server()
-            gameDirectory = project.file('run/server')
         }
     }
     mods {
@@ -41,6 +39,8 @@ neoForge {
     }
 }
 
-dependencies {}
-
 sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+publishMods {
+    file = jar.archiveFile
+}

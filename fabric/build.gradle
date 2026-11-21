@@ -5,8 +5,11 @@ plugins {
 
 repositories {
     maven {
-        name = "Terraformers"
-        url = "https://maven.terraformersmc.com/"
+        name = 'ParchmentMC'
+        url = 'https://maven.parchmentmc.org/'
+    }
+    maven {
+        url "https://maven.terraformersmc.com/releases/"
     }
 }
 
@@ -49,4 +52,8 @@ loom {
             runDir('runs/server')
         }
     }
+}
+
+publishMods {
+    file = remapJar.archiveFile
 }
