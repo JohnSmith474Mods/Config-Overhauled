@@ -3,6 +3,8 @@ plugins {
     id 'net.neoforged.moddev'
 }
 
+dependencies {}
+
 neoForge {
     version = neoforge_version
     // Automatically enable neoforge AccessTransformers if the file exists
@@ -41,3 +43,7 @@ neoForge {
 }
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
+
+publishMods {
+    file = jar.archiveFile
+}
