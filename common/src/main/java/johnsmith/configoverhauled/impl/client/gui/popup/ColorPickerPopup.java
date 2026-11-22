@@ -18,7 +18,7 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
+import com.mojang.blaze3d.platform.InputConstants;
 
 import java.util.List;
 import java.util.Locale;
@@ -196,7 +196,7 @@ public class ColorPickerPopup extends AbstractConfigPopup<Integer> {
         EditBox box = new EditBox(this.font, x, y, width, height, narration) {
             @Override
             public boolean keyPressed(KeyEvent event) {
-                if ((event.key() == GLFW.GLFW_KEY_ENTER || event.key() == GLFW.GLFW_KEY_KP_ENTER)
+                if ((event.key() == InputConstants.KEY_RETURN || event.key() == InputConstants.KEY_NUMPADENTER)
                         && !ColorPickerPopup.this.isLocked
                         && ColorPickerPopup.this.isWorkingValueValid()) {
                     ColorPickerPopup.this.applyAndClose();
@@ -555,7 +555,7 @@ public class ColorPickerPopup extends AbstractConfigPopup<Integer> {
 
     @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-        if (event.button() == GLFW.GLFW_MOUSE_BUTTON_LEFT && !this.isLocked) {
+        if (event.button() == InputConstants.MOUSE_BUTTON_LEFT && !this.isLocked) {
             double mx = event.x();
             double my = event.y();
 

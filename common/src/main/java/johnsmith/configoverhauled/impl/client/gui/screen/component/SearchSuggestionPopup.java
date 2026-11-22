@@ -17,7 +17,9 @@ import net.minecraft.locale.Language;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.Mth;
 
-import org.lwjgl.glfw.GLFW;
+import com.mojang.blaze3d.platform.InputConstants;
+
+import org.lwjgl.sdl.SDLKeycode;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -117,49 +119,49 @@ public class SearchSuggestionPopup {
 
         int key = event.key();
         int mods = event.modifiers();
-        boolean numLockOff = (mods & GLFW.GLFW_MOD_NUM_LOCK) == 0;
+        boolean numLockOff = (mods & SDLKeycode.SDL_KMOD_NUM) == 0;
 
         if (!this.isVisible()) {
             // Allow reopening dismissed suggestions with Up/Down or Tab while focused
             if (this.dismissed && !this.suggestions.isEmpty()
-                    && (key == GLFW.GLFW_KEY_UP || key == GLFW.GLFW_KEY_DOWN || key == GLFW.GLFW_KEY_TAB
-                    || (numLockOff && (key == GLFW.GLFW_KEY_KP_8 || key == GLFW.GLFW_KEY_KP_2 || key == GLFW.GLFW_KEY_KP_6)))) {
+                    && (key == InputConstants.KEY_UP || key == InputConstants.KEY_DOWN || key == InputConstants.KEY_TAB
+                    || (numLockOff && (key == InputConstants.KEY_NUMPAD8 || key == InputConstants.KEY_NUMPAD2 || key == InputConstants.KEY_NUMPAD6)))) {
                 this.dismissed = false;
-                if (key == GLFW.GLFW_KEY_KP_8) this.suppressNextChar('8');
-                else if (key == GLFW.GLFW_KEY_KP_2) this.suppressNextChar('2');
-                else if (key == GLFW.GLFW_KEY_KP_6) this.suppressNextChar('6');
+                if (key == InputConstants.KEY_NUMPAD8) this.suppressNextChar('8');
+                else if (key == InputConstants.KEY_NUMPAD2) this.suppressNextChar('2');
+                else if (key == InputConstants.KEY_NUMPAD6) this.suppressNextChar('6');
                 return true;
             }
             return false;
         }
 
-        if (key == GLFW.GLFW_KEY_ESCAPE) {
+        if (key == InputConstants.KEY_ESCAPE) {
             this.dismissed = true;
             return true;
         }
 
-        if (key == GLFW.GLFW_KEY_UP || (key == GLFW.GLFW_KEY_KP_8 && numLockOff)) {
-            if (key == GLFW.GLFW_KEY_KP_8) {
+        if (key == InputConstants.KEY_UP || (key == InputConstants.KEY_NUMPAD8 && numLockOff)) {
+            if (key == InputConstants.KEY_NUMPAD8) {
                 this.suppressNextChar('8');
             }
             this.moveSelection(-1);
             return true;
         }
 
-        if (key == GLFW.GLFW_KEY_DOWN || (key == GLFW.GLFW_KEY_KP_2 && numLockOff)) {
-            if (key == GLFW.GLFW_KEY_KP_2) {
+        if (key == InputConstants.KEY_DOWN || (key == InputConstants.KEY_NUMPAD2 && numLockOff)) {
+            if (key == InputConstants.KEY_NUMPAD2) {
                 this.suppressNextChar('2');
             }
             this.moveSelection(1);
             return true;
         }
 
-        boolean acceptKey = key == GLFW.GLFW_KEY_TAB
-                || (key == GLFW.GLFW_KEY_KP_6 && numLockOff)
-                || (key == GLFW.GLFW_KEY_RIGHT && this.searchBox.getCursorPosition() >= this.activeTokenEnd);
+        boolean acceptKey = key == InputConstants.KEY_TAB
+                || (key == InputConstants.KEY_NUMPAD6 && numLockOff)
+                || (key == InputConstants.KEY_RIGHT && this.searchBox.getCursorPosition() >= this.activeTokenEnd);
 
         if (acceptKey) {
-            if (key == GLFW.GLFW_KEY_KP_6) {
+            if (key == InputConstants.KEY_NUMPAD6) {
                 this.suppressNextChar('6');
             }
             this.applySelectedSuggestion();
@@ -182,7 +184,7 @@ public class SearchSuggestionPopup {
     }
 
     public boolean mouseClicked(MouseButtonEvent event) {
-        if (!this.isVisible() || event.button() != GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+        if (!this.isVisible() || event.button() != InputConstants.MOUSE_BUTTON_LEFT) {
             return false;
         }
         if (!this.isMouseOver(event.x(), event.y())) {

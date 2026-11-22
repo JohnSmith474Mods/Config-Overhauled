@@ -1,5 +1,7 @@
 package johnsmith.configoverhauled.impl.client.gui.popup;
 
+import com.mojang.blaze3d.platform.InputConstants;
+
 import johnsmith.configoverhauled.api.client.gui.popup.AbstractConfigPopup;
 import johnsmith.configoverhauled.api.client.gui.screen.ConfigScreen;
 
@@ -8,8 +10,6 @@ import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.FormattedCharSequence;
-
-import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
 
@@ -78,7 +78,7 @@ public class ConfirmPopup extends AbstractConfigPopup<Void> {
 
     @Override
     public boolean keyPressed(KeyEvent event) {
-        if ((event.key() == GLFW.GLFW_KEY_ENTER || event.key() == GLFW.GLFW_KEY_KP_ENTER)
+        if ((event.key() == InputConstants.KEY_RETURN || event.key() == InputConstants.KEY_NUMPADENTER)
                 && this.getFocusedWidget() != this.cancelButton) {
             this.applyAndClose();
             return true;

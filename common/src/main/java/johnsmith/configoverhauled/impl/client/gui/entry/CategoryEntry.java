@@ -1,6 +1,7 @@
 package johnsmith.configoverhauled.impl.client.gui.entry;
 
 import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.platform.InputConstants;
 
 import johnsmith.configoverhauled.api.Group;
 import johnsmith.configoverhauled.api.client.gui.entry.AbstractConfigEntry;
@@ -21,7 +22,6 @@ import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.sounds.SoundEvents;
 
 import org.jetbrains.annotations.NotNull;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
 
@@ -171,7 +171,7 @@ public class CategoryEntry extends AbstractConfigEntry {
 
         @Override
         public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-            if (event.button() == GLFW.GLFW_MOUSE_BUTTON_LEFT && this.isMouseOver(event.x(), event.y())) {
+            if (event.button() == InputConstants.MOUSE_BUTTON_LEFT && this.isMouseOver(event.x(), event.y())) {
                 CategoryEntry.this.triggerToggle();
                 return true;
             }
@@ -180,9 +180,9 @@ public class CategoryEntry extends AbstractConfigEntry {
 
         @Override
         public boolean keyPressed(KeyEvent event) {
-            if (this.focused && (event.key() == GLFW.GLFW_KEY_ENTER
-                    || event.key() == GLFW.GLFW_KEY_KP_ENTER
-                    || event.key() == GLFW.GLFW_KEY_SPACE)) {
+            if (this.focused && (event.key() == InputConstants.KEY_RETURN
+                    || event.key() == InputConstants.KEY_NUMPADENTER
+                    || event.key() == InputConstants.KEY_SPACE)) {
                 CategoryEntry.this.triggerToggle();
                 return true;
             }

@@ -1,5 +1,7 @@
 package johnsmith.configoverhauled.api.client.gui.popup;
 
+import com.mojang.blaze3d.platform.InputConstants;
+
 import johnsmith.configoverhauled.api.Property;
 import johnsmith.configoverhauled.api.client.gui.screen.ConfigScreen;
 import johnsmith.configoverhauled.api.data.ConfigScope;
@@ -20,7 +22,6 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -552,13 +553,18 @@ public abstract class AbstractConfigPopup<T> implements ConfigPopup {
     }
 
     @Override
+    public void onClose() {
+        this.setFocusedWidget(null);
+    }
+
+    @Override
     public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-        this.lastInputShiftDown = (event.modifiers() & GLFW.GLFW_MOD_SHIFT) != 0;
+        this.lastInputShiftDown = event.hasShiftDown();
         for (int i = this.children.size() - 1; i >= 0; i--) {
             GuiEventListener child = this.children.get(i);
             if (child.mouseClicked(event, doubleClick)) {
                 this.setFocusedWidget(child);
-                if (event.button() == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+                if (event.button() == InputConstants.MOUSE_BUTTON_LEFT) {
                     this.dragging = true;
                 }
                 return true;
@@ -567,7 +573,7 @@ public abstract class AbstractConfigPopup<T> implements ConfigPopup {
 
         this.setFocusedWidget(null);
         if (!this.isInsideFrame(event.x(), event.y())
-                && event.button() == GLFW.GLFW_MOUSE_BUTTON_LEFT
+                && event.button() == InputConstants.MOUSE_BUTTON_LEFT
                 && this.closeOnOutsideClick()) {
             this.dismiss();
             return true;
@@ -611,8 +617,8 @@ public abstract class AbstractConfigPopup<T> implements ConfigPopup {
 
     @Override
     public boolean keyPressed(KeyEvent event) {
-        this.lastInputShiftDown = (event.modifiers() & GLFW.GLFW_MOD_SHIFT) != 0;
-        if (event.key() == GLFW.GLFW_KEY_ESCAPE && this.closeOnEscape()) {
+        this.lastInputShiftDown = event.hasShiftDown();
+        if (event.key() == InputConstants.KEY_ESCAPE && this.closeOnEscape()) {
             this.dismiss();
             return true;
         }
@@ -621,8 +627,8 @@ public abstract class AbstractConfigPopup<T> implements ConfigPopup {
             return true;
         }
 
-        if (event.key() == GLFW.GLFW_KEY_TAB) {
-            boolean reverse = (event.modifiers() & GLFW.GLFW_MOD_SHIFT) != 0;
+        if (event.key() == InputConstants.KEY_TAB) {
+            boolean reverse = event.hasShiftDown();
             this.cycleFocus(reverse);
             return true;
         }

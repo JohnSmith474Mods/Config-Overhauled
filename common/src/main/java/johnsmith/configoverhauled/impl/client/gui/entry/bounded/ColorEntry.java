@@ -1,6 +1,7 @@
 package johnsmith.configoverhauled.impl.client.gui.entry.bounded;
 
 import com.google.common.collect.ImmutableList;
+import com.mojang.blaze3d.platform.InputConstants;
 
 import johnsmith.configoverhauled.api.Property;
 import johnsmith.configoverhauled.api.client.gui.screen.ConfigScreen;
@@ -23,8 +24,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.FormattedCharSequence;
 
 import org.jetbrains.annotations.NotNull;
-
-import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
 
@@ -176,11 +175,11 @@ public abstract class ColorEntry<P extends Property<Integer>> extends BoundedEnt
             int cursor = this.widget.getCursorPosition();
             int keyCode = event.key();
 
-            boolean isControlDown = (event.modifiers() & (GLFW.GLFW_MOD_CONTROL | GLFW.GLFW_MOD_SUPER)) != 0;
+            boolean isCut = event.isCut();
 
             // Handle mass deletion/cutting of selected text
-            if (hasSelection && (keyCode == GLFW.GLFW_KEY_BACKSPACE || keyCode == GLFW.GLFW_KEY_DELETE || (isControlDown && keyCode == GLFW.GLFW_KEY_X))) {
-                if (isControlDown && keyCode == GLFW.GLFW_KEY_X) {
+            if (hasSelection && (keyCode == InputConstants.KEY_BACKSPACE || keyCode == InputConstants.KEY_DELETE || isCut)) {
+                if (isCut) {
                     Minecraft.getInstance().keyboardHandler.setClipboard(this.widget.getHighlighted());
                 }
 
@@ -191,7 +190,7 @@ public abstract class ColorEntry<P extends Property<Integer>> extends BoundedEnt
             }
 
             // Handle single character backspace
-            if (keyCode == GLFW.GLFW_KEY_BACKSPACE) {
+            if (keyCode == InputConstants.KEY_BACKSPACE) {
                 if (cursor > 1) { // Prevents backspacing into the '#'
                     this.widget.setCursorPosition(cursor - 1);
                     this.widget.setHighlightPos(cursor);
@@ -204,7 +203,7 @@ public abstract class ColorEntry<P extends Property<Integer>> extends BoundedEnt
             }
 
             // Handle single character delete
-            if (keyCode == GLFW.GLFW_KEY_DELETE) {
+            if (keyCode == InputConstants.KEY_DELETE) {
                 if (cursor > 0 && cursor < this.getMaxLength()) { // Prevents deleting the '#'
                     this.widget.setCursorPosition(cursor);
                     this.widget.setHighlightPos(cursor + 1);
@@ -217,7 +216,7 @@ public abstract class ColorEntry<P extends Property<Integer>> extends BoundedEnt
             }
 
             // Allow copying
-            if (isControlDown && keyCode == GLFW.GLFW_KEY_C) {
+            if (event.isCopy()) {
                 if (hasSelection) {
                     Minecraft.getInstance().keyboardHandler.setClipboard(this.widget.getHighlighted());
                 }
@@ -225,7 +224,7 @@ public abstract class ColorEntry<P extends Property<Integer>> extends BoundedEnt
             }
 
             // Handle controlled pasting
-            if (isControlDown && keyCode == GLFW.GLFW_KEY_V) {
+            if (event.isPaste()) {
                 String clipboard = Minecraft.getInstance().keyboardHandler.getClipboard();
                 String clean = clipboard.replaceAll("[^0-9a-fA-F]", "").toUpperCase();
 
@@ -380,7 +379,7 @@ public abstract class ColorEntry<P extends Property<Integer>> extends BoundedEnt
 
         @Override
         public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
-            if (event.button() == GLFW.GLFW_MOUSE_BUTTON_LEFT && this.isMouseOver(event.x(), event.y())) {
+            if (event.button() == InputConstants.MOUSE_BUTTON_LEFT && this.isMouseOver(event.x(), event.y())) {
                 ColorEntry.this.openColorPicker();
                 return true;
             }
@@ -389,9 +388,9 @@ public abstract class ColorEntry<P extends Property<Integer>> extends BoundedEnt
 
         @Override
         public boolean keyPressed(KeyEvent event) {
-            if (this.focused && (event.key() == GLFW.GLFW_KEY_ENTER
-                    || event.key() == GLFW.GLFW_KEY_KP_ENTER
-                    || event.key() == GLFW.GLFW_KEY_SPACE)) {
+            if (this.focused && (event.key() == InputConstants.KEY_RETURN
+                    || event.key() == InputConstants.KEY_NUMPADENTER
+                    || event.key() == InputConstants.KEY_SPACE)) {
                 ColorEntry.this.openColorPicker();
                 return true;
             }

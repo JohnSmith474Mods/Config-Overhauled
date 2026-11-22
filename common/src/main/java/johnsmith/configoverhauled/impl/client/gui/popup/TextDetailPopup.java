@@ -12,7 +12,7 @@ import net.minecraft.client.input.KeyEvent;
 import net.minecraft.network.chat.Component;
 
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
+import com.mojang.blaze3d.platform.InputConstants;
 
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -105,7 +105,7 @@ public abstract class TextDetailPopup<T> extends AbstractConfigPopup<T> {
         this.editBox = new EditBox(this.font, left, inputY, boxWidth, 20, this.title) {
             @Override
             public boolean keyPressed(KeyEvent event) {
-                if ((event.key() == GLFW.GLFW_KEY_ENTER || event.key() == GLFW.GLFW_KEY_KP_ENTER)
+                if ((event.key() == InputConstants.KEY_RETURN || event.key() == InputConstants.KEY_NUMPADENTER)
                         && !TextDetailPopup.this.isLocked
                         && TextDetailPopup.this.isWorkingValueValid()) {
                     TextDetailPopup.this.applyAndClose();

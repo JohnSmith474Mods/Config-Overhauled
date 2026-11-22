@@ -26,7 +26,7 @@ import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 
 import org.jetbrains.annotations.Nullable;
-import org.lwjgl.glfw.GLFW;
+import com.mojang.blaze3d.platform.InputConstants;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -219,7 +219,7 @@ public class ListDetailPopup<E> extends AbstractConfigPopup<List<E>> {
         this.rawJsonBox = new EditBox(this.font, left, boxY, boxWidth, 20, this.title) {
             @Override
             public boolean keyPressed(KeyEvent event) {
-                if ((event.key() == GLFW.GLFW_KEY_ENTER || event.key() == GLFW.GLFW_KEY_KP_ENTER)
+                if ((event.key() == InputConstants.KEY_RETURN || event.key() == InputConstants.KEY_NUMPADENTER)
                         && !ListDetailPopup.this.isLocked
                         && ListDetailPopup.this.isWorkingValueValid()) {
                     ListDetailPopup.this.applyAndClose();
@@ -293,8 +293,8 @@ public class ListDetailPopup<E> extends AbstractConfigPopup<List<E>> {
             EditBox editBox = new EditBox(this.font, editLeft, 0, editWidth, ROW_WIDGET_HEIGHT, Component.literal("#" + (i + 1))) {
                 @Override
                 public boolean keyPressed(KeyEvent event) {
-                    if (event.key() == GLFW.GLFW_KEY_ENTER || event.key() == GLFW.GLFW_KEY_KP_ENTER) {
-                        boolean isCtrl = (event.modifiers() & (GLFW.GLFW_MOD_CONTROL | GLFW.GLFW_MOD_SUPER)) != 0;
+                    if (event.key() == InputConstants.KEY_RETURN || event.key() == InputConstants.KEY_NUMPADENTER) {
+                        boolean isCtrl = event.hasControlDownWithQuirk() || event.hasControlDown();
                         if (isCtrl) {
                             if (!ListDetailPopup.this.isLocked && ListDetailPopup.this.isWorkingValueValid()) {
                                 ListDetailPopup.this.applyAndClose();
@@ -864,7 +864,7 @@ public class ListDetailPopup<E> extends AbstractConfigPopup<List<E>> {
             int maxScroll = this.getMaxScroll();
             boolean hasScrollbar = maxScroll > 0;
 
-            if (hasScrollbar && event.button() == GLFW.GLFW_MOUSE_BUTTON_LEFT) {
+            if (hasScrollbar && event.button() == InputConstants.MOUSE_BUTTON_LEFT) {
                 int trackLeft = this.getScrollbarLeft();
                 int trackTop = this.viewportTop + 2;
                 int trackHeight = Math.max(12, this.viewportHeight - 4);
@@ -895,7 +895,7 @@ public class ListDetailPopup<E> extends AbstractConfigPopup<List<E>> {
                     }
                     if (rw.editBox.mouseClicked(event, doubleClick)) {
                         this.setFocusedWidget(rw.editBox);
-                        this.draggingRowWidget = event.button() == GLFW.GLFW_MOUSE_BUTTON_LEFT;
+                        this.draggingRowWidget = event.button() == InputConstants.MOUSE_BUTTON_LEFT;
                         return true;
                     }
                     if (rw.upButton.mouseClicked(event, doubleClick)) {
@@ -963,8 +963,8 @@ public class ListDetailPopup<E> extends AbstractConfigPopup<List<E>> {
 
     @Override
     public boolean keyPressed(KeyEvent event) {
-        if (!this.rawJsonMode && event.key() == GLFW.GLFW_KEY_TAB) {
-            boolean reverse = (event.modifiers() & GLFW.GLFW_MOD_SHIFT) != 0;
+        if (!this.rawJsonMode && event.key() == InputConstants.KEY_TAB) {
+            boolean reverse = event.hasShiftDown();
             this.cycleStructuredFocus(reverse);
             return true;
         }
