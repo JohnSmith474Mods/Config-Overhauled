@@ -1,4 +1,4 @@
-# Config Overhauled — v1.1.0 (Minecraft 26.1)
+# Config Overhauled — v1.1.0
 
 ## Added
 
