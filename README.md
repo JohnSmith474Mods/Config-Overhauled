@@ -38,15 +38,15 @@ Here is a quick overview of our current branches, their support status, and the 
 
 | Branch                                                                        | Game Version Range | Support Status | Latest Mod Version |
 | ----------------------------------------------------------------------------- | ------------------ | -------------- | ------------------ |
-| [1.21](https://github.com/JohnSmith474Mods/Config-Overhauled/tree/1.21)       | 1.21 - 1.21.1      | Life Support   | 1.0.1              |
-| [1.21.2](https://github.com/JohnSmith474Mods/Config-Overhauled/tree/1.21.2)   | 1.21.2 - 1.21.3    | Life Support   | 1.0.1              |
-| [1.21.4](https://github.com/JohnSmith474Mods/Config-Overhauled/tree/1.21.4)   | 1.21.4             | Life Support   | 1.0.1              |
-| [1.21.5](https://github.com/JohnSmith474Mods/Config-Overhauled/tree/1.21.5)   | 1.21.5             | Life Support   | 1.0.1              |
-| [1.21.6](https://github.com/JohnSmith474Mods/Config-Overhauled/tree/1.21.6)   | 1.21.6 - 1.21.8    | Life Support   | 1.0.1              |
-| [1.21.9](https://github.com/JohnSmith474Mods/Config-Overhauled/tree/1.21.9)   | 1.21.9 - 1.21.10   | Life Support   | 1.0.1              |
-| [1.21.11](https://github.com/JohnSmith474Mods/Config-Overhauled/tree/1.21.11) | 1.21.11            | Life Support   | 1.0.1              |
-| [26.1](https://github.com/JohnSmith474Mods/Config-Overhauled/tree/26.1)       | 26.1 - 26.1.2      | Active         | 1.0.1              |
-| [26.2](https://github.com/JohnSmith474Mods/Config-Overhauled/tree/26.2)       | 26.2               | Active         | 1.0.1              |
+| [1.21](https://github.com/JohnSmith474Mods/Config-Overhauled/tree/1.21)       | 1.21 - 1.21.1      | Life Support   | 1.0.2              |
+| [1.21.2](https://github.com/JohnSmith474Mods/Config-Overhauled/tree/1.21.2)   | 1.21.2 - 1.21.3    | Life Support   | 1.0.2              |
+| [1.21.4](https://github.com/JohnSmith474Mods/Config-Overhauled/tree/1.21.4)   | 1.21.4             | Life Support   | 1.0.2              |
+| [1.21.5](https://github.com/JohnSmith474Mods/Config-Overhauled/tree/1.21.5)   | 1.21.5             | Life Support   | 1.0.2              |
+| [1.21.6](https://github.com/JohnSmith474Mods/Config-Overhauled/tree/1.21.6)   | 1.21.6 - 1.21.8    | Life Support   | 1.0.2              |
+| [1.21.9](https://github.com/JohnSmith474Mods/Config-Overhauled/tree/1.21.9)   | 1.21.9 - 1.21.10   | Life Support   | 1.0.2              |
+| [1.21.11](https://github.com/JohnSmith474Mods/Config-Overhauled/tree/1.21.11) | 1.21.11            | Life Support   | 1.0.2              |
+| [26.1](https://github.com/JohnSmith474Mods/Config-Overhauled/tree/26.1)       | 26.1 - 26.1.2      | Active         | 1.1.1              |
+| [26.2](https://github.com/JohnSmith474Mods/Config-Overhauled/tree/26.2)       | 26.2               | Active         | 1.1.1              |
 
 ## Third-Party Licenses & Credits
 
