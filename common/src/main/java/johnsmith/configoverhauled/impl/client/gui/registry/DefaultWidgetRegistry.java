@@ -1,6 +1,7 @@
 package johnsmith.configoverhauled.impl.client.gui.registry;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
 import johnsmith.configoverhauled.api.Property;
@@ -27,7 +28,9 @@ public class DefaultWidgetRegistry implements WidgetRegistry {
 
     @Override
     public <P extends Property<?>> void register(Class<P> propertyClass, WidgetFactory<? super P> factory) {
-        this.registry.putIfAbsent(propertyClass, factory);
+        Objects.requireNonNull(propertyClass, "Property class cannot be null");
+        Objects.requireNonNull(factory, "Widget factory cannot be null");
+        this.registry.put(propertyClass, factory);
     }
 
     @Override
