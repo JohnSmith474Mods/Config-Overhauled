@@ -14,15 +14,18 @@ import net.minecraft.commands.Commands;
 
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.RegisterClientCommandsEvent;
+import net.minecraftforge.event.GameShuttingDownEvent;
 
 public class ForgeClientEvents {
 
-    // Removed @SubscribeEvent
     public static void onClientDisconnect(ClientPlayerNetworkEvent.LoggingOut event) {
         Minecraft.getInstance().execute(ClientEventHandler::onClientDisconnect);
     }
 
-    // Removed @SubscribeEvent
+    public static void onClientStopping(GameShuttingDownEvent event) {
+        ClientEventHandler.onClientStopping();
+    }
+
     public static void onClientCommands(RegisterClientCommandsEvent event) {
         event.getDispatcher().register(Commands.literal(Constants.COMMAND_ROOT)
                 .then(Commands.literal(Constants.COMMAND_LOCALIZATION)
