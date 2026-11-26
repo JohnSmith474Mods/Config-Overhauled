@@ -149,6 +149,7 @@ public record DefaultGroup(Category parent, String id, ConfigManager manager) im
         private final DefaultGroup group;
         private final Function<String, DefaultProperty<T>> factory;
         private String comment = "";
+        private String translationKey = null;
 
         private PropertyBuilderImpl(DefaultGroup group, Function<String, DefaultProperty<T>> factory) {
             this.group = group;
@@ -163,12 +164,16 @@ public record DefaultGroup(Category parent, String id, ConfigManager manager) im
 
         @Override
         public IPropertyBuilder<T> withTranslationKey(String key) {
+            this.translationKey = key;
             return this;
         }
 
         @Override
         public Property<T> register() {
             DefaultProperty<T> property = factory.apply(this.comment);
+            if (this.translationKey != null) {
+                property.setCustomTranslationKey(this.translationKey);
+            }
             this.group.manager().registerProperty(property);
             return property;
         }
