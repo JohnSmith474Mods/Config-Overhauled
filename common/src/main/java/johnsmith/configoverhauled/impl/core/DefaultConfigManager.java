@@ -38,11 +38,16 @@ public class DefaultConfigManager implements ConfigManager {
     private Path configDirectory;
     private CommentedFileConfig clientConfig;
     private CommentedFileConfig globalConfig;
-    private CommentedFileConfig levelConfig;
+    private volatile CommentedFileConfig levelConfig;
+
+    private final Object levelConfigLock = new Object();
+    private final Object categoryLock = new Object();
 
     private final Map<String, Category> categories = new ConcurrentHashMap<>();
+    private final List<Category> orderedCategories = new CopyOnWriteArrayList<>();
     private final Map<Category, List<Group>> categoriesToGroups = new ConcurrentHashMap<>();
     private final Map<Group, List<Property<?>>> groupsToProperties = new ConcurrentHashMap<>();
+    private final Map<String, Property<?>> propertyIndex = new ConcurrentHashMap<>();
 
     private Function<Object, Object> screenFactory;
 
@@ -84,8 +89,8 @@ public class DefaultConfigManager implements ConfigManager {
         Path clientPath = modConfigDir.resolve(this.modId + "-client.toml");
         Path globalPath = modConfigDir.resolve(this.modId + "-global.toml");
 
-        this.clientConfig = CommentedFileConfig.builder(clientPath).sync().autosave().build();
-        this.globalConfig = CommentedFileConfig.builder(globalPath).sync().autosave().build();
+        this.clientConfig = CommentedFileConfig.builder(clientPath).sync().build();
+        this.globalConfig = CommentedFileConfig.builder(globalPath).sync().build();
 
         this.clientConfig.load();
         this.globalConfig.load();
@@ -110,12 +115,34 @@ public class DefaultConfigManager implements ConfigManager {
         }
 
         Path levelPath = modServerConfigDir.resolve(this.modId + "-level.toml");
-        this.levelConfig = CommentedFileConfig.builder(levelPath).sync().autosave().build();
-        this.levelConfig.load();
+        synchronized (this.levelConfigLock) {
+            this.detachServerConfig();
+            CommentedFileConfig newLevelConfig = CommentedFileConfig.builder(levelPath).sync().build();
+            newLevelConfig.load();
+            this.levelConfig = newLevelConfig;
+        }
 
         loadScope(ConfigScope.LEVEL);
         saveScope(ConfigScope.LEVEL);
         logInfo("Server configuration attached to: {}", levelPath);
+    }
+
+    @Override
+    public void detachServerConfig() {
+        synchronized (this.levelConfigLock) {
+            CommentedFileConfig activeLevelConfig = this.levelConfig;
+            if (activeLevelConfig != null) {
+                this.levelConfig = null;
+                synchronized (activeLevelConfig) {
+                    try {
+                        activeLevelConfig.close();
+                    } catch (Exception e) {
+                        logError("Failed to close server configuration for {}: {}", this.modId, e.getMessage());
+                    }
+                }
+                logInfo("Server configuration detached.");
+            }
+        }
     }
 
     private CommentedFileConfig getConfigForScope(ConfigScope scope) {
@@ -200,12 +227,21 @@ public class DefaultConfigManager implements ConfigManager {
             logError("Cannot register category: ID is null.");
             throw new IllegalArgumentException("Category ID cannot be null");
         }
-        return categories.computeIfAbsent(id, k -> {
-            logDebug("Registering new category: {}", id);
-            Category category = new DefaultCategory(id, this);
-            categoriesToGroups.put(category, new CopyOnWriteArrayList<>());
+        Category existing = this.categories.get(id);
+        if (existing != null) {
+            return existing;
+        }
+        synchronized (this.categoryLock) {
+            Category category = this.categories.get(id);
+            if (category == null) {
+                logDebug("Registering new category: {}", id);
+                category = new DefaultCategory(id, this);
+                this.categoriesToGroups.put(category, new CopyOnWriteArrayList<>());
+                this.categories.put(id, category);
+                this.orderedCategories.add(category);
+            }
             return category;
-        });
+        }
     }
 
     @Override
@@ -251,6 +287,7 @@ public class DefaultConfigManager implements ConfigManager {
             if (!properties.contains(config)) {
                 logDebug("Registering config property: {}", config.getUniqueId());
                 properties.add(config);
+                this.propertyIndex.put(config.getUniqueId(), config);
             }
         }
 
@@ -282,8 +319,12 @@ public class DefaultConfigManager implements ConfigManager {
 
     @Override
     public void remove(Category category) {
+        if (category == null) return;
         logDebug("Removing category: {}", category.id());
-        this.categories.remove(category.id());
+        synchronized (this.categoryLock) {
+            this.categories.remove(category.id());
+            this.orderedCategories.remove(category);
+        }
         List<Group> groups = this.getGroupsIn(category);
         if (groups != null && !groups.isEmpty()) {
             synchronized (groups) {
@@ -313,18 +354,22 @@ public class DefaultConfigManager implements ConfigManager {
 
     @Override
     public void remove(Property<?> property) {
+        if (property == null) return;
         logDebug("Removing property: {} from group: {}", property.resourceName(), property.parentGroup().id());
         List<Property<?>> properties = this.getPropertiesIn(property.parentGroup());
         if (properties != null) {
             synchronized (properties) {
                 properties.remove(property);
+                this.propertyIndex.remove(property.getUniqueId(), property);
             }
+        } else {
+            this.propertyIndex.remove(property.getUniqueId(), property);
         }
     }
 
     @Override public List<Category> getCategories() {
         logDebug("Fetching all registered categories.");
-        return categories.values().stream().toList();
+        return List.copyOf(this.orderedCategories);
     }
 
     @Override public List<Group> getGroupsIn(Category category) {
@@ -344,17 +389,10 @@ public class DefaultConfigManager implements ConfigManager {
 
     @Override
     public Property<?> findProperty(ConfigDescription description) {
+        if (description == null) return null;
         logDebug("Locating property matching criteria: {} / {} / {}", description.category(), description.group(), description.property());
-        for (Category category : this.getCategories()) {
-            if (!category.id().equals(description.category())) continue;
-            for (Group group : this.getGroupsIn(category)) {
-                if (!group.id().equals(description.group())) continue;
-                for (Property<?> property : this.getPropertiesIn(group)) {
-                    if (property.resourceName().equals(description.property())) return property;
-                }
-            }
-        }
-        return null;
+        String uniqueId = description.category() + "." + description.group() + "." + description.property();
+        return this.propertyIndex.get(uniqueId);
     }
 
     @Override
