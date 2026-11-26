@@ -32,6 +32,7 @@ public abstract sealed class DefaultProperty<T> implements Property<T> permits D
     private T diskValue;
     private volatile T runtimeValue;
     private boolean isSynced = false;
+    private java.lang.String customTranslationKey;
     private final Set<Listener> listeners = Collections.synchronizedSet(Collections.newSetFromMap(new WeakHashMap<>()));
 
     protected DefaultProperty(java.lang.String resourceName, Group category, ConfigScope scope, java.lang.String comment, T defaultValue, Codec<T> codec, boolean isDynamic) {
@@ -54,8 +55,15 @@ public abstract sealed class DefaultProperty<T> implements Property<T> permits D
     @Override public java.lang.String comment() { return this.comment; }
     @Override public boolean isDynamic() { return this.isDynamic; }
 
+    void setCustomTranslationKey(java.lang.String customTranslationKey) {
+        this.customTranslationKey = (customTranslationKey == null || customTranslationKey.isBlank()) ? null : customTranslationKey;
+    }
+
     @Override
     public java.lang.String translationKey() {
+        if (this.customTranslationKey != null) {
+            return this.customTranslationKey;
+        }
         return this.parentGroup.translationKey() + "." + resourceName;
     }
 
@@ -107,13 +115,17 @@ public abstract sealed class DefaultProperty<T> implements Property<T> permits D
 
     @Override
     public void onDisconnect() {
+        T previousValue = this.runtimeValue;
+        boolean wasSynced = this.isSynced;
         this.runtimeValue = this.diskValue;
         this.isSynced = false;
-        this.invalidate();
-        this.listeners.clear();
         if (this.scope == ConfigScope.LEVEL && this.isDynamic) {
+            this.invalidate();
+            this.listeners.clear();
             Constants.LOG.info("Removing dynamic LEVEL scoped property: {}", this.getUniqueId());
             this.parentGroup.remove(this);
+        } else if (wasSynced && !java.util.Objects.equals(previousValue, this.runtimeValue)) {
+            this.notifyChange();
         }
     }
 

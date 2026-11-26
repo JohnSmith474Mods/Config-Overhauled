@@ -15,6 +15,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientPlayerNetworkEvent;
 import net.neoforged.neoforge.client.event.RegisterClientCommandsEvent;
+import net.neoforged.neoforge.event.GameShuttingDownEvent;
 
 @EventBusSubscriber(modid = Constants.MOD_ID, value = Dist.CLIENT)
 public class NeoForgeClientEvents {
@@ -22,6 +23,11 @@ public class NeoForgeClientEvents {
     @SubscribeEvent
     public static void onClientDisconnect(ClientPlayerNetworkEvent.LoggingOut event) {
         Minecraft.getInstance().execute(ClientEventHandler::onClientDisconnect);
+    }
+
+    @SubscribeEvent
+    public static void onClientStopping(GameShuttingDownEvent event) {
+        ClientEventHandler.onClientStopping();
     }
 
     @SubscribeEvent

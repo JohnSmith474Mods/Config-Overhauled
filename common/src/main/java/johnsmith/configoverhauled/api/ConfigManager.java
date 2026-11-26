@@ -49,6 +49,11 @@ public interface ConfigManager {
     void attachServerConfig(MinecraftServer server);
 
     /**
+     * Closes and detaches the active LEVEL-scoped server configuration file, if attached.
+     */
+    default void detachServerConfig() {}
+
+    /**
      * Forces a synchronous disk read operation for all properties bound to the specified scope.
      *
      * @param targetScope The target synchronization scope.

@@ -60,5 +60,8 @@ public class ServerEventHandler {
 
     public static void onServerStopping(MinecraftServer server) {
         ConfigRegistry.saveAllSynchronously();
+        for (ConfigManager manager : ConfigRegistry.getAllManagers()) {
+            manager.detachServerConfig();
+        }
     }
 }
