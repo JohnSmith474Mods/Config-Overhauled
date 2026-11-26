@@ -32,39 +32,42 @@ public final class Color {
      * Serializes primitive integer colors to hexadecimal strings and deserializes valid hexadecimal strings into integers.
      */
     public static final Codec<Integer> RGB_CODEC = Codec.STRING.comapFlatMap(
-            hexString -> {
-                int len = hexString.length();
-                if (len == 0) {
-                    return DataResult.error(() -> "Empty string is not a valid hex color");
-                }
-                int startIndex = hexString.charAt(0) == '#' ? 1 : 0;
-                try {
-                    int val = Integer.parseInt(hexString, startIndex, len, 16);
-                    return DataResult.success(val);
-                } catch (NumberFormatException e) {
-                    return DataResult.error(() -> "Not a valid hex color: " + hexString);
-                }
-            },
-            colorVal -> String.format("#%06X", colorVal)
+            hexString -> parseHexColor(hexString, 6, true),
+            colorVal -> String.format("#%06X", colorVal & 0xFFFFFF)
     );
 
     /**
      * Serializes primitive integer colors to hexadecimal strings and deserializes valid hexadecimal strings into integers.
      */
     public static final Codec<Integer> ARGB_CODEC = Codec.STRING.comapFlatMap(
-            hexString -> {
-                int len = hexString.length();
-                if (len == 0) {
-                    return DataResult.error(() -> "Empty string is not a valid hex color");
-                }
-                int startIndex = hexString.charAt(0) == '#' ? 1 : 0;
-                try {
-                    int val = Integer.parseInt(hexString, startIndex, len, 16);
-                    return DataResult.success(val);
-                } catch (NumberFormatException e) {
-                    return DataResult.error(() -> "Not a valid hex color: " + hexString);
-                }
-            },
+            hexString -> parseHexColor(hexString, 8, false),
             colorVal -> String.format("#%08X", colorVal)
     );
+
+    private static DataResult<Integer> parseHexColor(String hexString, int maxDigits, boolean requireRgbRange) {
+        int len = hexString.length();
+        if (len == 0) {
+            return DataResult.error(() -> "Empty string is not a valid hex color");
+        }
+        int startIndex = hexString.charAt(0) == '#' ? 1 : 0;
+        if (startIndex >= len) {
+            return DataResult.error(() -> "Not a valid hex color: " + hexString);
+        }
+        char firstChar = hexString.charAt(startIndex);
+        if (firstChar == '+' || firstChar == '-') {
+            return DataResult.error(() -> "Not a valid hex color: " + hexString);
+        }
+        if (len - startIndex > maxDigits) {
+            return DataResult.error(() -> "Not a valid hex color: " + hexString);
+        }
+        try {
+            int val = Integer.parseUnsignedInt(hexString, startIndex, len, 16);
+            if (requireRgbRange && (val & 0xFF000000) != 0) {
+                return DataResult.error(() -> "RGB hex color out of range: " + hexString);
+            }
+            return DataResult.success(val);
+        } catch (NumberFormatException e) {
+            return DataResult.error(() -> "Not a valid hex color: " + hexString);
+        }
+    }
 }
