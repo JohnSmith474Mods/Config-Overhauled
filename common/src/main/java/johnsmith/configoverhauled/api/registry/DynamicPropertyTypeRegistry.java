@@ -4,6 +4,7 @@ import com.mojang.serialization.Codec;
 import johnsmith.configoverhauled.Constants;
 import johnsmith.configoverhauled.api.Group;
 import johnsmith.configoverhauled.api.Property;
+import johnsmith.configoverhauled.api.data.Color;
 import johnsmith.configoverhauled.api.data.ConfigScope;
 import johnsmith.configoverhauled.api.factory.PropertyFactory;
 import johnsmith.configoverhauled.impl.core.state.DefaultProperty;
@@ -32,9 +33,9 @@ public final class DynamicPropertyTypeRegistry {
     /** Represents a dynamically instantiable long integer property. */
     public static final TypeDefinition<Long> LONG = register(Constants.MOD_ID, "long", Codec.LONG, (name, group, def, min, max, codec) -> new DefaultProperty.Long(name, group, ConfigScope.LEVEL, null, (Long) def, (Long) min, (Long) max, true));
     /** Represents a dynamically instantiable 24-bit RGB color property. */
-    public static final TypeDefinition<Integer> RGB_COLOR = register(Constants.MOD_ID, "rgb_color", Codec.INT, (name, group, def, min, max, codec) -> new DefaultProperty.RGBColor(name, group, ConfigScope.LEVEL, null, (Integer) def, true));
+    public static final TypeDefinition<Integer> RGB_COLOR = register(Constants.MOD_ID, "rgb_color", Color.RGB_CODEC, (name, group, def, min, max, codec) -> new DefaultProperty.RGBColor(name, group, ConfigScope.LEVEL, null, (Integer) def, true));
     /** Represents a dynamically instantiable 32-bit ARGB color property. */
-    public static final TypeDefinition<Integer> ARGB_COLOR = register(Constants.MOD_ID, "argb_color", Codec.INT, (name, group, def, min, max, codec) -> new DefaultProperty.ARGBColor(name, group, ConfigScope.LEVEL, null, (Integer) def, true));
+    public static final TypeDefinition<Integer> ARGB_COLOR = register(Constants.MOD_ID, "argb_color", Color.ARGB_CODEC, (name, group, def, min, max, codec) -> new DefaultProperty.ARGBColor(name, group, ConfigScope.LEVEL, null, (Integer) def, true));
     /** Represents a dynamically instantiable boolean property. */
     public static final TypeDefinition<Boolean> BOOLEAN = register(Constants.MOD_ID, "boolean", Codec.BOOL, (name, group, def, min, max, codec) -> new DefaultProperty.Boolean(name, group, ConfigScope.LEVEL, null, (Boolean) def, true));
     /** Represents a dynamically instantiable string property. */
