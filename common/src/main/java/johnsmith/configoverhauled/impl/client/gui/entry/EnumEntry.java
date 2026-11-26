@@ -21,8 +21,7 @@ public class EnumEntry<E extends Enum<E>> extends OptionEntry<E, CycleButton<E>>
 
     @Override
     protected CycleButton<E> createWidget() {
-        @SuppressWarnings("unchecked")
-        E[] enumConstants = (E[]) this.property.defaultValue().getClass().getEnumConstants();
+        E[] enumConstants = this.property.defaultValue().getDeclaringClass().getEnumConstants();
 
         CycleButton<E> button = CycleButton.builder((E e) -> Component.literal(e.name()), this.property.get())
                 .withValues(enumConstants)
