@@ -82,7 +82,7 @@ public class RegistryListSelectionScreen<T> extends AbstractRegistrySelectionScr
     }
 
     private void updateSelected(String query) {
-        double scroll = this.availableList.scrollAmount();
+        double scroll = this.selectedList.scrollAmount();
         this.selectedList.clearEntries();
         String lowerQuery = query.toLowerCase(Locale.ROOT);
 

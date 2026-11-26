@@ -18,6 +18,9 @@ import org.jetbrains.annotations.NotNull;
 import java.util.List;
 
 public class ListEntry<E> extends AbstractTextEntry<List<E>> {
+    private String cachedSerializedValue = "[]";
+    private List<FormattedCharSequence> cachedPreviewTooltip = List.of();
+
     public ListEntry(Property<List<E>> property, ConfigScreen parentScreen, Minecraft minecraft, Runnable onValueChanged) {
         super(property, parentScreen, minecraft, onValueChanged);
         this.updateWidgetValue();
@@ -49,6 +52,7 @@ public class ListEntry<E> extends AbstractTextEntry<List<E>> {
                     list -> {
                         this.setValue(list);
                         this.widget.setTextColor(0xFFFFFFFF);
+                        this.refreshPreviewCache();
                     },
                     this::restoreCurrentValue
             );
@@ -60,11 +64,26 @@ public class ListEntry<E> extends AbstractTextEntry<List<E>> {
     @Override
     protected void updateWidgetValue() {
         DataResult<JsonElement> result = this.property.codec().encodeStart(JsonOps.INSTANCE, this.property.get());
-        result.result().ifPresent(json -> {
-            this.widget.setValue(json.toString());
-            this.widget.setCursorPosition(0);
-            this.widget.setHighlightPos(0);
-        });
+        result.result().ifPresentOrElse(
+                json -> {
+                    String serialized = json.toString();
+                    this.widget.setValue(serialized);
+                    this.widget.setCursorPosition(0);
+                    this.widget.setHighlightPos(0);
+                    this.updatePreviewCache(serialized);
+                },
+                () -> this.updatePreviewCache("[]")
+        );
+    }
+
+    private void refreshPreviewCache() {
+        DataResult<JsonElement> result = this.property.codec().encodeStart(JsonOps.INSTANCE, this.property.get());
+        this.updatePreviewCache(result.result().map(JsonElement::toString).orElse("[]"));
+    }
+
+    private void updatePreviewCache(String serialized) {
+        this.cachedSerializedValue = serialized;
+        this.cachedPreviewTooltip = List.of(this.getContentPreview().getVisualOrderText());
     }
 
     @Override
@@ -74,8 +93,7 @@ public class ListEntry<E> extends AbstractTextEntry<List<E>> {
     }
 
     protected Component getContentPreview() {
-        DataResult<JsonElement> result = this.property.codec().encodeStart(JsonOps.INSTANCE, this.property.get());
-        return Component.literal("\"" + result.result().map(JsonElement::toString).orElse("[]") + "\"");
+        return Component.literal("\"" + this.cachedSerializedValue + "\"");
     }
 
     @Override
@@ -83,8 +101,7 @@ public class ListEntry<E> extends AbstractTextEntry<List<E>> {
         super.renderContent(guiGraphics, mouseX, mouseY, isHovering, partialTick);
 
         if (this.widget.isMouseOver(mouseX, mouseY)) {
-            List<FormattedCharSequence> boundsTooltip = List.of(this.getContentPreview().getVisualOrderText());
-            this.parentScreen.setDeferredTooltip(boundsTooltip);
+            this.parentScreen.setDeferredTooltip(this.cachedPreviewTooltip);
         }
     }
 }
