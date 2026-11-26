@@ -11,6 +11,7 @@ import net.minecraft.commands.Commands;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.ClientPlayerNetworkEvent;
 import net.minecraftforge.client.event.RegisterClientCommandsEvent;
+import net.minecraftforge.event.GameShuttingDownEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 
@@ -20,6 +21,11 @@ public class ForgeClientEvents {
     @SubscribeEvent
     public static void onClientDisconnect(ClientPlayerNetworkEvent.LoggingOut event) {
         Minecraft.getInstance().execute(ClientEventHandler::onClientDisconnect);
+    }
+
+    @SubscribeEvent
+    public static void onClientStopping(GameShuttingDownEvent event) {
+        ClientEventHandler.onClientStopping();
     }
 
     @SubscribeEvent
